@@ -1,0 +1,6 @@
+.no-validate .is-invalid,
+.no-validate .is-valid{
+    border-color:initial;
+    background-image: none;
+    padding-right: initial;
+}

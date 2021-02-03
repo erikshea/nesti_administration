@@ -1,0 +1,14 @@
+{
+    "MYNAME.needemand.com" : {
+        "user": "MYLOGIN",
+        "db_name": "MYDB",
+        "password": "MYPASS",
+        "host": "localhost"
+    },
+    "localhost" : {
+        "user": "root",
+        "db_name": "tp_php",
+        "password": "",
+        "host": "localhost"
+    }
+}
