@@ -7,6 +7,15 @@ class ArticlePrice extends BaseEntity{
     private $idArticle;
     
 
+    public function getArticle(): ?Article{
+        return $this->getRelatedEntity("Article");
+    }
+
+    public function setArticle(Article $a){
+        $this->setRelatedEntity($a);
+    }
+
+
     /**
      * Get the value of idArticle
      */

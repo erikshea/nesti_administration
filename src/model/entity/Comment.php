@@ -8,14 +8,40 @@ class Comment extends BaseEntity{
     private $flag;
     private $idRecipe;
     private $idUser;
-    private $idUser1;
+    private $idModerator;
 
     
+    public function getModerator(): ?Moderator{
+        return $this->getRelatedEntity("Moderator");
+    }
+    public function setModerator(Moderator $m){
+        $this->setRelatedEntity($m);
+    }
+
+    public function getUser(): ?User{
+        return $this->getRelatedEntity("User");
+    }
+
+    public function setUser(User $user){
+        $this->setRelatedEntity($user);
+    }
+
+    public function getRecipe(): ?Recipe{
+        return $this->getRelatedEntity("Recipe");
+    }
 
     public function setRecipe(Recipe $recipe){
-
         $this->setRelatedEntity($recipe);
     }
+    
+    public function getImage(): ?Image{
+        return $this->getRelatedEntity("Image");
+    }
+    
+    public function setImage(Image $i){
+        $this->setRelatedEntity($i);
+    }
+
     /**
      * Get the value of idUser
      */
@@ -152,6 +178,26 @@ class Comment extends BaseEntity{
     public function setIdRecipe($idRecipe)
     {
         $this->idRecipe = $idRecipe;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of idUser1
+     */ 
+    public function getIdModerator()
+    {
+        return $this->idModerator;
+    }
+
+    /**
+     * Set the value of idUser1
+     *
+     * @return  self
+     */ 
+    public function setIdModerator($idModerator)
+    {
+        $this->idModerator = $idModerator;
 
         return $this;
     }

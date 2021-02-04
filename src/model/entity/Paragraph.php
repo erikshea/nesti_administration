@@ -11,6 +11,11 @@ class Paragraph extends BaseEntity{
         return $this->getRelatedEntity("Recipe");
     }
 
+    public function setRecipe(Recipe $r){
+        $this->setRelatedEntity($r);
+    }
+
+
     /**
      * Get the value of idRecipe
      */ 

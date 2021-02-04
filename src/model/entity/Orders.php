@@ -1,7 +1,7 @@
 <?php
 
 class Orders extends BaseEntity{
-    private $idOrdes;
+    private $idOrders;
     private $flag;
     private $creationDate;
     private $idUser;
@@ -15,12 +15,16 @@ class Orders extends BaseEntity{
         return $this->getRelatedEntity("User");
     }
 
+    public function setUser(User $user){
+        $this->setRelatedEntity($user);
+    }
+
     /**
      * Get the value of idOrdes
      */
-    public function getIdOrdes()
+    public function getIdOrders()
     {
-        return $this->idOrdes;
+        return $this->idOrders;
     }
 
     /**
@@ -28,9 +32,9 @@ class Orders extends BaseEntity{
      *
      * @return  self
      */
-    public function setIdOrdes($idOrdes)
+    public function setIdOrders($idOrders)
     {
-        $this->idOrdes = $idOrdes;
+        $this->idOrders = $idOrders;
 
         return $this;
     }

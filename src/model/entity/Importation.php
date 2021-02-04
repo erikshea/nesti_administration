@@ -1,30 +1,34 @@
 <?php
 
 class Importation extends BaseEntity{
-    private $idUser;
+    private $idAdministrator;
+    private $idArticle;
     private $idSupplierOrder;
     private $dateImportation;
 
     
-
-    /**
-     * Get the value of idUser
-     */
-    public function getIdUser()
-    {
-        return $this->idUser;
+    public function getAdministrator(): ?Administrator{ 
+        return $this->getRelatedEntity("Administrator");
     }
 
-    /**
-     * Set the value of idUser
-     *
-     * @return  self
-     */
-    public function setIdUser($idUser)
-    {
-        $this->idUser = $idUser;
+    public function setAdministrator(Administrator $a){
+        $this->setRelatedEntity($a);
+    }
 
-        return $this;
+    public function getArticle(): ?Article{ 
+        return $this->getRelatedEntity("Article");
+    }
+
+    public function setArticle(Article $a){
+        $this->setRelatedEntity($a);
+    }
+
+    public function getLot(): ?Lot{ 
+        return $this->getRelatedEntity("Lot");
+    }
+
+    public function setLot(Lot $l){
+        $this->setRelatedEntity($l);
     }
 
     /**

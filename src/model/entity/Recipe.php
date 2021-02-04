@@ -8,6 +8,7 @@ class Recipe extends BaseEntity{
     private $portions;
     private $flag;
     private $preparationTime;
+    private $idChef;
     private $idImage;
 
     public function getComments(): array{
@@ -22,10 +23,18 @@ class Recipe extends BaseEntity{
     public function getImage(): ?Image{
         return $this->getRelatedEntity("Image");
     }
-    public function getChef(): ?Chef{
+
+    public function setImage(Image $i){
+        $this->setRelatedEntity($i);
+    }
+
+    public function getChef(): ?Chef{ 
         return $this->getRelatedEntity("Chef");
     }
 
+    public function setChef(Chef $c){
+        $this->setRelatedEntity($c);
+    }
 
     /**
      * Get the value of idImage
@@ -183,6 +192,26 @@ class Recipe extends BaseEntity{
     public function setDateCreation($dateCreation)
     {
         $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of idChef
+     */ 
+    public function getIdChef()
+    {
+        return $this->idChef;
+    }
+
+    /**
+     * Set the value of idChef
+     *
+     * @return  self
+     */ 
+    public function setIdChef($idChef)
+    {
+        $this->idChef = $idChef;
 
         return $this;
     }

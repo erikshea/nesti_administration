@@ -4,17 +4,30 @@ class IngredientRecipe extends BaseEntity{
     private $idProduct;
     private $idRecipe;
     private $quantity;
-    private $recipeOrder;
+    private $recipePosition;
     private $idUnit;
     
-
-
     public function getIngredient(): Ingredient{
         return $this->getRelatedEntity("Ingredient");
     }
 
+    public function setIngredient(Ingredient $i){
+        $this->setRelatedEntity($i);
+    }
+
     public function getRecipe(): Recipe{
         return $this->getRelatedEntity("Recipe");
+    }
+    public function setRecipe(Recipe $r){
+        $this->setRelatedEntity($r);
+    }
+
+    public function getUnit(): Unit{
+        return $this->getRelatedEntity("Unit");
+    }
+
+    public function setUnit(Unit $u){
+        $this->setRelatedEntity($u);
     }
 
     /**
@@ -37,25 +50,7 @@ class IngredientRecipe extends BaseEntity{
         return $this;
     }
 
-    /**
-     * Get the value of recipeOrder
-     */ 
-    public function getRecipeOrder()
-    {
-        return $this->recipeOrder;
-    }
 
-    /**
-     * Set the value of recipeOrder
-     *
-     * @return  self
-     */ 
-    public function setRecipeOrder($recipeOrder)
-    {
-        $this->recipeOrder = $recipeOrder;
-
-        return $this;
-    }
 
     /**
      * Get the value of quantity
@@ -113,6 +108,26 @@ class IngredientRecipe extends BaseEntity{
     public function setIdProduct($idProduct)
     {
         $this->idProduct = $idProduct;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of recipePosition
+     */ 
+    public function getRecipePosition()
+    {
+        return $this->recipePosition;
+    }
+
+    /**
+     * Set the value of recipePosition
+     *
+     * @return  self
+     */ 
+    public function setRecipePosition($recipePosition)
+    {
+        $this->recipePosition = $recipePosition;
 
         return $this;
     }

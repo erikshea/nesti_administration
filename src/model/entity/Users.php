@@ -1,13 +1,14 @@
 <?php
 
-class User extends BaseEntity{
+class Users extends BaseEntity{
     private $idUser;
     private $lastName;
-    private $firtName;
+    private $firstName;
     private $email;
     private $password;
     private $flag;
     private $dateCreation;
+    private $login;
 
 
     public function getOrders(): array{
@@ -101,9 +102,9 @@ class User extends BaseEntity{
     /**
      * Get the value of firtName
      */
-    public function getFirtName()
+    public function getFirstName()
     {
-        return $this->firtName;
+        return $this->firstName;
     }
 
     /**
@@ -111,9 +112,9 @@ class User extends BaseEntity{
      *
      * @return  self
      */
-    public function setFirtName($firtName)
+    public function setFirstName($firstName)
     {
-        $this->firtName = $firtName;
+        $this->firstName = $firstName;
 
         return $this;
     }
@@ -154,6 +155,26 @@ class User extends BaseEntity{
     public function setIdUser($idUser)
     {
         $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of login
+     */ 
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
+     * Set the value of login
+     *
+     * @return  self
+     */ 
+    public function setLogin($login)
+    {
+        $this->login = $login;
 
         return $this;
     }

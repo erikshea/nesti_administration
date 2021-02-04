@@ -35,6 +35,20 @@ class Article extends BaseEntity{
         return $this->getRelatedEntity("Image");
     }
 
+    public function setUnit(Unit $u){
+        $this->setRelatedEntity($u);
+    }
+
+
+    public function setProduct(Product $p){
+        $this->setRelatedEntity($p);
+    }
+
+
+    public function setImage(Image $i){
+        $this->setRelatedEntity($i);
+    }
+
     /**
      * Get the value of idProduct
      */

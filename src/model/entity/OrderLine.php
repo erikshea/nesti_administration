@@ -6,6 +6,24 @@ class OrderLine extends BaseEntity{
     private $quantity;
     
 
+    public function getOrder(): ?Orders{
+        return $this->getRelatedEntity("Orders");
+    }
+
+    public function setOrder(Orders $o){
+        $this->setRelatedEntity($o);
+    }
+
+    public function getArticle(): ?Article{ 
+        return $this->getRelatedEntity("Article");
+    }
+
+    public function setArticle(Article $a){
+        $this->setRelatedEntity($a);
+    }
+
+
+
     /**
      * Get the value of idOrders
      */

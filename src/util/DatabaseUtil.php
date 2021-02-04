@@ -4,7 +4,7 @@
  * Database
  * Provides a PDO connection object
  */
-class Database
+class DatabaseUtil
 {
     // Default database connection parameters, depending on HTTP_HOST
     private static $defaultConnectionParameters = ["user" => "root", "db_name" => "tp_php", "password" => "", "host" => "localhost"];

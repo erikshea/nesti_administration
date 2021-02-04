@@ -5,7 +5,13 @@ class ConnectionLog extends BaseEntity{
     private $dateConnection;
     private $idUser;
 
-    
+    public function getUser(): ?User{ 
+        return $this->getRelatedEntity("User");
+    }
+
+    public function setUser(User $u){
+        $this->setRelatedEntity($u);
+    }
 
     /**
      * Get the value of idUser
