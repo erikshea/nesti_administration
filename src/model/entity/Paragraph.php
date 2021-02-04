@@ -8,7 +8,7 @@ class Paragraph extends BaseEntity{
     private $idRecipe;
 
     public function getRecipe(): Recipe{
-        return $this->getRelatedEntity("Recipe");
+        return $this->getRelatedEntity("Recipe",BaseDao::FLAGS['active']);
     }
 
     public function setRecipe(Recipe $r){

@@ -19,6 +19,14 @@ class Users extends BaseEntity{
         return $this->getRelatedEntities("ConnectionLog");
     }
 
+    public function getComments(): array{
+        return $this->getRelatedEntities("Comment", BaseDao::FLAGS['active']);
+    }
+
+    public function getRecipes(): array{
+        return $this->getIndirectlyRelatedEntities("Recipe", "Grades", BaseDao::FLAGS['active']); 
+    }
+
     /**
      * Get the value of dateCreation
      */

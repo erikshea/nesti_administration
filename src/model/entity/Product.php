@@ -7,7 +7,7 @@ class Product extends BaseEntity{
 
 
     public function getArticles(): array{
-        return $this->getRelatedEntities("Article");
+        return $this->getRelatedEntities("Article", BaseDao::FLAGS['active']);
     }
     
 

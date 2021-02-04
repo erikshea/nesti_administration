@@ -1,5 +1,5 @@
 <?php
-class Moderator extends User{
+class Moderator extends Users{
     private $idModerator;
 
 

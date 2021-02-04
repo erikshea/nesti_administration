@@ -4,6 +4,10 @@ SiteUtil::require('util/EntityUtil.php');
 
 class BaseDao
 {
+    public const FLAGS = ['active'  => 'a',
+        'waiting' => 'w',
+        'deleted' => 'b' ];
+
     public static function getTableName(): String{
         return strtolower(self::getEntityClass());
     }
@@ -13,7 +17,7 @@ class BaseDao
     }
 
     public static function getPkColumnName(): String{
-        return strtolower(self::getEntityClass());
+        return 'id' . self::getEntityClass();
     }
 
     /**
@@ -23,11 +27,19 @@ class BaseDao
      * @param  mixed $value to search
      * @return Objet if found, null otherwise
      */
-    public static function findOneBy(String $key, $value)
+    public static function findOneBy(String $key, $value, $flag=null)
     {
-        $pdo = Database::connect();
-        $req = $pdo->prepare("SELECT * FROM " . self::getTableName() . " WHERE $key = ?");
-        $req->execute([$value]);
+        $pdo = DatabaseUtil::connect();
+        $sql = "SELECT * FROM " . self::getTableName() . " WHERE $key = ?";
+        $values = [$value];
+
+        if ( $flag != null){
+            $sql .= " AND flag = ?";
+            $values[] = $flag;
+        }
+
+        $req = $pdo->prepare($sql);
+        $req->execute($values);
         $entity = $req->fetchObject(self::getEntityClass()); // set entity properties using fetched values
 
         return $entity ?? null; // fetchObject returns boolean false if no row found, whereas we want null
@@ -39,8 +51,8 @@ class BaseDao
      * @param  mixed $id primary key
      * @return Objet if found, null otherwise
      */
-    public static function findById($id){
-        return self::findOneBy(self::getPkColumnName(), $id);
+    public static function findById($id, $flag=null){
+        return self::findOneBy(self::getPkColumnName(), $id, $flag);
     }
 
     /**
@@ -48,11 +60,20 @@ class BaseDao
      * fetch all table rows, create and return matching entitiess
      * @return Array of entities (or empty if no rows in table)
      */
-    public static function findAll(): array
+    public static function findAll($flag=null): array
     {
-        $pdo = Database::connect();
-        $req = $pdo->prepare("SELECT * FROM " . self::getTableName() . " ORDER BY " . self::getPkColumnName() . " DESC");
-        $req->execute();
+        $pdo = DatabaseUtil::connect();
+        $sql = "SELECT * FROM " . self::getTableName() . " ORDER BY " . self::getPkColumnName() . " DESC";
+        
+        $values = [];
+
+        if ( $flag != null){
+            $sql .= " AND flag = ?";
+            $values[] = $flag;
+        }
+
+        $req = $pdo->prepare($sql);
+        $req->execute($values);
 
         $entities = [];
         while ($entity = $req->fetchObject(self::getEntityClass())) { // set entity properties using fetched values
@@ -69,11 +90,19 @@ class BaseDao
      * @param  mixed $value to search
      * @return Objet if found, null otherwise
      */
-    public static function findAllBy(String $key, $value)
+    public static function findAllBy(String $key, $value, $flag=null)
     {
-        $pdo = Database::connect();
-        $req = $pdo->prepare("SELECT * FROM " . self::getTableName() . " WHERE $key = ?");
-        $req->execute([$value]);
+        $pdo = DatabaseUtil::connect();
+        $sql = "SELECT * FROM " . self::getTableName() . " WHERE $key = ?";
+        $values = [$value];
+
+        if ( $flag != null){
+            $sql .= " AND flag = ?";
+            $values[] = $flag;
+        }
+
+        $req = $pdo->prepare($sql);
+        $req->execute([$values]);
 
         $entities = [];
         while ($entity = $req->fetchObject(self::getEntityClass())) { // set entity properties to fetched column values
@@ -89,7 +118,7 @@ class BaseDao
      * @return void
      */
     public static function saveOrUpdate(&$entity){
-        $pdo = Database::connect();
+        $pdo = DatabaseUtil::connect();
         if(!empty( EntityUtil::get($entity, self::getPkColumnName()) )){
             self::update($entity);  // if entity has a primary key set, it already exists in data source
         }
@@ -106,7 +135,7 @@ class BaseDao
      * @return void
      */
     public static function update($entity) {
-        $pdo = Database::connect();
+        $pdo = DatabaseUtil::connect();
 
         $columnNames = self::getColumnNames();
 
@@ -138,7 +167,7 @@ class BaseDao
      * @return int inserted entity's PK
      */
     public static function save($entity): int {
-        $pdo = Database::connect();
+        $pdo = DatabaseUtil::connect();
 
         $columnNames = self::getColumnNames(false);
 
@@ -165,7 +194,7 @@ class BaseDao
      * @return void
      */
     public static function getColumnNames(bool $includePk=false): Array{
-        $pdo = Database::connect();
+        $pdo = DatabaseUtil::connect();
         $q = $pdo->prepare("DESCRIBE " . self::getTableName());
         $q->execute();
         $columnNames = $q->fetchAll(PDO::FETCH_COLUMN);
@@ -188,10 +217,37 @@ class BaseDao
      * @return void
      */
     public static function delete($entity) {
-        $pdo = Database::connect();
+        $pdo = DatabaseUtil::connect();
         $sql = "DELETE FROM " . self::getTableName() . " WHERE " . self::getPkColumnName() . " = ?";
         $q = $pdo->prepare($sql);
         $q->execute([EntityUtil::get($entity, self::getPkColumnName()) ?? null]); // if entity doesn't exist, null instead of pk
     }
 
+    public static function getManyToMany($startEntity, $joinEntityClass, $endEntityClass, $flag=null){
+        $start = $startEntity::class::getDaoClass();
+        $join = $joinEntityClass::getDaoClass();
+        $end = $endEntityClass::getDaoClass();
+
+        $pdo = DatabaseUtil::connect();
+        $sql = "SELECT e.* FROM " . $join::getTableName() . " j" .
+            " JOIN " . $end::getTableName() . " e" .
+                " ON e." . $end::getPkColumnName() . " = j." . $end::getPkColumnName() .
+                " AND  j." . $start::getPkColumnName() . " = ? ";
+        
+        $values = [$startEntity->getId()];
+        if ( $flag != null ){
+            $sql .= " WHERE e.flag = ?" ;
+            $values[] = $flag;
+        }
+
+        $req = $pdo->prepare($sql);
+        $req->execute([$values]);
+
+        $endEntities = [];
+        while ($entity = $req->fetchObject($end::getEntityClass())) { // set entity properties to fetched column values
+            $endEntities[] = $entity;
+        }
+
+        return $endEntities;
+    }
 }

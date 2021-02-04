@@ -1,9 +1,9 @@
 <?php
-class Chef extends User{
+class Chef extends Users{
     private $idChef;
 
     public function getRecipes(): array{
-        return $this->getRelatedEntities("Recipe");
+        return $this->getRelatedEntities("Recipe", BaseDao::FLAGS['active']);
     }
 
     /**
