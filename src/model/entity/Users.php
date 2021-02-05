@@ -1,14 +1,26 @@
 <?php
 
 class Users extends BaseEntity{
-    private $idUser;
+    private $idUsers;
     private $lastName;
     private $firstName;
     private $email;
-    private $password;
+    private $passwordHash;
     private $flag;
     private $dateCreation;
     private $login;
+    private $address1;
+    private $address2;
+    private $zipCode;
+    private $idCity;
+
+    public function getCity(): ?City{
+        return $this->getRelatedEntity("City");
+    }
+
+    public function setCity(City $c){
+        $this->setRelatedEntity($c);
+    }
 
 
     public function getOrders(): array{
@@ -70,9 +82,9 @@ class Users extends BaseEntity{
     /**
      * Get the value of password
      */
-    public function getPassword()
+    public function getPasswordHash()
     {
-        return $this->password;
+        return $this->passwordHash;
     }
 
     /**
@@ -80,9 +92,9 @@ class Users extends BaseEntity{
      *
      * @return  self
      */
-    public function setPassword($password)
+    public function setPasswordHash($p)
     {
-        $this->password = $password;
+        $this->passwordHash = $p;
 
         return $this;
     }
@@ -150,9 +162,9 @@ class Users extends BaseEntity{
     /**
      * Get the value of idUser
      */
-    public function getIdUser()
+    public function getIdUsers()
     {
-        return $this->idUser;
+        return $this->idUsers;
     }
 
     /**
@@ -160,9 +172,9 @@ class Users extends BaseEntity{
      *
      * @return  self
      */
-    public function setIdUser($idUser)
+    public function setIdUsers($idUsers)
     {
-        $this->idUser = $idUser;
+        $this->idUsers = $idUsers;
 
         return $this;
     }
@@ -183,6 +195,93 @@ class Users extends BaseEntity{
     public function setLogin($login)
     {
         $this->login = $login;
+
+        return $this;
+    }
+
+    public function setPasswordHashFromPlaintext($plaintextPassword){
+        $this->setPasswordHash(password_hash($plaintextPassword, PASSWORD_DEFAULT));
+    }
+    public function isPassword($plaintextPassword){
+        return password_verify ( $plaintextPassword, $this->getPasswordHash() );
+    }
+
+    /**
+     * Get the value of address1
+     */ 
+    public function getAddress1()
+    {
+        return $this->address1;
+    }
+
+    /**
+     * Set the value of address1
+     *
+     * @return  self
+     */ 
+    public function setAddress1($address1)
+    {
+        $this->address1 = $address1;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of address2
+     */ 
+    public function getAddress2()
+    {
+        return $this->address2;
+    }
+
+    /**
+     * Set the value of address2
+     *
+     * @return  self
+     */ 
+    public function setAddress2($address2)
+    {
+        $this->address2 = $address2;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of zipCode
+     */ 
+    public function getZipCode()
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * Set the value of zipCode
+     *
+     * @return  self
+     */ 
+    public function setZipCode($zipCode)
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of idCity
+     */ 
+    public function getIdCity()
+    {
+        return $this->idCity;
+    }
+
+    /**
+     * Set the value of idCity
+     *
+     * @return  self
+     */ 
+    public function setIdCity($idCity)
+    {
+        $this->idCity = $idCity;
 
         return $this;
     }

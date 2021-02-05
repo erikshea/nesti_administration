@@ -1,54 +1,51 @@
 <?php
 
-// SiteUtil::require('model/entity/Recipe.php');
 SiteUtil::require('model/entity/Users.php');
 SiteUtil::require('util/FormatUtil.php');
-SiteUtil::require('controller/BaseController.php');
 
 
 
 
 class UserController extends BaseController
 {
-
     protected static $entityClass = "Users";
+    protected static $loggedInUser;
 
     public static function login()
     {
-
         $template = 'login';
         if (isset($_POST['Users'])) {
 
-            $candidate = UsersDao::findOneBy('login', $_POST['Users']['username']);
+            $candidate = UsersDao::findOneBy('login', $_POST['Users']['login']);
 
             if ($candidate != null && $candidate->isPassword($_POST['Users']['password'])) {
-                echo "login ";
-                self::setUser($candidate);
-                header('Location: '.SiteUtil::url().'loc=recipe');
+                self::setUser($candidate, $_POST['Users']['password']);
+                header('Location: '.SiteUtil::url().'recipe/list');
             }
         }
         self::render($template);
     }
 
 
-    /**
-     * Get the value of user
-     */
-    public static function getUser()
-    {
-        
-        if (isset($_SESSION['userLogin'])) {
-            self::$entity = UsersDao::findOneBy('login', $_SESSION['userLogin']);
-        }
-        return self::$entity;
-    }
-    public static function setUser($user){
 
-        self::setEntity(null);
+    public static function getLoggedInUser(): ?Users{
+        if (self::$loggedInUser == null && isset($_COOKIE['user']['login'])) {
+            $candidate =  UsersDao::findOneBy('login',$_COOKIE['user']['login']);
+            if ($candidate->isPassword($_COOKIE['user']['password'])){
+                self::$loggedInUser = $candidate;
+            }
+        }
+        return self::$loggedInUser;
+    }
+
+    public static function setLoggedInUser(?Users $user, $password=null){
+        self::$loggedInUser = $user;
+
         if($user!=null){
-            self::setEntity($user);
-            // session_start();
-            $_SESSION['userLogin'] = $user->getLogin();
+            setcookie("user[login]", $user->getLogin(), 2147483647, '/');
+            if ( $password != null ){
+                setcookie("user[password]", $password, 2147483647, '/');
+            }
         }
     }
 }

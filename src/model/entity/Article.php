@@ -31,9 +31,6 @@ class Article extends BaseEntity{
         return $this->getRelatedEntity("Unit");
     }
     
-    public function getImage(): ?Image{
-        return $this->getRelatedEntity("Image");
-    }
 
     public function setUnit(Unit $u){
         $this->setRelatedEntity($u);
@@ -44,6 +41,9 @@ class Article extends BaseEntity{
         $this->setRelatedEntity($p);
     }
 
+    public function getImage(): ?Image{
+        return $this->getRelatedEntity("Image");
+    }
 
     public function setImage(Image $i){
         $this->setRelatedEntity($i);

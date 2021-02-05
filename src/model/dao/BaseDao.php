@@ -176,7 +176,7 @@ class BaseDao
 
         $sql = "INSERT INTO " . self::getTableName() . " (" . implode(',', $columnNames) . ") 
         values(" . implode(',', $questionMarks) . ")";
-        FormatUtil::dump($sql);
+        
         $q = $pdo->prepare($sql);
 
         $values = array_map(function($columnName) use ($entity) { return EntityUtil::get($entity,$columnName); }, $columnNames);
@@ -194,6 +194,8 @@ class BaseDao
      * @return void
      */
     public static function getColumnNames(bool $includePk=false): Array{
+
+
         $pdo = DatabaseUtil::connect();
         $q = $pdo->prepare("DESCRIBE " . self::getTableName());
         $q->execute();
@@ -224,7 +226,7 @@ class BaseDao
     }
 
     public static function getManyToMany($startEntity, $joinEntityClass, $endEntityClass, $flag=null){
-        $start = $startEntity::class::getDaoClass();
+        $start = $startEntity->getClass()::getDaoClass();
         $join = $joinEntityClass::getDaoClass();
         $end = $endEntityClass::getDaoClass();
 

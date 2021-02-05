@@ -1,5 +1,5 @@
 <?php
 
-class RecipesDao extends BaseDao{
+class RecipeDao extends BaseDao{
  
 }

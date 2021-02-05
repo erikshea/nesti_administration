@@ -1,9 +1,5 @@
 <?php
-
-// SiteUtil::require('model/entity/Recipe.php');
-SiteUtil::require('model/entity/Users.php');
 SiteUtil::require('util/FormatUtil.php');
-SiteUtil::require("controller/UserController.php");
 
 
 
@@ -19,32 +15,26 @@ class BaseController
 
     public static function callActionMethod($action)
     {
+        if ( $action  == "" ){
+            $action = 'list';
+        }
 
         method_exists(get_called_class(), $action) ?
             get_called_class()::$action() : // if action in URL exists, call it
             get_called_class()::error(); // else call default one
     }
 
-    public static function processAction($action=null)
+    public static function processAction($forceAction=null)
     {
-        // FormatUtil::dump($_SERVER['SERVER_NAME']);
-        FormatUtil::sanitize($_POST); // need recursive sanitizing for multidimensional array
-        FormatUtil::sanitize($_GET);
-        $id = $_GET['id'] ?? null;
-        if($action==null){
-            $action = $_GET['action'] ?? null;
-        }
         
-        $location = $_GET['loc'] ?? null;
+        @[,$action, $id] = SiteUtil::getUrlParameters();
 
-        // action is first slug in url, id second
-        //   @[$action, $id] = SiteUtil::getUrlParameters();
-        get_called_class()::initializeEntity($id);
-        if ($location == "user") {
-
-            new UserController(); // Constructor will determine action 
+        if($forceAction!=null){
+            $action = $forceAction;
         }
-        $dao = self::getEntityClass()::getDaoClass();
+
+        get_called_class()::initializeEntity($id);
+        self::$dao = self::getEntityClass()::getDaoClass();
         get_called_class()::callActionMethod($action);
     }
 
@@ -70,10 +60,10 @@ class BaseController
                 'baseUrl' => SiteUtil::url() , // absolute url of public folder
                 'entity' =>  self::getEntity(),         // current user
                 'controller' => self::class,         // current user
-                'templatePath' => SiteUtil::toAbsolute("app/view/$templateName.php")
+                'templatePath' => SiteUtil::toAbsolute("templates/$templateName.php")
             ]);
             //pour que ca fonctionne pour toutes les aciton, on passe le nom du template
-            include __DIR__ . '/../view/common/base.php';
+            include  SiteUtil::toAbsolute("templates/common/base.php");
             //    echo $this->twig->render("$templateName.twig", $vars); // render twig template
         }
     }
@@ -85,7 +75,6 @@ class BaseController
      */
     protected static function initializeEntity($id)
     {
-
         if (!empty($id)) { // If a user ID is specified in the URL
 
             self::setEntity(self::$dao::findById($id)); // find corresponding user in data source
@@ -95,15 +84,11 @@ class BaseController
 
             $class =  self::getEntityClass();
 
+            
             self::setEntity(new $class);
         }
     }
 
-    public static function getEntityClass()
-    {
-
-        return get_called_class()::$entityClass;
-    }
 
     /**
      * edit
@@ -153,9 +138,9 @@ class BaseController
         ]);
     }
 
-    protected static function error()
+    public static function error()
     {
-        self::render('error/error_404');
+        self::render('error/error404');
     }
 
     /**
@@ -173,5 +158,13 @@ class BaseController
     {
 
         get_called_class()::$entity = $entity;
+    }
+
+
+    
+    public static function getEntityClass()
+    {
+
+        return get_called_class()::$entityClass;
     }
 }

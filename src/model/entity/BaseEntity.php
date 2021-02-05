@@ -67,7 +67,7 @@ class BaseEntity{
     protected function setRelatedEntity($relatedEntity)
     {
         // find dao class of the joined entity
-        $relatedClassDao = $relatedEntity::class::getDaoClass();
+        $relatedClassDao = $relatedEntity->getClass()::getDaoClass();
 
         // find column name of the joined entity's primary key
         $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
