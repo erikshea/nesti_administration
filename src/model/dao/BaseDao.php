@@ -1,12 +1,11 @@
 <?php
-
-SiteUtil::require('util/EntityUtil.php');
-
 class BaseDao
 {
+    protected static $cachedData=['columnNames'=>[]];
+
     public const FLAGS = ['active'  => 'a',
         'waiting' => 'w',
-        'deleted' => 'b' ];
+        'blocked' => 'b' ];
 
     public static function getTableName(): String{
         return strtolower(self::getEntityClass());
@@ -25,7 +24,7 @@ class BaseDao
      * create and return an entity corresponding to a given field name, and it's searched value
      * @param  String $key field name
      * @param  mixed $value to search
-     * @return Objet if found, null otherwise
+     * @return mixed if found, null otherwise
      */
     public static function findOneBy(String $key, $value, $flag=null)
     {
@@ -33,23 +32,71 @@ class BaseDao
         $sql = "SELECT * FROM " . self::getTableName() . " WHERE $key = ?";
         $values = [$value];
 
-        if ( $flag != null){
+        if ( $flag != null  && in_array('flag', self::getColumnNames()) ){
             $sql .= " AND flag = ?";
             $values[] = $flag;
         }
 
         $req = $pdo->prepare($sql);
         $req->execute($values);
-        $entity = $req->fetchObject(self::getEntityClass()); // set entity properties using fetched values
+
+        $entity = self::fetchEntity($req, $flag); // set entity properties using fetched values
 
         return $entity ?? null; // fetchObject returns boolean false if no row found, whereas we want null
     }
+    
+    /**
+     * fetchEntity
+     * transforms a request result row into an entity. 
+     * if entity is based on an inherited table, loops through all parent tables to populate entity properties
+     * @param  mixed $req
+     * @param  mixed $flag
+     * @return void
+     */
+    protected static function fetchEntity(&$req, $flag){
+        // start by initializing entity as a fetched object of current request
+        $entity = $req->fetchObject(self::getEntityClass()); 
+        $currentClass = get_parent_class(self::getEntityClass());
+
+        // loop through all parent classes
+        while ( $entity != null && $currentClass != 'BaseEntity' ){
+            $currentDao = $currentClass::getDaoClass();
+
+            $pdo = DatabaseUtil::connect();
+            $sql = "SELECT * FROM " . $currentDao::getTableName() . " WHERE " . $currentDao::getPkColumnName() . " = ?";
+            $values = [$entity->getId()];
+   
+            if ( $flag != null  && in_array('flag', $currentDao::getColumnNames()) ){
+ 
+                $sql .= " AND flag = ?";
+                $values[] = $flag;
+            }
+            $currentRequest = $pdo->prepare($sql);
+            $currentRequest->execute($values);
+           
+            $rowData = $currentRequest->fetch(PDO::FETCH_ASSOC);
+
+            if ( $rowData === false ){ // if flag constraint fails
+                $entity = null;
+                break;
+            } else {
+                EntityUtil::setFromArray($entity, $rowData);
+            }
+
+            // get row data as associative array, set initial entity's properties to that of current child's properties
+            
+            $currentClass = get_parent_class($currentClass);
+        }
+
+        return $entity;
+    }
+
 
     /**
      * findById
      * create and return an entity corresponding to a given id
      * @param  mixed $id primary key
-     * @return Objet if found, null otherwise
+     * @return mixed if found, null otherwise
      */
     public static function findById($id, $flag=null){
         return self::findOneBy(self::getPkColumnName(), $id, $flag);
@@ -67,17 +114,20 @@ class BaseDao
         
         $values = [];
 
-        if ( $flag != null){
+        if ( $flag != null && in_array('flag', self::getColumnNames()) ){
             $sql .= " AND flag = ?";
             $values[] = $flag;
         }
 
         $req = $pdo->prepare($sql);
+ 
         $req->execute($values);
 
         $entities = [];
-        while ($entity = $req->fetchObject(self::getEntityClass())) { // set entity properties using fetched values
-            $entities[] = $entity;
+        while ( ($entity = self::fetchEntity($req, $flag)) !== false ) { // set entity properties using fetched values
+            if ($entity != null){ // entity might have a parent with a blocked flag
+                $entities[] = $entity;
+            }
         };
         return $entities;
     }
@@ -96,17 +146,19 @@ class BaseDao
         $sql = "SELECT * FROM " . self::getTableName() . " WHERE $key = ?";
         $values = [$value];
 
-        if ( $flag != null){
+        if ( $flag != null && in_array('flag', self::getColumnNames()) ){
             $sql .= " AND flag = ?";
             $values[] = $flag;
         }
 
         $req = $pdo->prepare($sql);
-        $req->execute([$values]);
+        $req->execute($values);
 
         $entities = [];
-        while ($entity = $req->fetchObject(self::getEntityClass())) { // set entity properties to fetched column values
-            $entities[] = $entity;
+        while ( ($entity = self::fetchEntity($req, $flag)) !== false ) { // set entity properties to fetched column values
+            if ($entity != null){ // entity might have a parent with a blocked flag
+                $entities[] = $entity;
+            }
         };
         return $entities;
     }
@@ -117,45 +169,48 @@ class BaseDao
      * @param  mixed $entity
      * @return void
      */
-    public static function saveOrUpdate(&$entity){
+    public static function saveOrUpdate(?BaseEntity &$entity){
         $pdo = DatabaseUtil::connect();
         if(!empty( EntityUtil::get($entity, self::getPkColumnName()) )){
             self::update($entity);  // if entity has a primary key set, it already exists in data source
         }
         else {
-            $pk = self::save($entity); // If no primary key set, insert new row
-            EntityUtil::set($entity, self::getPkColumnName(), $pk);
+            self::save($entity); // If no primary key set, insert new row
         }
     }
     
     /**
      * update
      * update the table row that corresponds to an entity
-     * @param  mixed $entity to update in table
+     * @param  BaseEntity $entity to update in table
      * @return void
      */
-    public static function update($entity) {
-        $pdo = DatabaseUtil::connect();
+    public static function update(?BaseEntity &$entity) {
+        // Loop through inherited tables (from parent to child), updating the relevant entity properties
+        foreach ( self::getParentClasses() as $currentClass ) { 
+            $pdo = DatabaseUtil::connect();
+            $currentDao = $currentClass::getDaoClass();
 
-        $columnNames = self::getColumnNames();
+            $columnNames = $currentDao::getColumnNames();
 
-        // update conditions are in the form "COLUMN_NAME = ?, COLUMN_NAME2 = ?, ..."
-        $conditions = array_map(function($columnName) { return "$columnName = ?"; }, $columnNames);
+            // update conditions are in the form "COLUMN_NAME = ?, COLUMN_NAME2 = ?, ..."
+            $conditions = array_map(function($columnName) { return "$columnName = ?"; }, $columnNames);
 
-        $sql = "UPDATE " . self::getTableName() . " SET " . implode(',', $conditions) . " WHERE " . self::getPkColumnName() . " = ?";
+            $sql = "UPDATE " . $currentDao::getTableName() . " SET " . implode(',', $conditions) . " WHERE " . $currentDao::getPkColumnName() . " = ?";
 
-        $q = $pdo->prepare($sql);
+            $q = $pdo->prepare($sql);
 
-        $values = array_map( // Create a new array out of the column names
-            function($columnName) use ($entity) {
-                return EntityUtil::get($entity,$columnName); // Each column name corresponds to an entity getter 
-            },
-            $columnNames
-        );
-        // Add primary key to list of values
-        $values[] = $entity->getId();
+            $values = array_map( // Create a new array out of the column names
+                function($columnName) use ($entity) {
+                    return EntityUtil::get($entity,$columnName); // Each column name corresponds to an entity getter 
+                },
+                $columnNames
+            );
+            // Add primary key to list of values
+            $values[] = $entity->getId();
 
-        $q->execute($values);
+            $q->execute($values);
+        }
     }
     
 
@@ -163,29 +218,61 @@ class BaseDao
     /**
      * save
      * insert a new row into data source that corresponds to an entity
-     * @param  mixed $entity to base new row on
+     * @param  BaseEntity $entity to base new row on
      * @return int inserted entity's PK
      */
-    public static function save($entity): int {
-        $pdo = DatabaseUtil::connect();
+    public static function save(?BaseEntity &$entity) {
+        $insertedId = null;
+        // Loop through inherited tables (from parent to child), inserting the relevant entity properties
+        foreach ( self::getParentClasses() as $currentClass ) { 
+            $pdo = DatabaseUtil::connect();
+            $currentDao = $currentClass::getDaoClass();
+            
+            $columnNames = $currentDao::getColumnNames(false); // get column names for current table
 
-        $columnNames = self::getColumnNames(false);
+            // populate values with the entity properties that correspond to the column names
+            $values = array_map(function($columnName) use ($entity) { return EntityUtil::get($entity,$columnName); }, $columnNames);
 
-        // Need a list of question marks of same size as the list of column names
-        $questionMarks = array_map(function($columnName) { return '?'; }, $columnNames);
+            // if we're dealing with an inherited table, we must insert parent id explicitly to child table
+            if (self::hasParentEntity($currentClass)){
+                $columnNames[] = $currentDao::getPkColumnName();
+                $values[] = $insertedId;
+                $entity->setId($insertedId);
+            }
+ 
+            // Need a list of question marks of same size as the list of column names
+            $questionMarks = array_map(function($columnName) { return '?'; }, $columnNames);
 
-        $sql = "INSERT INTO " . self::getTableName() . " (" . implode(',', $columnNames) . ") 
-        values(" . implode(',', $questionMarks) . ")";
-        
-        $q = $pdo->prepare($sql);
+            $sql = "INSERT INTO " . $currentDao::getTableName() . " (" . implode(',', $columnNames) . ") 
+            values(" . implode(',', $questionMarks) . ")";
+            
+            $q = $pdo->prepare($sql);
+            
+            $q->execute($values);  
+  
 
-        $values = array_map(function($columnName) use ($entity) { return EntityUtil::get($entity,$columnName); }, $columnNames);
-        $q->execute($values);
-        
-        return $pdo->lastInsertId(); // Last inserted ID is entity's id
+            $insertedId = $pdo->lastInsertId();
+        }
+        return $entity->getId(); // Last inserted ID is entity's id
     }
 
-    
+
+    protected static function getParentClasses(): Array{
+        $currentEntityClass = self::getEntityClass();
+        $classes = [];
+        while ($currentEntityClass != 'BaseEntity' ) {
+            $classes[] = $currentEntityClass;
+            $currentEntityClass = get_parent_class($currentEntityClass);
+        }
+
+        return array_reverse($classes);
+    }
+
+    protected static function hasParentEntity($entityClass): bool{
+        return get_parent_class($entityClass) != "BaseEntity";
+    }
+
+
     /**
      * getColumnNames
      * get an array of column names, in the same order as they appear in the database schema
@@ -194,21 +281,24 @@ class BaseDao
      * @return void
      */
     public static function getColumnNames(bool $includePk=false): Array{
+        if ( !isset(static::$cachedData['columnNames'][get_called_class()]) ){
+            $pdo = DatabaseUtil::connect();
+            $q = $pdo->prepare("DESCRIBE " . self::getTableName());
 
+            $q->execute();
+            $names = $q->fetchAll(PDO::FETCH_COLUMN);
 
-        $pdo = DatabaseUtil::connect();
-        $q = $pdo->prepare("DESCRIBE " . self::getTableName());
-        $q->execute();
-        $columnNames = $q->fetchAll(PDO::FETCH_COLUMN);
+            static::$cachedData['columnNames'][get_called_class()] =  $names;
+        }
+        $names = static::$cachedData['columnNames'][get_called_class()];
 
         if (!$includePk){
             // Get index of primary key in table schema (usually but not always first)
-            $primaryKeyIndex = array_search(self::getPkColumnName(), $columnNames);
-            unset($columnNames[$primaryKeyIndex]); // unset it
+            $primaryKeyIndex = array_search(self::getPkColumnName(), $names);
+            unset($names[$primaryKeyIndex]); // unset it
         }
-
         // we must re-establish indexes starting from 0 in case we removed primary key
-        return array_values($columnNames);
+        return array_values($names);
     }
 
     
@@ -226,7 +316,7 @@ class BaseDao
     }
 
     public static function getManyToMany($startEntity, $joinEntityClass, $endEntityClass, $flag=null){
-        $start = $startEntity->getClass()::getDaoClass();
+        $start = get_class($startEntity)::getDaoClass();
         $join = $joinEntityClass::getDaoClass();
         $end = $endEntityClass::getDaoClass();
 
@@ -243,11 +333,14 @@ class BaseDao
         }
 
         $req = $pdo->prepare($sql);
-        $req->execute([$values]);
+        $req->execute($values);
+
 
         $endEntities = [];
-        while ($entity = $req->fetchObject($end::getEntityClass())) { // set entity properties to fetched column values
-            $endEntities[] = $entity;
+        while ( ($entity = self::fetchEntity($req, $flag)) !== false ) { // set entity properties to fetched column values
+            if ($entity != null){ // entity might have a parent with a blocked flag
+                $endEntities[] = $entity;
+            }
         }
 
         return $endEntities;

@@ -1,6 +1,8 @@
 <?php
 
 class ArticlePrice extends BaseEntity{
+    protected static $columnNames; 
+    
     private $idArticlePrice;
     private $dateStart;
     private $price;

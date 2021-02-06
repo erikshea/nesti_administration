@@ -51,6 +51,12 @@ class FormatUtil{
         }
         return substr( $haystack, -$length ) === $needle;
     }
+
+
+    public static function dd($var){
+        self::dump($var);
+        die();
+    }
 }
 
 ?>

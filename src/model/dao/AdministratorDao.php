@@ -1,4 +1,4 @@
 <?php
-class AdministratorDao extends UserDao{
+class AdministratorDao extends UsersDao{
   
 }

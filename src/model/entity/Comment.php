@@ -7,7 +7,7 @@ class Comment extends BaseEntity{
     private $dateCreation;
     private $flag;
     private $idRecipe;
-    private $idUser;
+    private $idUsers;
     private $idModerator;
 
     
@@ -18,11 +18,11 @@ class Comment extends BaseEntity{
         $this->setRelatedEntity($m);
     }
 
-    public function getUser(): ?User{
-        return $this->getRelatedEntity("User");
+    public function getUser(): ?Users{
+        return $this->getRelatedEntity("Users");
     }
 
-    public function setUser(User $user){
+    public function setUser(Users $user){
         $this->setRelatedEntity($user);
     }
 
@@ -45,9 +45,9 @@ class Comment extends BaseEntity{
     /**
      * Get the value of idUser
      */
-    public function getIdUser()
+    public function getIdUsers()
     {
-        return $this->idUser;
+        return $this->idUsers;
     }
 
     /**
@@ -55,9 +55,9 @@ class Comment extends BaseEntity{
      *
      * @return  self
      */
-    public function setIdUser($idUser)
+    public function setIdUsers($idUsers)
     {
-        $this->idUser = $idUser;
+        $this->idUsers = $idUsers;
 
         return $this;
     }

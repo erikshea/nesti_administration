@@ -1,4 +1,3 @@
 <?php
-class ChefDao extends UserDao{
-  
+class ChefDao extends UsersDao{
 }

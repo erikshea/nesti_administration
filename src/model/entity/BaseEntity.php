@@ -12,7 +12,7 @@ class BaseEntity{
 
     /**
      * getRelatedEntities
-     * Get an array of entities that are joined to the current instance in a one-to-many relationship 
+     * Get an array of entities that are joined to the current instance by a foreign key
      * 
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return array of related entities
@@ -23,12 +23,14 @@ class BaseEntity{
         $relatedClassDao = $relatedEntityClass::getDaoClass();
 
         // find column name of the related entity's primary key
-        $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
+        $thisPrimaryKeyName = static::getDaoClass()::getPkColumnName();
 
+        $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
+  
         return $relatedClassDao::findAllBy(
-            // joined entity's primary key is the same as starting entity's corresponding foreign key 
-            $relatedClassPrimaryKey,
-            EntityUtil::get($this, $relatedClassPrimaryKey),
+            // joined entity's foreign key name is the same as starting entity's primary key name 
+            $thisPrimaryKeyName,
+            $this->getId(),
             $flag
         );
     }
@@ -36,12 +38,12 @@ class BaseEntity{
         
     /**
      * getRelatedEntity
-     * Get an entity that is joined to the current instance in a one-to-one relationship 
+     * Get an entity that is joined to the current instance by a foreign key
      * 
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return mixed related entity, or null if none exists
      */
-    protected function getRelatedEntity(String $relatedEntityClass, $flag=null)
+    protected function getRelatedEntity(String $relatedEntityClass, $flag=null): ?BaseEntity
     {
         // find dao class of the related entity
         $relatedClassDao = $relatedEntityClass::getDaoClass();
@@ -49,25 +51,38 @@ class BaseEntity{
         // find column name of the related entity's primary key
         $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
 
-        return $relatedClassDao::findById(
-            // joined entity's primary key is the same as starting entity's corresponding foreign key 
-            EntityUtil::get($this, $relatedClassPrimaryKey) ,
-            $flag
-        );
+        // If foreign key is in current instance
+        if (  property_exists($this, $relatedClassPrimaryKey) ){
+            $relatedEntity = $relatedClassDao::findById(
+                // joined entity's primary key name is the same as starting entity's corresponding foreign key 
+                EntityUtil::get($this, $relatedClassPrimaryKey) ,
+                $flag
+            );
+        } else { // If foreign key is in related object
+            $relatedEntity = static::getDaoClass()::findOneBy(
+                // joined entity's foreign key name is the same as starting entity's primary key
+                static::getDaoClass()::getPkColumnName(),
+                $this->getId(),
+                $flag
+            );
+        }
+
+        return $relatedEntity;
     }
+
 
 
   
     /**
      * setRelatedEntity
      * sets the current instance's foreign key parameter to that of the related entity's primary key
-     * @param  mixed $relatedEntity to link to current instance
+     * @param  BaseEntity $relatedEntity to link to current instance
      * @return void
      */
-    protected function setRelatedEntity($relatedEntity)
+    protected function setRelatedEntity(?BaseEntity $relatedEntity)
     {
         // find dao class of the joined entity
-        $relatedClassDao = $relatedEntity->getClass()::getDaoClass();
+        $relatedClassDao = get_class($relatedEntity)::getDaoClass();
 
         // find column name of the joined entity's primary key
         $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
@@ -89,7 +104,16 @@ class BaseEntity{
         return EntityUtil::get($this, $idColumnName);
     }
 
-
+    /**
+     * getId
+     * get the primary key value for the current instance
+     * @return void
+     */
+    public function setId($id){
+        $idColumnName = self::getDaoClass()::getPkColumnName();
+        EntityUtil::set($this,  $idColumnName, $id);
+    }
+    
 
      /**
      * getIndirectlyRelatedEntities

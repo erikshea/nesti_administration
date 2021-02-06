@@ -1,5 +1,6 @@
 <?php
 class Administrator extends Users{
+    protected static $columnNames; 
     private $idAdministrator;
 
 

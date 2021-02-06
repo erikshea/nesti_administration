@@ -4,18 +4,18 @@ class Orders extends BaseEntity{
     private $idOrders;
     private $flag;
     private $creationDate;
-    private $idUser;
+    private $idUsers;
 
     
     public function getOrderLines(): array{
         return $this->getRelatedEntities("OrderLine");
     }
     
-    public function getUser(): ?User{
-        return $this->getRelatedEntity("User");
+    public function getUser(): ?Users{
+        return $this->getRelatedEntity("Users");
     }
 
-    public function setUser(User $user){
+    public function setUser(Users $user){
         $this->setRelatedEntity($user);
     }
 
@@ -82,9 +82,9 @@ class Orders extends BaseEntity{
     /**
      * Get the value of idUser
      */
-    public function getIdUser()
+    public function getIdUsers()
     {
-        return $this->idUser;
+        return $this->idUsers;
     }
 
     /**
@@ -92,9 +92,9 @@ class Orders extends BaseEntity{
      *
      * @return  self
      */
-    public function setIdUser($idUser)
+    public function setIdUsers($idUsers)
     {
-        $this->idUser = $idUser;
+        $this->idUsers = $idUsers;
 
         return $this;
     }

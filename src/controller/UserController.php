@@ -6,7 +6,7 @@ SiteUtil::require('util/FormatUtil.php');
 
 
 
-class UserController extends BaseController
+class UserController extends BaseEntityController
 {
     protected static $entityClass = "Users";
     protected static $loggedInUser;
@@ -19,8 +19,8 @@ class UserController extends BaseController
             $candidate = UsersDao::findOneBy('login', $_POST['Users']['login']);
 
             if ($candidate != null && $candidate->isPassword($_POST['Users']['password'])) {
-                self::setUser($candidate, $_POST['Users']['password']);
-                header('Location: '.SiteUtil::url().'recipe/list');
+                self::setLoggedInUser($candidate, $_POST['Users']['password']);
+                header('Location: '.SiteUtil::url());
             }
         }
         self::render($template);
@@ -31,14 +31,14 @@ class UserController extends BaseController
     public static function getLoggedInUser(): ?Users{
         if (self::$loggedInUser == null && isset($_COOKIE['user']['login'])) {
             $candidate =  UsersDao::findOneBy('login',$_COOKIE['user']['login']);
-            if ($candidate->isPassword($_COOKIE['user']['password'])){
+            if ($candidate != null && $candidate->isPassword($_COOKIE['user']['password'])){
                 self::$loggedInUser = $candidate;
             }
         }
         return self::$loggedInUser;
     }
 
-    public static function setLoggedInUser(?Users $user, $password=null){
+    public static function setLoggedInUser( $user, $password=null){
         self::$loggedInUser = $user;
 
         if($user!=null){

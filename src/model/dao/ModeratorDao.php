@@ -1,4 +1,3 @@
 <?php
-class ModeratorDao extends UserDao{
-  
+class ModeratorDao extends UsersDao{
 }
