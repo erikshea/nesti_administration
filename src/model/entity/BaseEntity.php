@@ -17,7 +17,7 @@ class BaseEntity{
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return array of related entities
      */
-    protected function getRelatedEntities(String $relatedEntityClass, $flag=null): array
+    public function getRelatedEntities(String $relatedEntityClass, $flag=null): array
     {
         // find dao class of the related entity
         $relatedClassDao = $relatedEntityClass::getDaoClass();
@@ -43,7 +43,7 @@ class BaseEntity{
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return mixed related entity, or null if none exists
      */
-    protected function getRelatedEntity(String $relatedEntityClass, $flag=null): ?BaseEntity
+    public function getRelatedEntity(String $relatedEntityClass, $flag=null): ?BaseEntity
     {
         // find dao class of the related entity
         $relatedClassDao = $relatedEntityClass::getDaoClass();
@@ -79,7 +79,7 @@ class BaseEntity{
      * @param  BaseEntity $relatedEntity to link to current instance
      * @return void
      */
-    protected function setRelatedEntity(?BaseEntity $relatedEntity)
+    public function setRelatedEntity(?BaseEntity $relatedEntity)
     {
         // find dao class of the joined entity
         $relatedClassDao = get_class($relatedEntity)::getDaoClass();
@@ -122,8 +122,8 @@ class BaseEntity{
      * @param  mixed $joinedEntityClass Class of the joined entity to look for
      * @return array of related entities
      */
-    protected function getIndirectlyRelatedEntities(String $relatedEntityClass, String $joinClass, $flag = null): array
+    public function getIndirectlyRelatedEntities(String $relatedEntityClass, String $joinClass, $options= null): array
     {
-        return self::getDaoClass()::getManyToMany($this,  $joinClass , $relatedEntityClass);
+        return self::getDaoClass()::getManyToMany($this,  $joinClass , $relatedEntityClass, $options);
     }
 }

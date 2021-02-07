@@ -2,9 +2,9 @@
 
 class EntityFormBuilder extends BaseFormBuilder{
     protected $entity;
-
-    protected $validatedProperties;
-
+    protected $validatorErrorMessages = [];
+    protected $propertyParameters = [];
+    protected $errors = [];
 
     function __construct($entity) {
         $this->entity = $entity;
@@ -16,7 +16,7 @@ class EntityFormBuilder extends BaseFormBuilder{
      * @return bool true if all validators passed, false if just one validator failed
      */
     public function isValid(){
-        return empty($this->getErrors());
+        return empty($this->getAllErrors());
     }
 
     /**
@@ -25,18 +25,18 @@ class EntityFormBuilder extends BaseFormBuilder{
      * @param  String $fieldName
      * @return Array errors found, by validator name (or empty array if none found)
      * example return array:
-     * ['notEmpty' => true],   // error found: empty value
+     * ['notEmpty'],   // error found: empty value
      */
-    public function validateProperty(String $propertyName){
+    public function getPropertyErrors(String $propertyName){
         $propertyErrors = [];
         
-        if (isset($this->validatedProperties[$propertyName])) {
+        if ( isset($this->propertyParameters[$propertyName]['validators']) ) {
             // Loop through each validator for that field
-            foreach($this->validatedProperties[$propertyName] as $validatorName){
+            foreach($this->propertyParameters[$propertyName]['validators'] as $validatorName){
                 // store error states (negated validator) with the validator name as key
                 $errored = !EntityValidator::$validatorName($this->entity,$propertyName);
                 if ( $errored ) {
-                    $propertyErrors[$validatorName] = true;
+                    $propertyErrors[] = $validatorName;
                 }
                 
             }
@@ -57,15 +57,43 @@ class EntityFormBuilder extends BaseFormBuilder{
      *      'email'     =>  ['unique' => true ],
      * ]
      */
-    public function getErrors(): ?array{
-        foreach ($this->validatedProperties as $propertyName=>$validators) {
-            // assign an array of errors in the form ['myValidator' => true, 'myOtherValidator' => false ]
-            $this->errors[$propertyName] = $this->validateProperty($propertyName);
+    public function getAllErrors(): ?array{
+        foreach ($this->propertyParameters as $propertyName=>$p) {
+            $this->errors[$propertyName] = $this->getPropertyErrors($propertyName);
+             // unset empty array if no error found,
             if (empty($this->errors[$propertyName])){ 
-                unset($this->errors[$propertyName]); // If no error found, unset empty array
+                unset($this->errors[$propertyName]);
             }
         }
 
         return $this->errors;
     }
+
+    public function add($propertyName, $label=null){
+        $vars['errors'] = [];
+        foreach ( $this->getPropertyErrors($propertyName) as $validatorName) {
+            $vars['errors'][] = $this->validatorErrorMessages[$validatorName];
+        }
+        $vars['id'] = $propertyName;
+
+        if ( $label == null ){
+            $vars['label'] = $this->propertyParameters[$propertyName]['label'];
+        } else {
+            $vars['label'] = $label;
+        }
+
+    }
+
+    public function getValidatorErrorMessages()
+    {
+        if ( $this->validatorErrorMessages == null ){
+            $jsonString = file_get_contents(
+                __DIR__ . "/../../config/validatorErrorMessages.json"
+            );
+            $this->validatorErrorMessages = json_decode($jsonString,true);
+        }
+
+        return $this->validatorErrorMessages;
+    }
+
 }

@@ -3,7 +3,7 @@
 class Orders extends BaseEntity{
     private $idOrders;
     private $flag;
-    private $creationDate;
+    private $dateCreation;
     private $idUsers;
 
     
@@ -62,9 +62,9 @@ class Orders extends BaseEntity{
     /**
      * Get the value of creationDate
      */
-    public function getCreationDate()
+    public function getDateCreation()
     {
-        return $this->creationDate;
+        return $this->dateCreation;
     }
 
     /**
@@ -72,9 +72,9 @@ class Orders extends BaseEntity{
      *
      * @return  self
      */
-    public function setCreationDate($creationDate)
+    public function setDateCreation($dateCreation)
     {
-        $this->creationDate = $creationDate;
+        $this->dateCreation = $dateCreation;
 
         return $this;
     }

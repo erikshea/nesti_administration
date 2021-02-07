@@ -4,7 +4,7 @@
  * FormatUtil
  * Format-related convenience methods.
  */
-class FormatUtil{    
+class FormatUtil {    
 
     
     /**

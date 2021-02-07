@@ -97,6 +97,45 @@ class EntityValidator{
         return $valid;
     }
     
+     /**
+     * url
+     * validates if property value is a strong password.
+     * @param  mixed $entity whose property we must check
+     * @param  String $parameterName name of property whose value we must check
+     * @return bool true if validates
+     */
+    public static function strong($entity, String $parameterName): bool{
+        return self::calculatePasswordStrength(self::_get($entity, $parameterName)) > 50;
+    }
+
+     /**
+     * url
+     * validates if property value contains at least one letter.
+     * @param  mixed $entity whose property we must check
+     * @param  String $parameterName name of property whose value we must check
+     * @return bool true if validates
+     */
+    public static function oneLetter($entity, String $parameterName): bool{
+        return preg_match(
+            "/^.*[a-zA-ZÀ-ÿ].*$/", // at least one letter  (including accented)
+            self::_get($entity, $parameterName)
+        ); 
+    }
+   
+     /**
+     * url
+     * validates if property value contains at least one number.
+     * @param  mixed $entity whose property we must check
+     * @param  String $parameterName name of property whose value we must check
+     * @return bool true if validates
+     */
+    public static function oneNumber($entity, String $parameterName): bool{
+        return preg_match(
+            "/^.*[\d].*$/", // at least one number
+            self::_get($entity, $parameterName)
+        ); 
+    }
+
     /**
      * _get
      * convenience method: gets a property value from an object
@@ -106,5 +145,20 @@ class EntityValidator{
      */
     private static function _get($entity, String $parameterName){
         return $entity->{"get".ucfirst($parameterName)}();
+    }
+
+
+    private static function calculatePasswordStrength($password){
+        $possibleChars = 0; // set of potentially different characters in password
+
+    	foreach ( ["09", "az", "AZ", " /"] as $range) { 
+            // If any character is within those ranges
+    		if (preg_match("^.*[{$range[0]}-{$range[1]}].*$", $password)) { 
+    			$possibleChars += ord($range[1]) - ord($range[0]) + 1; // add distance between the chars
+    	    }
+        }
+    	
+        // Equation source: https://www.ssi.gouv.fr/administration/precautions-elementaires/calculer-la-force-dun-mot-de-passe/
+        return strlen($password) *  log($possibleChars)/log(2);
     }
 }

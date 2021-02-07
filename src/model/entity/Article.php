@@ -51,8 +51,8 @@ class Article extends BaseEntity{
         $this->setRelatedEntity($i);
     }
 
-    public function getOrders(): array{
-        return $this->getIndirectlyRelatedEntities("Orders", "OrderLine", BaseDao::FLAGS['active']); 
+    public function getOrders($options='a'): array{
+        return $this->getIndirectlyRelatedEntities("Orders", "OrderLine", $options); 
     }
 
     /**
