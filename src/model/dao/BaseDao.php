@@ -54,13 +54,13 @@ class BaseDao
     /**
      * buildRequest
      *
-     * @param  array $options array of query options, ie [ 'articlePrice <=' => 12, 'flag' => 'a']
+     * @param  array $options query options, ie: 'a' or [ 'articlePrice <=' => 12, 'flag' => 'a']
      * @param  string $sql starting SQL string, if none specified we assume we're selecting all from current table
      * @param  mixed $values values to inject in prepared query (in case the starting sql string uses some)
      * @return PDOStatement built and executed statement
      */
-    protected static function buildRequest(array $options, ?string $sql = null, array $values=[]): PDOStatement{
-        $pdo = DatabaseUtil::connect();
+    protected static function buildRequest(array &$options, ?string $sql = null, array $values=[]): PDOStatement{
+        $pdo = DatabaseUtil::getConnection()();
 
         // if no starting sql specified, select all
         if ( $sql == null ) {
@@ -71,9 +71,9 @@ class BaseDao
         // $options may be in the form [ 'articlePrice <=' => 12, 'flag' => 'a']
         // we must seperate the operators from the property name for lader validation
 
-        array_walk ( $options, function($value, $key) use (&$translatedOptions){
+        array_walk ( $options, function($value, $key) use (&$translatedOptions, &$options){
             if (preg_match(
-                "/^(.*)(=|>|<|>=|<=|LIKE|NOT LIKE)$/", // look for an operator at the end of option key
+                "/^(.*)(=|>|<|>=|<=|<>|LIKE|NOT LIKE)$/", // look for an operator at the end of option key
                 $key, $matches)
             ){
                 $propertyKey = trim($matches[1]); 
@@ -84,9 +84,21 @@ class BaseDao
                 $operator = "=";
             }
 
+            $condition = "$propertyKey $operator ?";
+            
+            if (preg_match(
+                "/^.*\((.*)\)$/", // is remaining part of key an sql function call?
+                $propertyKey, $matches)
+            ) {
+                // if so, actual property key is within the parentheses
+                $propertyKey = trim($matches[1]);
+            }
+
             // only add if it has an equivalent table column
             if (in_array($propertyKey, static::getColumnNames())) {
-                $translatedOptions[trim($propertyKey)] = [ 'operator' => $operator, 'value' => $value ];
+                $translatedOptions[trim($propertyKey)] = [ 'condition' => $condition, 'value' => $value ];
+                // remove property from options in case we reuse the same options in parent entity query
+                unset($options[$key]); 
             }
         } );
 
@@ -99,7 +111,7 @@ class BaseDao
                 $sql .= " WHERE ";
             }
 
-            $sql .= "$propertyName {$optionParameters['operator']} ?";
+            $sql .= $optionParameters['condition'];
             $values[] = $optionParameters['value'];
 
             // don't add another end if we're finished adding WHERE conditions
@@ -112,11 +124,12 @@ class BaseDao
             if (preg_match(
                 "/^(.*) (DESC|ASC)$/", // look for an operator at the end of ORDER option
                 $options['ORDER'], $matches)
-            ) {
+            ) { // if order option in the form 'ORDER' => 'articlePrice ASC' or 'ORDER' => 'articlePrice DESC'
                 $sql .= " ORDER BY {$matches[1]} {$matches[2]}";
-            } else {
+            } else { // if order option in the form 'ORDER' => 'articlePrice', assume DESC
                 $sql .= " ORDER BY {$options['ORDER']} DESC";
             }
+            unset($options['ORDER']);
         }
 
         $request = $pdo->prepare($sql);
@@ -130,7 +143,7 @@ class BaseDao
      * create and return an entity corresponding to a given field name, and it's searched value
      * @param  String $key field name
      * @param  mixed $value to search
-     * @param  array $options query options, ie: [ 'articlePrice <=' => 12, 'flag' => 'a']
+     * @param  array $options query options, ie: 'a' or [ 'articlePrice <=' => 12, 'flag' => 'a']
      * @return mixed entity if found, null otherwise
      */
     public static function findOneBy(string $key, $value, $options=null)
@@ -151,7 +164,7 @@ class BaseDao
      * transforms a request result row into an entity. 
      * if entity is based on an inherited table, loops through all parent tables to populate entity properties
      * @param  mixed $req
-     * @param  array $options query options, ie: [ 'articlePrice <=' => 12, 'flag' => 'a']
+     * @param  array $options query options, ie: 'a' or [ 'articlePrice <=' => 12, 'flag' => 'a']
      * @return void
      */
     protected static function fetchEntity(&$req, array $queryOptions){
@@ -202,9 +215,9 @@ class BaseDao
     public static function findAll($options=null): array
     {
         static::initializeQueryOptions($options);
-
+        FormatUtil::dump($options);
         $req = static::buildRequest($options);
-
+        FormatUtil::dump($options);
         $entities = [];
         // set entity properties using fetched values
         while ( ($entity = self::fetchEntity($req, $options)) !== false ) { 
@@ -240,7 +253,7 @@ class BaseDao
      * @return void
      */
     public static function delete($entity) {
-        $pdo = DatabaseUtil::connect();
+        $pdo = DatabaseUtil::getConnection()();
         $sql = "DELETE FROM " . self::getTableName() . " WHERE " . self::getPkColumnName() . " = ?";
         $q = $pdo->prepare($sql);
         $q->execute([EntityUtil::get($entity, self::getPkColumnName()) ?? null]); // if entity doesn't exist, null instead of pk
@@ -253,7 +266,7 @@ class BaseDao
      * @return void
      */
     public static function saveOrUpdate(?BaseEntity &$entity){
-        $pdo = DatabaseUtil::connect();
+        $pdo = DatabaseUtil::getConnection()();
         if(!empty( EntityUtil::get($entity, self::getPkColumnName()) )){
             self::update($entity);  // if entity has a primary key set, it already exists in data source
         }
@@ -271,7 +284,7 @@ class BaseDao
     public static function update(?BaseEntity &$entity) {
         // Loop through inherited tables (from parent to child), updating the relevant entity properties
         foreach ( self::getParentClasses() as $currentClass ) { 
-            $pdo = DatabaseUtil::connect();
+            $pdo = DatabaseUtil::getConnection()();
             $currentDao = $currentClass::getDaoClass();
 
             $columnNames = $currentDao::getColumnNames(false);
@@ -308,7 +321,7 @@ class BaseDao
         $insertedId = null;
         // Loop through inherited tables (from parent to child), inserting the relevant entity properties
         foreach ( self::getParentClasses() as $currentClass ) { 
-            $pdo = DatabaseUtil::connect();
+            $pdo = DatabaseUtil::getConnection()();
             $currentDao = $currentClass::getDaoClass();
             
             $columnNames = $currentDao::getColumnNames(false); // get column names for current table
@@ -365,7 +378,7 @@ class BaseDao
      */
     public static function getColumnNames(bool $includePk=true): Array{
         if ( !isset(static::$cachedData['columnNames'][get_called_class()]) ){
-            $pdo = DatabaseUtil::connect();
+            $pdo = DatabaseUtil::getConnection()();
             $q = $pdo->prepare("DESCRIBE " . self::getTableName());
 
             $q->execute();
@@ -395,7 +408,7 @@ class BaseDao
      * @param  array $options query options, ie: [ 'articlePrice <=' => 12, 'flag' => 'a']
      * @return array of related entities
      */
-    public static function getManyToMany($startEntity, string $joinEntityClass, string $endEntityClass, array $options): array{
+    public static function findManyToMany($startEntity, string $joinEntityClass, string $endEntityClass, array $options): array{
         static::initializeQueryOptions($options);
 
         $startDao = get_class($startEntity)::getDaoClass();

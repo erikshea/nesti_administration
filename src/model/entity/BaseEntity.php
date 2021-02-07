@@ -118,12 +118,14 @@ class BaseEntity{
      /**
      * getIndirectlyRelatedEntities
      * Get an array of entities that are joined to the current instance in a many-to-many relationship 
-     * 
-     * @param  mixed $joinedEntityClass Class of the joined entity to look for
+     * @param  string $relatedEntityClass indirectly related entity we're looking for
+     * @param  string $joinClass entity that links the target related entity to the current instance (via a join table)
+     * @param  array $options query options, ie: 'a' or [ 'articlePrice <=' => 12, 'flag' => 'a']
      * @return array of related entities
+     * 
      */
-    public function getIndirectlyRelatedEntities(String $relatedEntityClass, String $joinClass, $options= null): array
+    public function getIndirectlyRelatedEntities(string $relatedEntityClass, string $joinClass, $options= null): array
     {
-        return self::getDaoClass()::getManyToMany($this,  $joinClass , $relatedEntityClass, $options);
+        return self::getDaoClass()::findManyToMany($this,  $joinClass , $relatedEntityClass, $options);
     }
 }

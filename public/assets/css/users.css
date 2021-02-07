@@ -1,0 +1,40 @@
+.no-validate .is-invalid,
+.no-validate .is-valid{
+    border-color:initial;
+    background-image: none;
+    padding-right: initial;
+}
+
+.login-form {
+    position: relative;
+    top: 9rem;
+}
+.login-form form {
+    margin-bottom: 15px;
+    background: var(--color-classic-base);
+    box-shadow: 0 0 25px rgba(220,220,220,0.5);
+    padding: 3rem;
+}
+.login-form h3 {
+    margin: 0 0 3rem;
+}
+.form-control, .btn {
+    min-height: 2rem;
+    border-radius: 4px;
+}
+.btn {        
+    font-size: 15px;
+    font-weight: bold;
+}
+
+body{
+    background-image: url( '../../assets/images/interface/nesti-logo.png' ), url( '../../assets/images/users/bg-login.svg' ) ;
+    background-repeat: no-repeat;
+    background-size: 8rem 8rem, 5000px;
+    background-position: 5rem 5rem, center 0;
+    background-color: var(--color-primary-dark);
+}
+
+form button {
+    background-color: var(--color-primary) !important;
+}

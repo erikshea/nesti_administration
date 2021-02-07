@@ -16,7 +16,7 @@ class DatabaseUtil
      *  connect to a database, return resulting connection
      * @return PDO connection object
      */
-    public static function connect(): ?PDO {
+    public static function getConnection(): ?PDO {
         if (self::$connectionParameters == null){ 
             // If connection parameters not initiated, pull them from a JSON file
             $jsonString = file_get_contents(__DIR__ . "/../../config/databaseParameters.json");
@@ -29,7 +29,7 @@ class DatabaseUtil
             if (isset(self::$connectionParameters[$address])) { 
                 $parameters = self::$connectionParameters[$address];
             } else {
-                $parameters = self::$defaultConnectionParameters; // if no parameters specified for current host, revert to defaults
+                $parameters = self::$connectionParameters['default'];; // if no parameters specified for current host, revert to defaults
             }
 
             try {

@@ -20,11 +20,13 @@ $a = ArticleDao::findById(8);
 FormatUtil::dump($a);
 //FormatUtil::dump($a->getArticlePrices());
 
-/*
+// FormatUtil::dump(
+//     OrdersDao::findAll([])
+// );
 FormatUtil::dump(
-    OrdersDao::findAll(['dateCreation'=>"{MAX}"])
-);*/
-
+    OrdersDao::findAll(['HOUR(dateCreation) >'=>5, 'ORDER'=>'dateCreation'])
+);
+/*
 FormatUtil::dump(
     $a->getOrders( ['flag'=>'a', 'ORDER' => 'dateCreation ASC'])[0]
 );
@@ -34,8 +36,8 @@ $newChef->setLogin("dssdqsqd");
 $newChef->setLastName("dddddd");
 $newChef->setEmail("dddddd@ddd.cc");
 ChefDao::saveOrUpdate($newChef);
-FormatUtil::dump($newChef);
-/*$pdo = DatabaseUtil::connect();
+FormatUtil::dump($newChef);*/
+/*$pdo = DatabaseUtil::getConnection()();
 $sql = "INSERT INTO users (lastName,firstName,email,passwordHash,flag,dateCreation,login,address1,address2,zipCode,idCity) 
 values(?,?,?,?,?,?,?,?,?,?,?)";
 $q = $pdo->prepare($sql);

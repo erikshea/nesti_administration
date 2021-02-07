@@ -1,6 +1,6 @@
 <?php
 
-class RecipeController extends BaseEntityController
+class RecipeController extends EntityController
 {
-    protected static $entityClass = "Recipe";
+    protected $entityClass = "Recipe";
 }

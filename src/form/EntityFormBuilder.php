@@ -82,13 +82,14 @@ class EntityFormBuilder extends BaseFormBuilder{
             $vars['label'] = $label;
         }
 
+        require SiteUtil::toAbsolute("templates/form/standardFormRow.php");
     }
 
     public function getValidatorErrorMessages()
     {
         if ( $this->validatorErrorMessages == null ){
             $jsonString = file_get_contents(
-                __DIR__ . "/../../config/validatorErrorMessages.json"
+                SiteUtil::toAbsolute("config/validatorErrorMessages.json")
             );
             $this->validatorErrorMessages = json_decode($jsonString,true);
         }
