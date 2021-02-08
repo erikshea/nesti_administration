@@ -5,26 +5,30 @@ SiteUtil::require('util/FormatUtil.php');
 
 class BaseController
 {
-    protected  $entity;
-    protected  $entityClass;
-    protected  $dao;
+    protected $action;
+    protected $templateVars = [];
+    protected $templateNames = ['base'=>'common/base'];
 
-    public function callActionMethod($action)
+    
+    public function callActionMethod()
     {
-        method_exists(get_called_class(), $action) ?
+        $action = $this->action;
+        method_exists(get_called_class(), $this->action) ?
             $this->$action() : // if action in URL exists, call it
             $this->error(); // else call default one
+
+        $this->render();
     }
 
     public function processAction($forceAction=null)
     {
-        @[,$action, $id] = SiteUtil::getUrlParameters();
+        $this->action = @SiteUtil::getUrlParameters()[1];
 
         if($forceAction!=null){
-            $action = $forceAction;
+            $this->action = $forceAction;
         }
 
-        $this->callActionMethod($action);
+        $this->callActionMethod();
     }
 
     /**
@@ -33,30 +37,22 @@ class BaseController
      * @param  string $templateName template name , or null to redirect to default action
      * @return void
      */
-    protected function render(?string $templateNames, array $vars = [])
+    protected function render()
     {
-        if ($templateNames == null) {
-            //si le templet eest nul(ex si on delete un article => aon applele le tmplate par dafault (ici la liste))
-            $this->error();
-        } else {
-            if (!is_array($templateNames)) {
-                 $templates =['action'=>$templateNames,'base'=>'common/base'];
-            }
-     
-            $this->setupTemplateVars($vars,$templates);
-        
-            //repars a la racine du porjet
-            include_once SiteUtil::toAbsolute("templates/{$templates['base']}.php");
-        }
+        $this->preRender();
+    
+        $vars = $this->templateVars;
+        include_once SiteUtil::toAbsolute("templates/{$this->templateNames['base']}.php");
     }
 
-    public function setupTemplateVars(&$templateVars,&$templates){
+    public function preRender(){
             // Add shared parameters to the existing ones
-            $templateVars = array_merge($templateVars, [
+            $this->addVars([
+                'version' => random_int(0,8000000000000000), // absolute url of site root
                 'baseUrl' => SiteUtil::url(), // absolute url of site root
                 'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
                 'controller' => self::class, // current user
-                'templatePath' => SiteUtil::toAbsolute("templates/" . $templates['action'] . ".php"),
+                'templatePath' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
                 'loggedInUser' => MainController::getLoggedInUser(),
                 'assets' => [
                     "js" => [], // JavaScript files to include
@@ -65,9 +61,24 @@ class BaseController
             ]);
     }
 
+    public function addVars($templateVars){
+        $this->templateVars = array_merge($this->templateVars,$templateVars);
+    }
+
+    public function addVar($key,$value){
+        $this->templateVars[$key] = $value;
+    }
+
+    public function setTemplateName($name, $type='action'){
+        $this->templateNames[$type] = $name;
+    }   
 
     public function error()
     {
-        $this->render('error/error404');
+        $this->setTemplateName('error/error404');
+    }
+
+    public function redirect(){
+        header('Location: '.SiteUtil::url());
     }
 }

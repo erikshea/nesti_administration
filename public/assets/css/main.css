@@ -11,6 +11,8 @@
     --color-classic-medium: #606267;
     --color-classic-light: #ececec;
     --color-classic-base: #FFFFFF;
+
+    --color-success: #AFD31B;
 }
 body .h1, body .h2, body .h3, body .h4, body .h5, body .h6, body h1, body h2, body h3, body h4, body h5, body h6 {
     font-family: Nunito; 
@@ -35,4 +37,12 @@ body{
     font-family: Nunito;
     src: url(../fonts/Nunito-Bold.ttf);
     font-weight: 700;
+}
+
+.alert.alert-danger {
+    background-color: var(--color-secondary);
+}
+
+.alert.alert-success {
+    background-color: var(--color-success);
 }

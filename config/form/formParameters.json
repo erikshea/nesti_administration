@@ -1,0 +1,48 @@
+{
+    "Users": {
+        "firstName": {
+            "label": "Prénom",
+            "validators": ["notEmpty","letters"]
+        },
+        "lastName": {
+            "label": "Nom",
+            "validators": ["notEmpty", "letters"]
+        },
+        "tel" : {
+            "label": "Numéro de téléphone",
+            "validators": ["telephone"]
+        },
+        "email": {
+            "label": "Email",
+            "validators": ["email", "unique", "notEmpty"]
+        },
+        "login": {
+            "icon": "far fa-user",
+            "label": "Identifiant",
+            "validators": ["email", "unique", "notEmpty"]
+        },
+        "address1": {
+            "label": "Addresse (ligne 1)",
+            "validators": ["email", "unique"]
+        },
+        "address2": {
+            "label": "Addresse (ligne 2)",
+            "validators": ["email", "unique"]
+        },
+        "zipcode": {
+            "label": "Code postal",
+            "validators": ["email", "unique"]
+        },
+        "ville": {
+            "label": "Ville",
+            "type": "::entityList:City",
+            "validators": ["exists"]
+        },
+        "password": {
+            "icon": "fas fa-lock",
+            "label": "Mot de passe",
+            "type": "password",
+            "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
+        }
+    }
+}

@@ -1,40 +1,39 @@
 <?php
 class EntityController extends BaseController
 {
-    public function callActionMethod($action)
+    protected  $entity;
+    protected  $entityClass;
+    protected  $dao;
+
+    public function callActionMethod()
     {
-        if ( $action  == "" ){
-            $action = 'list';
-        }
-
-        parent::callActionMethod($action);
-    }
-
-    public function processAction($forceAction=null)
-    {
-        @[,$action, $id] = SiteUtil::getUrlParameters();
-
-        if($forceAction!=null){
-            $action = $forceAction;
+        if ( $this->action  == "" ){
+            $this->action = 'list';
         }
 
         $this->dao = $this->getEntityClass()::getDaoClass();
-        $this->initializeEntity($id);
-        $this->callActionMethod($action);
+        $this->initializeEntity();
+
+        parent::callActionMethod();
     }
 
-    public function setupTemplateVars(&$templateVars, &$templates)
+    public function preRender()
     {
-        parent::setupTemplateVars($templateVars, $templates);
-        if (strpos($templates['action'], '/') === false) {
+        if ( !isset($this->templateNames['action']) ){
+            $this->templateNames['action'] = $this->action;
+        }
+        parent::preRender();
 
-            $templates['action'] = strtolower($this->getEntityClass()) . "/".$templates['action'];
+        if (strpos($this->templateNames['action'], '/') === false) {
+
+            $this->templateNames['action'] = strtolower($this->getEntityClass())
+                . "/".$this->templateNames['action'];
         }
 
         // Add shared parameters to the existing ones
-        $templateVars = array_merge($templateVars, [
+        $this->addVars([
             'entity' =>  $this->getEntity(),
-            'templatePath' => SiteUtil::toAbsolute("templates/" . $templates['action'] . ".php"),
+            'templatePath' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
         ]);
     }
 
@@ -44,18 +43,17 @@ class EntityController extends BaseController
      * Sets user class parameter to a user from data source if specified in url, otherwise a new user
      * @return void
      */
-    protected function initializeEntity($id)
+    protected function initializeEntity()
     {
+        @[,,$id] = SiteUtil::getUrlParameters();
         if (!empty($id)) { // If a user ID is specified in the URL
 
             $this->setEntity($this->dao::findById($id)); // find corresponding user in data source
         }
 
         if (!$this->getEntity()) { // If no ID specified, or wrong ID specified
-
             $class =  $this->getEntityClass();
 
-            
             $this->setEntity(new $class);
         }
     }
@@ -68,21 +66,17 @@ class EntityController extends BaseController
      */
     public function edit()
     {
-        $templateName = 'edit';
-        $templateVars = ["isSubmitted" => !empty($_POST[$this->getEntityClass()])];
+        $this->addVars(["isSubmitted" => !empty($_POST[$this->getEntityClass()])]);
 
-        if ($templateVars["isSubmitted"]) { // if we arrived here by way of the submit button in the edit view
+        if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             $this->getEntity()->setParametersFromArray($_POST[$this->getEntityClass()]);
             if ($this->getEntity()->isValid()) {
                 $this->dao::saveOrUpdate($this->getEntity());
-                $templateName = null; // null template will redirect to default action
+                $this->redirect();
             } else {
-                $templateVars["errors"] = $this->getEntity()->getErrors();
+                $this->addVars(["errors" => $this->getEntity()->getErrors()]);
             }
         }
-
-        // template remains "edit" if no POST user parameters, or if user parameters in POST are invalid
-        $this->render($templateName, $templateVars);
     }
 
     /**
@@ -90,23 +84,17 @@ class EntityController extends BaseController
      * shows a delete confirmation form, which if submitted deletes user
      * @return void
      */
-    public  function delete()
+    public function delete()
     {
-        $templateName = 'delete';
-
         if (!empty($_POST)) { // if we arrived here by way of the submit button in the delete view
             $this->dao::delete($this->getEntity());
-            $templateName = null;
+            $this->redirect();
         }
-
-        $this->render($templateName);
     }
 
     public function list()
     {
-        $this->render("list", [
-            'entities' => $this->dao::findAll()
-        ]);
+        $this->addVars(['entities' => $this->dao::findAll()]);
     }
 
 
@@ -132,5 +120,15 @@ class EntityController extends BaseController
     public function getEntityClass()
     {
         return substr(static::class, 0, -10);
+    }
+
+    public function redirect(){
+        $route = strtolower($this->getEntityClass());
+
+        if ( !FormatUtil::endsWith($this->getEntityClass(),'s') ){
+            $route .= 's';
+        }
+
+        header('Location: '.SiteUtil::url($route));
     }
 }

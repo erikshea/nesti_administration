@@ -16,27 +16,27 @@ FormatUtil::dump($c);
 $c2->setFirstName("BOOYAKASHA");
 ChefDao::saveOrUpdate($c2);
 */
-$a = ArticleDao::findById(8);
-FormatUtil::dump($a);
+ $a = ArticleDao::findById(8);
+// FormatUtil::dump($a);
 //FormatUtil::dump($a->getArticlePrices());
 
 // FormatUtil::dump(
 //     OrdersDao::findAll([])
 // );
-FormatUtil::dump(
-    OrdersDao::findAll(['HOUR(dateCreation) >'=>5, 'ORDER'=>'dateCreation'])
-);
-/*
-FormatUtil::dump(
-    $a->getOrders( ['flag'=>'a', 'ORDER' => 'dateCreation ASC'])[0]
-);
-
-$newChef = new Chef();
-$newChef->setLogin("dssdqsqd");
-$newChef->setLastName("dddddd");
-$newChef->setEmail("dddddd@ddd.cc");
-ChefDao::saveOrUpdate($newChef);
-FormatUtil::dump($newChef);*/
+// FormatUtil::dump(
+//     OrdersDao::findAll(['HOUR(dateCreation) >'=>5,'HOUR(dateCreation) <'=>15, 'ORDER'=>'dateCreation'])
+// );
+unset($_COOKIE["user"]);
+// FormatUtil::dump(
+//     $a->getOrders( ['flag'=>'a', 'ORDER' => 'dateCreation ASC'])[0]
+// );
+// PopulateUtil::populate();
+// $newChef = new Chef();
+// $newChef->setLogin("dssdqsqd");
+// $newChef->setLastName("dddddd");
+// $newChef->setEmail("dddddd@ddd.cc");
+// ChefDao::saveOrUpdate($newChef);
+// FormatUtil::dump($newChef);
 /*$pdo = DatabaseUtil::getConnection()();
 $sql = "INSERT INTO users (lastName,firstName,email,passwordHash,flag,dateCreation,login,address1,address2,zipCode,idCity) 
 values(?,?,?,?,?,?,?,?,?,?,?)";

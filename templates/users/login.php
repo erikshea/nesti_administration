@@ -1,18 +1,27 @@
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-sm-8 col-md-6">
-            <div class="login-form w-100">
-                <form action="<?=$vars["baseUrl"]?>user/login" method="post">
+        <div class="col-9  col-md-8 col-lg-7  ">
+
+            <div class="login-form">
+<?php if (@$vars['message'] == "invalid"): ?>
+                <div class="alert alert-danger text-center p-3" role="alert">
+                    Vos identifiants sont incorrects.
+                </div>
+<?php endif ?>
+<?php if (@$vars['message'] == "disconnect"): ?>
+                <div class="alert alert-success text-center p-3" role="alert">
+                    Déconnexion réussie.
+                </div>
+<?php endif ?>
+                <form action="<?=$vars["baseUrl"]?>user/login" class="mt-4" method="post">
                     <h3 class="text-center">Connexion</h3>       
-                    <div class="form-group">
-                        <input type="text" name="Users[login]" class="form-control" placeholder="Username" required="required">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="Users[password]" class="form-control" placeholder="Password" required="required">
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+<?php $vars['formBuilder']->add('login',    ['validation' => false]) 
+                          ->add('password', ['validation' => false]) ?>
+                    <div class="row justify-content-end">
+                    <div class="form-group ">
+                        <button type="submit" class="btn btn-info px-4 mr-2">Valider</button>
                     </div>   
+                    </row>
                 </form>
             </div>
         </div>

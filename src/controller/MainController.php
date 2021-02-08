@@ -3,7 +3,6 @@ class MainController
 {
     protected static ?Users $loggedInUser = null;
 
-
     public function processRoute(){
         SiteUtil::sanitize($_POST); // need recursive sanitizing for multidimensional array
         SiteUtil::sanitize($_GET);
@@ -15,10 +14,10 @@ class MainController
         }
 
         switch ( $controller ){
-            case "user":
+            case "users":
                 (new UsersController)->processAction();
             break;
-            case "recipe":
+            case "recipes":
             case "":
                 (new RecipeController)->processAction();
             break;
@@ -41,11 +40,8 @@ class MainController
     public static function setLoggedInUser( $user, $password=null){
         static::$loggedInUser = $user;
 
-        if($user!=null){
-            setcookie("user[login]", $user->getLogin(), 2147483647, '/');
-            if ( $password != null ){
-                setcookie("user[password]", $password, 2147483647, '/');
-            }
-        }
+
+        setcookie("user[login]", $user?$user->getLogin():null, 2147483647, '/');
+        setcookie("user[password]", $password, 2147483647, '/');
     }
 }
