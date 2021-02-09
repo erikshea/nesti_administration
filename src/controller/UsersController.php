@@ -3,11 +3,10 @@ class UsersController extends EntityController
 {
     public function actionLogin()
     {
-        $this->setTemplateName('common/baseNoNav', 'base');
+        $this->setTemplateName('common/baseBarebones', 'base');
 
         $this->addVars(["formBuilder" => new EntityFormBuilder($this->entity)]);
         if (isset($_POST['Users'])) {
-
             $candidate = UsersDao::findOneBy('login', $_POST['Users']['login']);
 
             if ($candidate != null && $candidate->isPassword($_POST['Users']['password'])) {
@@ -21,14 +20,13 @@ class UsersController extends EntityController
 
     public function actionLogout()
     {
-        $this->setTemplateName('login');
-        $this->setTemplateName('common/baseNoNav', 'base');
         MainController::setLoggedInUser(null);
 
         $this->addVars([
             'message' => 'disconnect',
-            "formBuilder" => new EntityFormBuilder($this->entity)
         ]);
+
+        $this->dispatch("login");
     }
 
 

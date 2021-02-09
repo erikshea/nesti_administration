@@ -22,6 +22,7 @@ body .h1, body .h2, body .h3, body .h4, body .h5, body .h6, body h1, body h2, bo
 }
 body{
     font-family: Nunito;
+
     color: var(--color-classic-dark);
 }
 
@@ -47,6 +48,19 @@ body{
     font-family: Nunito;
     src: url(../fonts/Nunito-ExtraBold.ttf);
     font-weight: 900;
+}
+
+a {
+    color: var(--color-primary-dark);
+}
+
+main a{
+    text-decoration: underline;
+}
+
+main a:hover,
+main a:hover *  {
+    color: var(--color-secondary-dark);
 }
 
 .alert.alert-danger {
@@ -83,11 +97,15 @@ form button:hover i {
 }
 
 
+
+
 .btn{
     font-family: Nunito;
     color: var(--color-primary-dark);
-    height:fit-content;
+    height: calc(1.5em + .75rem + 2px);
+    text-decoration: none;
 }
+
 
 .btn i{
     font-size: 1.2em;
@@ -108,3 +126,34 @@ form button:hover i {
     background-color: var(--color-primary) !important;
 }
 
+table.listing thead{
+    background-color: var(--color-primary);
+    color: var(--color-classic-base);
+}
+
+table.listing th,
+table.listing td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+.listing__actions {
+    font-size: 0.8em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.breadcrumbs span{
+    color: var(--color-primary);
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform:capitalize;
+}
+
+.breadcrumbs > span:last-child::before{
+    content: ">";
+    color: var(--color-classic-dark);
+    margin-right: 0.3em;
+}

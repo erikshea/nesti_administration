@@ -62,7 +62,10 @@ class EntityController extends BaseController
      */
     public function actionEdit()
     {
-        $this->addVars(["isSubmitted" => !empty($_POST[$this->getEntityClass()])]);
+        $this->addVars([
+            "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
+            "formBuilder" => new EntityFormBuilder($this->entity)
+        ]);
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             $this->getEntity()->setParametersFromArray($_POST[$this->getEntityClass()]);
@@ -90,7 +93,16 @@ class EntityController extends BaseController
 
     public function actionList()
     {
-        $this->addVars(['entities' => $this->dao::findAll()]);
+        $queryOptions = ['flag'=>'a'];
+        $this->setTemplateName('common/baseNoCrumbs', 'base');
+
+        if ( isset( $_POST["search"] )){
+            foreach ( $_POST["search"] as $parameterName => $value ){
+                $queryOptions[$parameterName . " LIKE"] = "%$value%";
+            }
+        }
+
+        $this->addVars(['entities' => $this->dao::findAll($queryOptions)]);
     }
 
 

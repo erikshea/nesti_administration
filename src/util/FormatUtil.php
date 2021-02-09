@@ -57,6 +57,24 @@ class FormatUtil {
         self::dump($var);
         die();
     }
+
+
+    public static function formatTime($minutes){
+        $hours = floor($minutes/60);
+        $minutes = $minutes%60;
+
+        $result = "";
+
+        if ( $hours != 0 ){
+            $result .= $hours . 'h';
+        }
+
+        if ( $minutes != 0 ){
+            $result .= $minutes . ' min';
+        }
+
+        return $result;
+    }
 }
 
 ?>

@@ -35,7 +35,7 @@
         },
         "ville": {
             "label": "Ville",
-            "type": "::entityList:City",
+            "type": ":entityList:City",
             "validators": ["exists"]
         },
         "password": {
@@ -43,6 +43,24 @@
             "label": "Mot de passe",
             "type": "password",
             "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
+        }
+    },
+    "Recipe": {
+        "name": {
+            "label": "Nom de la recette",
+            "validators": ["notEmpty","letters"]
+        },
+        "difficulty": {
+            "label": "Difficulté (note sur 5)",
+            "validators": ["notEmpty", "betweenZeroAndFive"]
+        },
+        "portions" : {
+            "label": "Nombre de personnes",
+            "validators": ["notEmpty"]
+        },
+        "preparationTime": {
+            "label": "Temps de préparation en minutes",
+            "validators": ["notEmpty"]
         }
     }
 }

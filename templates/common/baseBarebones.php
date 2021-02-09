@@ -4,6 +4,9 @@
 <?php include SiteUtil::toAbsolute("templates/common/head.php") ?>
 
 <body>
-<?php include $vars["actionTemplate"] ?>
+    <main>
+        <?php include $vars["actionTemplate"] ?>
+    </main>
+</main>
 </body>
 </html>

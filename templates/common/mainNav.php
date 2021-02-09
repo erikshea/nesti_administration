@@ -1,4 +1,4 @@
-<nav id="main-menu" class="d-flex justify-content-between  mb-4">
+<nav id="main-menu" class="d-flex justify-content-between ">
     <div id="main-menu__pages" class="navbar navbar-expand-sm ">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsable-buttons" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
@@ -14,8 +14,8 @@
                     <div class="dropdown-menu" aria-labelledby="menu-item-recipes">
                         <a class="dropdown-item <?= $vars['actionRoute']=='recipe/list' ? "active":"" ?>"
                             href="<?= $vars['baseUrl'] ?>recipe/list">Liste</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='recipe/create' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>recipe/create">Création</a>
+                        <a class="dropdown-item <?= $vars['actionRoute']=='recipe/add' ? "active":"" ?>"
+                            href="<?= $vars['baseUrl'] ?>recipe/add">Création</a>
                         <a class="dropdown-item <?= $vars['actionRoute']=='recipe/edit' ? "active":"" ?>"
                             href="<?= $vars['baseUrl'] ?>recipe/edit">Édition</a>
                     </div>
@@ -46,8 +46,8 @@
                     <div class="dropdown-menu" aria-labelledby="menu-item-users">
                         <a class="dropdown-item <?= $vars['actionRoute']=='user/list' ? "active":"" ?>"
                             href="<?= $vars['baseUrl'] ?>user/list">Liste</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='user/create' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>user/create">Création</a>
+                        <a class="dropdown-item <?= $vars['actionRoute']=='user/add' ? "active":"" ?>"
+                            href="<?= $vars['baseUrl'] ?>user/add">Création</a>
                         <a class="dropdown-item <?= $vars['actionRoute']=='user/edit' ? "active":"" ?>"
                             href="<?= $vars['baseUrl'] ?>user/edit">Édition</a>
                     </div>

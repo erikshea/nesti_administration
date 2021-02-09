@@ -1,23 +1,65 @@
 {
     "user": {
         "controller"    : "UsersController",
-        "defaultAction" : "list"
+        "defaultAction" : "list",
+        "name": "utilisateurs",
+        "actions": {
+            "edit": {
+                "name": "édition",
+                "title": "Édition d'un utilisateur"
+            },
+            "add": {
+                "name": "création",
+                "title": "Création d'un utilisateur"
+            }
+        }
     },
     "recipe": {
         "controller"    : "RecipeController",
         "defaultAction" : "list",
-        "isDefault": true
+        "isDefault": true,
+        "name": "recettes",
+        "actions": {
+            "edit": {
+                "name": "édition",
+                "title": "Édition d'une recette"
+            },
+            "add": {
+                "name": "création",
+                "title": "Création d'une recette"
+            },
+            "list": {
+                "title": "Recettes"
+            }
+        }
     },
     "article": {
         "controller"    : "ArticleController",
-        "defaultAction" : "list"
+        "defaultAction" : "list",
+        "name": "articles",
+        "actions": {
+            "edit": { "name": "édition" },
+            "add": { "name": "création" }
+        }
     },
     "statistics": {
         "controller"    : "StatisticsController",
-        "defaultAction" : "show"
+        "defaultAction" : "show",
+        "name": "statistiques",
+        "actions": {
+            "show": {
+                "title": "Statistiques"
+            }
+        }
     },
     "error": {
         "controller"    : "ErrorController",
-        "defaultAction" : "404"
+        "defaultAction" : "404",
+        "name": "erreur",
+        "actions": {
+            "404": {
+                "title": "Cette page n'existe pas"
+            }
+        }
     }
 }

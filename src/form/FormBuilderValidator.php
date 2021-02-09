@@ -115,7 +115,20 @@ class FormBuilderValidator{
         ); 
     }
 
+     /**
+     * url
+     * validates if property value contains at least one number.
+     * @param  mixed $entity whose property we must check
+     * @param  String $parameterName name of property whose value we must check
+     * @return bool true if validates
+     */
+    public static function betweenZeroAndFive($value): bool{
+        if ( is_string($value) ){
+            $value = (float) $value;
+        }
 
+        return 0 < $value && $value < 5;
+    }
 
     private static function calculatePasswordStrength($password){
         $possibleChars = 0; // set of potentially different characters in password

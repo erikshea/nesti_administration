@@ -151,7 +151,7 @@
 }
 
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 480px) {
     #main-menu__pages {
         width: 50%;
     }

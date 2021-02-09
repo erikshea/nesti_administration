@@ -36,12 +36,14 @@ class BaseController
     public function preRender(){
             // Add shared parameters to the existing ones
             $this->addVars([
+                'title' => MainController::getActionParameters()["title"] ?? null,
                 'version' => random_int(0,8000000000000000), // absolute url of site root
                 'baseUrl' => SiteUtil::url(), // absolute url of site root
                 'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
                 'route' =>   MainController::getCurrentRoute(), 
                 'actionRoute' =>    MainController::getCurrentRoute()['controller'] .
                                     '/' . MainController::getCurrentRoute()['action'], 
+                'breadcrumbs' => $this->getBreadcrumbs(),
                 'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
                 'currentUser' => MainController::getLoggedInUser(),
                 'assets' => [
@@ -63,19 +65,11 @@ class BaseController
         $this->templateNames[$type] = $name;
     }   
 
-    public function redirect($route=null){
-        if ( $route == null ){
-            // todo: use maincontroller routing info
-            $route = $this->getActualControllerSlug();
-            if ( $route == "bases" ) {
-                $route = "";
-            }
-        }
+    public function redirect($route=""){
         header('Location: '.SiteUtil::url($route));
         exit;
     }
-    
-    
+
     public function redirect404(){
         $this->redirect("error/404");
     }
@@ -100,5 +94,20 @@ class BaseController
 
     public static function translateToActionMethod($actionSlug){
         return 'action' . ucfirst($actionSlug);
+    }
+
+
+    public static function getBreadcrumbs(){
+        $routeParameters = MainController::getRouteParameters();
+        $controllerSlug = MainController::getCurrentRoute()['controller'];
+        $actionSlug = MainController::getCurrentRoute()['action'];
+
+        $breadcrumbs = [$routeParameters[$controllerSlug]["name"]];
+
+        if (isset ($routeParameters[$controllerSlug]["actions"][$actionSlug]["name"])){
+            $breadcrumbs[] = $routeParameters[$controllerSlug]["actions"][$actionSlug]["name"];
+        }
+
+        return $breadcrumbs;
     }
 }

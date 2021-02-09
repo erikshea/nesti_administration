@@ -8,7 +8,7 @@ class MainController
     public function dispatch(){
         SiteUtil::sanitize($_POST); // need recursive sanitizing for multidimensional array
         SiteUtil::sanitize($_GET);
-        
+
         @[$controllerSlug, $actionSlug, $idSlug] = SiteUtil::getUrlParameters();
         $routeConfig = static::getRouteParameters();
 
@@ -99,5 +99,9 @@ class MainController
         }
 
         return $defaultSlug;
+    }
+
+    public static function getActionParameters(){
+        return static::getRouteParameters()[static::$currentRoute["controller"]]["actions"][static::$currentRoute["action"]] ?? null;
     }
 }
