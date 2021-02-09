@@ -76,10 +76,10 @@ class BaseEntity{
     /**
      * setRelatedEntity
      * sets the current instance's foreign key parameter to that of the related entity's primary key
-     * @param  BaseEntity $relatedEntity to link to current instance
+     * @param  mixed $relatedEntity to link to current instance
      * @return void
      */
-    public function setRelatedEntity(?BaseEntity $relatedEntity)
+    public function setRelatedEntity($relatedEntity)
     {
         // find dao class of the joined entity
         $relatedClassDao = get_class($relatedEntity)::getDaoClass();
@@ -87,9 +87,23 @@ class BaseEntity{
         // find column name of the joined entity's primary key
         $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
 
-        EntityUtil::set($this, $relatedClassPrimaryKey, $relatedEntity->getId());
 
-        self::getDaoClass()::saveOrUpdate($this);
+        // If foreign key is in current instance
+        if (  property_exists($this, $relatedClassPrimaryKey) ){
+            EntityUtil::set(
+                $this,
+                $relatedClassPrimaryKey,
+                $relatedEntity->getId()
+            );
+            static::getDaoClass()::saveOrUpdate($this);
+        } else { // If foreign key is in related object
+            EntityUtil::set(
+                $relatedEntity,
+                static::getDaoClass()::getPkColumnName(),
+                $this->getId()
+            );
+            $relatedClassDao::saveOrUpdate($relatedEntity);
+        }
     }
 
 
@@ -100,7 +114,7 @@ class BaseEntity{
      * @return void
      */
     public function getId(){
-        $idColumnName = self::getDaoClass()::getPkColumnName();
+        $idColumnName = static::getDaoClass()::getPkColumnName();
         return EntityUtil::get($this, $idColumnName);
     }
 
@@ -110,7 +124,7 @@ class BaseEntity{
      * @return void
      */
     public function setId($id){
-        $idColumnName = self::getDaoClass()::getPkColumnName();
+        $idColumnName = static::getDaoClass()::getPkColumnName();
         EntityUtil::set($this,  $idColumnName, $id);
     }
     

@@ -5,22 +5,18 @@ class EntityController extends BaseController
     protected  $entityClass;
     protected  $dao;
 
-    public function callActionMethod()
+    public function dispatch($actionSlug)
     {
-        if ( $this->action  == "" ){
-            $this->action = 'list';
-        }
-
         $this->dao = $this->getEntityClass()::getDaoClass();
         $this->initializeEntity();
 
-        parent::callActionMethod();
+        parent::dispatch($actionSlug);
     }
 
     public function preRender()
     {
         if ( !isset($this->templateNames['action']) ){
-            $this->templateNames['action'] = $this->action;
+            $this->templateNames['action'] = $this->actionSlug;
         }
         parent::preRender();
 
@@ -33,7 +29,7 @@ class EntityController extends BaseController
         // Add shared parameters to the existing ones
         $this->addVars([
             'entity' =>  $this->getEntity(),
-            'templatePath' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
+            'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
         ]);
     }
 
@@ -64,7 +60,7 @@ class EntityController extends BaseController
      * edit an existing recipe, or a newly-created one
      * @return void
      */
-    public function edit()
+    public function actionEdit()
     {
         $this->addVars(["isSubmitted" => !empty($_POST[$this->getEntityClass()])]);
 
@@ -84,7 +80,7 @@ class EntityController extends BaseController
      * shows a delete confirmation form, which if submitted deletes user
      * @return void
      */
-    public function delete()
+    public function actionDelete()
     {
         if (!empty($_POST)) { // if we arrived here by way of the submit button in the delete view
             $this->dao::delete($this->getEntity());
@@ -92,7 +88,7 @@ class EntityController extends BaseController
         }
     }
 
-    public function list()
+    public function actionList()
     {
         $this->addVars(['entities' => $this->dao::findAll()]);
     }
@@ -122,13 +118,5 @@ class EntityController extends BaseController
         return substr(static::class, 0, -10);
     }
 
-    public function redirect(){
-        $route = strtolower($this->getEntityClass());
 
-        if ( !FormatUtil::endsWith($this->getEntityClass(),'s') ){
-            $route .= 's';
-        }
-
-        header('Location: '.SiteUtil::url($route));
-    }
 }

@@ -139,6 +139,18 @@ class BaseDao
                 $sql .= " ORDER BY {$options['ORDER']} DESC";
             }
             unset($options['ORDER']);
+        } else {
+            $sql .= " ORDER BY " . static::getPkColumnName() . " ASC";
+        }
+
+        if ( isset ($options['LIMIT']) ){
+            $sql .= " LIMIT " . $options['LIMIT'];
+            unset($options['LIMIT']);
+        }
+
+        if ( isset ($options['OFFSET']) ){
+            $sql .= " OFFSET " . $options['OFFSET'];
+            unset($options['OFFSET']);
         }
 
         $request = $pdo->prepare($sql);

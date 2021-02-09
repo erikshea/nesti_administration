@@ -1,9 +1,9 @@
 <?php
 class UsersController extends EntityController
 {
-    public function login()
+    public function actionLogin()
     {
-        $this->setTemplateName('login');
+        $this->setTemplateName('common/baseNoNav', 'base');
 
         $this->addVars(["formBuilder" => new EntityFormBuilder($this->entity)]);
         if (isset($_POST['Users'])) {
@@ -18,6 +18,19 @@ class UsersController extends EntityController
             }
         }
     }
+
+    public function actionLogout()
+    {
+        $this->setTemplateName('login');
+        $this->setTemplateName('common/baseNoNav', 'base');
+        MainController::setLoggedInUser(null);
+
+        $this->addVars([
+            'message' => 'disconnect',
+            "formBuilder" => new EntityFormBuilder($this->entity)
+        ]);
+    }
+
 
     public function preRender()
     {

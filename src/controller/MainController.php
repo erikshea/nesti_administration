@@ -1,30 +1,47 @@
 <?php
 class MainController 
 {
-    protected static ?Users $loggedInUser = null;
+    protected const DEFAULT_CONTROLLER_SLUG = "recipe";
 
-    public function processRoute(){
+    protected static ?Users $loggedInUser = null;
+    protected static $routeConfig;
+    protected static $currentRoute; 
+
+    public function dispatch(){
         SiteUtil::sanitize($_POST); // need recursive sanitizing for multidimensional array
         SiteUtil::sanitize($_GET);
 
-        @[$controller, $action, $id] = SiteUtil::getUrlParameters();
+        @[$controllerSlug, $actionSlug, $idSlug] = SiteUtil::getUrlParameters();
+        $routeConfig = static::getRouteParameters();
+
+
+        if ( empty( $controllerSlug ) ){
+            $controllerSlug = static::DEFAULT_CONTROLLER_SLUG;
+        }
+
+        if ( !isset($routeConfig[$controllerSlug]) ) {
+            static::redirect404();
+        }
+
+        if ( empty( $actionSlug ) ){
+            $actionSlug = $routeConfig[$controllerSlug]['defaultAction'];
+        }
+
+        $controllerClass = $routeConfig[$controllerSlug]['controller'];
+        $actionMethod = $controllerClass::translateToActionMethod($actionSlug);
+
+        if ( !method_exists($controllerClass, $actionMethod) ) {
+            static::redirect404();
+        }
+
         if ( static::getLoggedInUser() == null ){
-            (new UsersController)->processAction("login");
-            exit;
+            static::redirect("user/login");
         }
 
-        switch ( $controller ){
-            case "users":
-                (new UsersController)->processAction();
-            break;
-            case "recipes":
-            case "":
-                (new RecipeController)->processAction();
-            break;
-            default:
-                (new BaseController)->error();
-        }
+        static::$currentRoute = ['controller' => $controllerSlug, 'action' => $actionSlug];
 
+        $controllerClass = $routeConfig[$controllerSlug]['controller'];
+        (new $controllerClass)->dispatch($actionSlug);
     }
 
     public static function getLoggedInUser(): ?Users{
@@ -44,4 +61,34 @@ class MainController
         setcookie("user[login]", $user?$user->getLogin():null, 2147483647, '/');
         setcookie("user[password]", $password, 2147483647, '/');
     }
+
+
+
+    public static function getRouteParameters(){
+        if ( static::$routeConfig == null ){
+            $jsonString = file_get_contents(
+                SiteUtil::toAbsolute("config/routeParameters.json")
+            );
+            static::$routeConfig = json_decode($jsonString,true);
+        }
+        return static::$routeConfig;
+    }
+
+    public static function redirect(string $completeRoute = ""){
+        header('Location: '.SiteUtil::url($completeRoute));
+        exit;
+    }
+
+    public static function redirect404(){
+        static::redirect("error/404");
+    }
+
+    public static function getCurrentRoute(){
+        return static::$currentRoute;
+    }
+
+    public static function getActionRoute(){
+        return static::$currentRoute['controller'] . '/' . static::$currentRoute['action'];
+    }
+
 }

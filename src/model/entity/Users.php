@@ -285,4 +285,8 @@ class Users extends BaseEntity{
 
         return $this;
     }
+
+    public function getFullName(){
+        return $this->getFirstName() . " " . $this->getLastName();
+    }
 }

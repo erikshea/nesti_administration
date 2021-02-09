@@ -1,0 +1,22 @@
+{
+    "recipe": {
+        "controller"    : "RecipeController",
+        "defaultAction" : "list"
+    },
+    "user": {
+        "controller"    : "UsersController",
+        "defaultAction" : "list"
+    },
+    "article": {
+        "controller"    : "ArticleController",
+        "defaultAction" : "list"
+    },
+    "statistics": {
+        "controller"    : "StatisticsController",
+        "defaultAction" : "show"
+    },
+    "error": {
+        "controller"    : "ErrorController",
+        "defaultAction" : "404"
+    }
+}

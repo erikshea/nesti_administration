@@ -16,13 +16,10 @@ FormatUtil::dump($c);
 $c2->setFirstName("BOOYAKASHA");
 ChefDao::saveOrUpdate($c2);
 */
- $a = ArticleDao::findById(8);
-// FormatUtil::dump($a);
-//FormatUtil::dump($a->getArticlePrices());
 
-// FormatUtil::dump(
-//     OrdersDao::findAll([])
-// );
+ FormatUtil::dump(
+     OrdersDao::findAll(["LIMIT"=>"1, 1"])
+ );
 // FormatUtil::dump(
 //     OrdersDao::findAll(['HOUR(dateCreation) >'=>5,'HOUR(dateCreation) <'=>15, 'ORDER'=>'dateCreation'])
 // );

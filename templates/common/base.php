@@ -4,8 +4,9 @@
 <?php include SiteUtil::toAbsolute("templates/common/head.php") ?>
 
 <body>
-    <div class="page-wrapper">
-    <?php include $vars["templatePath"] ?>
-    </div>
+    <?php include SiteUtil::toAbsolute("templates/common/mainNav.php") ?>
+
+    <?php include $vars["actionTemplate"] ?>
+
 </body>
 </html>
