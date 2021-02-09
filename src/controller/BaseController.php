@@ -39,7 +39,7 @@ class BaseController
                 'version' => random_int(0,8000000000000000), // absolute url of site root
                 'baseUrl' => SiteUtil::url(), // absolute url of site root
                 'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
-                'currentRoute' =>   MainController::getCurrentRoute(), 
+                'route' =>   MainController::getCurrentRoute(), 
                 'actionRoute' =>    MainController::getCurrentRoute()['controller'] .
                                     '/' . MainController::getCurrentRoute()['action'], 
                 'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),

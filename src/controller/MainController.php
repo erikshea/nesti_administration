@@ -1,8 +1,6 @@
 <?php
 class MainController 
 {
-    protected const DEFAULT_CONTROLLER_SLUG = "recipe";
-
     protected static ?Users $loggedInUser = null;
     protected static $routeConfig;
     protected static $currentRoute; 
@@ -10,13 +8,12 @@ class MainController
     public function dispatch(){
         SiteUtil::sanitize($_POST); // need recursive sanitizing for multidimensional array
         SiteUtil::sanitize($_GET);
-
+        
         @[$controllerSlug, $actionSlug, $idSlug] = SiteUtil::getUrlParameters();
         $routeConfig = static::getRouteParameters();
 
-
         if ( empty( $controllerSlug ) ){
-            $controllerSlug = static::DEFAULT_CONTROLLER_SLUG;
+            $controllerSlug = static::getDefaultControllerSlug();
         }
 
         if ( !isset($routeConfig[$controllerSlug]) ) {
@@ -34,7 +31,7 @@ class MainController
             static::redirect404();
         }
 
-        if ( static::getLoggedInUser() == null ){
+        if ( static::getLoggedInUser() == null && $controllerSlug != "user" && $actionSlug != "login"){
             static::redirect("user/login");
         }
 
@@ -91,4 +88,16 @@ class MainController
         return static::$currentRoute['controller'] . '/' . static::$currentRoute['action'];
     }
 
+    public static function getDefaultControllerSlug(){
+
+        $defaultSlug = array_keys(static::getRouteParameters())[0];
+        
+        foreach ( static::getRouteParameters() as $slug => $parameters){
+            if ( $parameters['isDefault'] ?? false) {
+                $defaultSlug = $slug;
+            }
+        }
+
+        return $defaultSlug;
+    }
 }

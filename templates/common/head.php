@@ -6,6 +6,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='<?= "{$vars['assetsUrl']}/fontawesome/css/all.css" ?>'>
     <link rel='stylesheet' type='text/css' media='screen' href='<?= "{$vars['assetsUrl']}/css/bootstrap.min.css" ?>'>
     <link rel='stylesheet' type='text/css' media='screen' href='<?= "{$vars['assetsUrl']}/css/main.css?version={$vars['version']}" ?>'>
+    <link rel='stylesheet' type='text/css' media='screen' href='<?= "{$vars['assetsUrl']}/css/mainNav.css?version={$vars['version']}" ?>'>
     <?php foreach ($vars['assets']['css']  as $stylesheetName): ?>
         <link rel='stylesheet' type='text/css' media='screen' href='<?= "{$vars['assetsUrl']}/css/$stylesheetName.css?version={$vars['version']}" ?>'>
     <?php endforeach; ?>

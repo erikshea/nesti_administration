@@ -1,11 +1,12 @@
 {
-    "recipe": {
-        "controller"    : "RecipeController",
-        "defaultAction" : "list"
-    },
     "user": {
         "controller"    : "UsersController",
         "defaultAction" : "list"
+    },
+    "recipe": {
+        "controller"    : "RecipeController",
+        "defaultAction" : "list",
+        "isDefault": true
     },
     "article": {
         "controller"    : "ArticleController",

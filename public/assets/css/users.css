@@ -39,9 +39,6 @@ body{
     background-color: var(--color-primary-dark);
 }
 
-form button {
-    background-color: var(--color-primary) !important;
-}
 
 @media screen and (max-width: 768px) {
 
