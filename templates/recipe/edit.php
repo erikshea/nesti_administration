@@ -4,10 +4,9 @@
         <div class="col-6">
             
             <?php $vars["formBuilder"]->add("name")
-                                        ->add("difficulty", ['class'=>'form-row--horizontal'])
-                                        ->add("portions", ['class'=>'form-row--horizontal'])
-                                        ->add("preparationTime", ['class'=>'form-row--horizontal']);
-            ?>
+                                      ->add("difficulty", ['class'=>'form-row--horizontal'])
+                                      ->add("portions", ['class'=>'form-row--horizontal'])
+                                      ->add("preparationTime", ['class'=>'form-row--horizontal']); ?>
             <div class="form-group ">
                 <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
                 <a class="btn px-4 mr-2" href="<?=$vars["baseUrl"]?>recipe">Annuler</a>

@@ -13,6 +13,7 @@ class Users extends BaseEntity{
     private $address2;
     private $zipCode;
     private $idCity;
+    private $roles;
 
     public function getCity(): ?City{
         return $this->getRelatedEntity("City");
@@ -291,15 +292,97 @@ class Users extends BaseEntity{
     }
 
     public function getChef(){
-        return ChefDao::findById($this->getId());
+        return $this->getChildEntity("Chef");
     }
 
-
     public function makeChef(){
-        if ( $this->getChef() == null ){
-            $chef = new Chef;
-            $chef->setId($this->getId());
-            ChefDao::save($chef);
+        return $this->makeChildEntity("Chef");
+    }
+    
+    public function isChef(){
+        return $this->getChef() != null;
+    }
+
+    public function getAdministrator(){
+        return $this->getChildEntity("Administrator");
+    }
+
+    public function makeAdministrator(){
+        return $this->makeChildEntity("Administrator");
+    }
+    
+    public function isAdministrator(){
+        return $this->getAdministrator() != null;
+    }
+
+    public function getModerator(){
+        return $this->getChildEntity("Moderator");
+    }
+
+    public function makeModerator(){
+        return $this->makeChildEntity("Moderator");
+    }
+    
+    public function isModerator(){
+        return $this->getModerator() != null;
+    }
+
+    public function getRoles(){
+        if ( $this->roles == null){
+            $this->roles = [];
+
+            if ( $this->isAdministrator() ){
+                $this->roles[] = "administrator";
+            }
+    
+            if ( $this->isModerator() ){
+                $this->roles[] = "moderator";
+            }
+    
+            if ( $this->isChef() ){
+                $this->roles[] = "chef";
+            }
         }
+        return $this->roles;
+    }
+
+    public function hasRightsForCurrentController(){
+        return $this->hasRightsForCurrentRoute(true);
+    }
+
+    public function hasRightsForCurrentRoute( $controllerOnly=false ){
+        $currentAction  = $controllerOnly ? null : MainController::getCurrentRoute()['action'];
+        $currentController  = MainController::getCurrentRoute()['controller'];
+
+        $routeParameters  = MainController::getRouteParameters();
+
+        $allowedForRoute =  $routeParameters[$currentController]['actions'][$currentAction]['allowed']
+                        ??  $routeParameters[$currentController]['allowed']
+                        ??  [ 'moderator', 'chef', "administrator"];
+        
+        $isAllowed = false;    
+
+        if (    in_array("all", $allowedForRoute)
+            ||  count(array_intersect($this->getRoles(),$allowedForRoute)) > 0 ) {
+            $isAllowed = true;
+        } else{
+            $controllerClass = $routeParameters[$currentController]['controller'];
+
+            foreach ( $allowedForRoute as $allowedItem ){
+                if( preg_match(
+                    "/^%(.*)%$/", // if function in the form %FUNCTION%
+                    $allowedItem, 
+                    $matches
+                )) {
+                    switch ( $matches[1] ){
+                        case "recipeCreator": 
+                            $recipe = MainController::getCurrentController()->getEntity();
+                            $isAllowed = $this->equals( $recipe->getChef() );
+                        break;
+                    }
+                }
+            }
+        }    
+        return $isAllowed;
     }
 }

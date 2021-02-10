@@ -5,7 +5,7 @@ class EntityController extends BaseController
     protected  $entityClass;
     protected  $dao;
 
-    public function dispatch($actionSlug)
+    public function dispatch($actionSlug,$options= [])
     {
         $this->dao = $this->getEntityClass()::getDaoClass();
         $this->initializeEntity();
@@ -71,7 +71,7 @@ class EntityController extends BaseController
             $this->getEntity()->setParametersFromArray($_POST[$this->getEntityClass()]);
             if ($this->getEntity()->isValid()) {
                 $this->dao::saveOrUpdate($this->getEntity());
-                $this->redirect();
+                MainController::redirect();
             } else {
                 $this->addVars(["errors" => $this->getEntity()->getErrors()]);
             }
@@ -87,7 +87,7 @@ class EntityController extends BaseController
     {
         if (!empty($_POST)) { // if we arrived here by way of the submit button in the delete view
             $this->dao::delete($this->getEntity());
-            $this->redirect();
+            MainController::redirect();
         }
     }
 

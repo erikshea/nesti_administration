@@ -3,42 +3,50 @@ class MainController
 {
     protected static ?Users $loggedInUser = null;
     protected static $routeConfig;
-    protected static $currentRoute; 
+    protected static $currentRoute = []; 
+    protected static $currentController;
 
     public function dispatch(){
         SiteUtil::sanitize($_POST); // need recursive sanitizing for multidimensional array
         SiteUtil::sanitize($_GET);
 
-        @[$controllerSlug, $actionSlug, $idSlug] = SiteUtil::getUrlParameters();
+        @[  static::$currentRoute['controller'],
+            static::$currentRoute['action']
+        ] = SiteUtil::getUrlParameters();
+
         $routeConfig = static::getRouteParameters();
 
-        if ( empty( $controllerSlug ) ){
-            $controllerSlug = static::getDefaultControllerSlug();
+        if (    static::getLoggedInUser() == null
+            &&  static::$currentRoute['controller'] != "user"
+            &&  static::$currentRoute['action'] != "login"){
+            static::redirect("user/login");
         }
 
-        if ( !isset($routeConfig[$controllerSlug]) ) {
+        if ( empty( static::$currentRoute['controller'] ) ){
+            static::$currentRoute['controller'] = static::getDefaultControllerSlug();
+        }
+
+
+        if ( !isset($routeConfig[static::$currentRoute['controller']]) ) {
             static::redirect404();
         }
-
-        if ( empty( $actionSlug ) ){
-            $actionSlug = $routeConfig[$controllerSlug]['defaultAction'];
+        
+        if ( !$this->getLoggedInUser()->hasRightsForCurrentController() ){
+            static::forward401();
         }
 
-        $controllerClass = $routeConfig[$controllerSlug]['controller'];
-        $actionMethod = $controllerClass::translateToActionMethod($actionSlug);
+        if ( empty( static::$currentRoute['action'] ) ){
+            static::$currentRoute['action'] = $routeConfig[static::$currentRoute['controller']]['defaultAction'];
+        }
+
+        $controllerClass = $routeConfig[static::$currentRoute['controller']]['controller'];
+        $actionMethod = $controllerClass::translateToActionMethod(static::$currentRoute['action']);
 
         if ( !method_exists($controllerClass, $actionMethod) ) {
             static::redirect404();
         }
 
-        if ( static::getLoggedInUser() == null && $controllerSlug != "user" && $actionSlug != "login"){
-            static::redirect("user/login");
-        }
-
-        static::$currentRoute = ['controller' => $controllerSlug, 'action' => $actionSlug];
-
-        $controllerClass = $routeConfig[$controllerSlug]['controller'];
-        (new $controllerClass)->dispatch($actionSlug);
+        static::callControllerDispatch();
     }
 
     public static function getLoggedInUser(): ?Users{
@@ -71,15 +79,6 @@ class MainController
         return static::$routeConfig;
     }
 
-    public static function redirect(string $completeRoute = ""){
-        header('Location: '.SiteUtil::url($completeRoute));
-        exit;
-    }
-
-    public static function redirect404(){
-        static::redirect("error/404");
-    }
-
     public static function getCurrentRoute(){
         return static::$currentRoute;
     }
@@ -90,10 +89,13 @@ class MainController
 
     public static function getDefaultControllerSlug(){
 
-        $defaultSlug = array_keys(static::getRouteParameters())[0];
+        $defaultSlug = 'error';
         
         foreach ( static::getRouteParameters() as $slug => $parameters){
-            if ( $parameters['isDefault'] ?? false) {
+            if ( count(
+                    array_intersect(static::getLoggedInUser()->getRoles(),
+                    $parameters['isDefault'] ?? [] )
+                ) > 0 ) {
                 $defaultSlug = $slug;
             }
         }
@@ -103,5 +105,31 @@ class MainController
 
     public static function getActionParameters(){
         return static::getRouteParameters()[static::$currentRoute["controller"]]["actions"][static::$currentRoute["action"]] ?? null;
+    }
+
+    public static function getCurrentController(){
+        return static::$currentController;
+    }
+
+
+    
+    public static function redirect($route=""){
+        header('Location: '.SiteUtil::url($route));
+        exit;
+    }
+
+    public static function redirect404(){
+        static::redirect("error/404");
+    }
+    public static function forward401(){
+        static::$currentRoute = ['controller' => 'error', 'action' => '401'];
+        static::callControllerDispatch("error/restricted");
+    }
+
+    public static function callControllerDispatch($options=[]){
+        $controllerClass = static::getRouteParameters()[static::$currentRoute['controller']]['controller'];
+        static::$currentController = new $controllerClass;
+
+        static::$currentController->dispatch(static::$currentRoute['action'],$options);
     }
 }

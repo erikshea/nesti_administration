@@ -76,7 +76,7 @@ class BaseDao
         $conditions = [];
         array_walk ( $options, function($value, $key) use (&$conditions, &$options){
             if (preg_match(
-                "/^(.*)(=|>|<|>=|<=|<>|LIKE|NOT LIKE)$/", // look for an operator at the end of option key
+                "/^(.*)(=|>|<|>=|<=|<>|!=|LIKE|NOT LIKE)$/", // look for an operator at the end of option key
                 $key, $matches)
             ){
                 $propertyKey = trim($matches[1]); 

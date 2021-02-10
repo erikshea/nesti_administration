@@ -11,7 +11,7 @@ class UsersController extends EntityController
 
             if ($candidate != null && $candidate->isPassword($_POST['Users']['password'])) {
                 MainController::setLoggedInUser($candidate, $_POST['Users']['password']);
-                $this->redirect();
+                MainController::redirect();
             } else {
                 $this->addVars(['message' => 'invalid']);
             }

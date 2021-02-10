@@ -9,9 +9,17 @@ class BaseController
     protected $templateVars = [];
     protected $templateNames = ['base'=>'common/base'];
 
-    public function dispatch($actionSlug)
+    public function dispatch($actionSlug, $options= [])
     {
-        $this->forward($actionSlug);
+        if ( !MainController::getLoggedInUser()->hasRightsForCurrentRoute() ){
+            MainController::forward401();
+        } else {
+            if ( isset($options['templateVars']) ){
+                $this->addVars( $options['templateVars'] );
+            }
+    
+            $this->forward($actionSlug);
+        }
     }
 
     protected function forward($actionSlug){
@@ -33,7 +41,7 @@ class BaseController
     {
         $this->preRender();
     
-        $vars = $this->templateVars;
+        $vars = $this->templateVars; // templates only use $vars
         include_once SiteUtil::toAbsolute("templates/{$this->templateNames['base']}.php");
     }
 
@@ -67,14 +75,6 @@ class BaseController
         $this->templateNames[$type] = $name;
     }   
 
-    public function redirect($route=""){
-        header('Location: '.SiteUtil::url($route));
-        exit;
-    }
-
-    public function redirect404(){
-        $this->redirect("error/404");
-    }
 
     /**
      * getActualControllerSlug

@@ -3,6 +3,8 @@
         "controller"    : "UsersController",
         "defaultAction" : "list",
         "name": "utilisateurs",
+        "isDefault": ["moderator"],
+        "allowed": [ "moderator", "administrator" ],
         "actions": {
             "edit": {
                 "name": "édition",
@@ -17,12 +19,14 @@
     "recipe": {
         "controller"    : "RecipeController",
         "defaultAction" : "list",
-        "isDefault": true,
         "name": "recettes",
+        "isDefault": ["chef", "administrator"],
+        "allowed": [ "chef", "administrator" ],
         "actions": {
             "edit": {
                 "name": "édition",
-                "title": "Édition d'une recette"
+                "title": "Édition d'une recette",
+                "allowed": [ "%recipeCreator%" ]
             },
             "add": {
                 "name": "création",
@@ -37,6 +41,8 @@
         "controller"    : "ArticleController",
         "defaultAction" : "list",
         "name": "articles",
+        "isDefault": [],
+        "allowed": ["administrator"],
         "actions": {
             "edit": { "name": "édition" },
             "add": { "name": "création" }
@@ -46,6 +52,7 @@
         "controller"    : "StatisticsController",
         "defaultAction" : "show",
         "name": "statistiques",
+        "allowed": ["administrator"],
         "actions": {
             "show": {
                 "title": "Statistiques"
@@ -56,7 +63,11 @@
         "controller"    : "ErrorController",
         "defaultAction" : "404",
         "name": "erreur",
+        "allowed": ["all"],
         "actions": {
+            "401": {
+                "title": "Droits insuffisants."
+            },
             "404": {
                 "title": "Cette page n'existe pas"
             }

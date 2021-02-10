@@ -142,4 +142,26 @@ class BaseEntity{
     {
         return self::getDaoClass()::findManyToMany($this,  $joinClass , $relatedEntityClass, $options);
     }
+
+
+    public function getChildEntity(string $childEntityClass){
+        return $childEntityClass::getDaoClass()::findById($this->getId());
+    }
+
+    public function makeChildEntity(string $childEntityClass){
+        if ( $this->getChildEntity($childEntityClass) == null ) {
+            $child = new $childEntityClass;
+            $child->setId($this->getId());
+            $childEntityClass::getDaoClass()::save($child);
+        }
+
+        return $this;
+    }
+
+    public function equals( $other ){
+        return $other != null
+            &&     is_a($this,get_class($other)) // $this must either be class/sublass of $other
+                || is_a($other,get_class($this)) // or vice-versa
+            && $this->getId() == $other->getId();
+    }
 }
