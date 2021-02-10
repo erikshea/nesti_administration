@@ -7,7 +7,6 @@
 class DatabaseUtil
 {
     // Default database connection parameters, depending on HTTP_HOST
-    private static $defaultConnectionParameters = ["user" => "root", "db_name" => "tp_php", "password" => "", "host" => "localhost"];
     private static $connectionParameters = null;
     private static $conn = null; // Connection object
     

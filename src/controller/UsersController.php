@@ -26,14 +26,14 @@ class UsersController extends EntityController
             'message' => 'disconnect',
         ]);
 
-        $this->dispatch("login");
+        $this->forward("login");
     }
 
 
     public function preRender()
     {
         parent::preRender();
-        $this->templateVars['assets']['css'][] = "users";
+        $this->templateVars['assets']['css'][] = "user";
     }
 
 }

@@ -11,6 +11,10 @@ class BaseController
 
     public function dispatch($actionSlug)
     {
+        $this->forward($actionSlug);
+    }
+
+    protected function forward($actionSlug){
         $this->actionSlug = $actionSlug;
 
         $actionMethod = static::translateToActionMethod($actionSlug); 
@@ -41,8 +45,6 @@ class BaseController
                 'baseUrl' => SiteUtil::url(), // absolute url of site root
                 'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
                 'route' =>   MainController::getCurrentRoute(), 
-                'actionRoute' =>    MainController::getCurrentRoute()['controller'] .
-                                    '/' . MainController::getCurrentRoute()['action'], 
                 'breadcrumbs' => $this->getBreadcrumbs(),
                 'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
                 'currentUser' => MainController::getLoggedInUser(),

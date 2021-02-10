@@ -77,33 +77,42 @@ h1{
     font-weight: 900;
 }
 
-
-form button {
-    background-color: var(--color-primary) !important;
-    border-color: var(--color-primary-dark) !important;
+.no-validate .is-invalid,
+.no-validate .is-valid{
+    border-color: var(--color-primary);
+    background-image: none;
+    padding-right: initial;
 }
 
-form button:hover {
-    background-color: var(--color-secondary) !important;
-    border-color: var(--color-secondary-dark) !important;
-}
 
-form button i{
-    color: var(--color-classic-base);
-}
 
-form button:hover i {
-    color: var(--color-primary-dark);
-}
+
 
 
 
 
 .btn{
+    border-style: solid 1px;
     font-family: Nunito;
-    color: var(--color-primary-dark);
+    color: var(--color-classic-base);
     height: calc(1.5em + .75rem + 2px);
     text-decoration: none;
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
+    
+}
+
+.btn:hover,
+.btn:focus{
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary-dark);
+}
+
+.btn:hover,
+.btn:focus,
+.btn:hover *,
+.btn:focus *{
+    color: var(--color-primary-dark);
 }
 
 
@@ -116,15 +125,33 @@ form button:hover i {
     margin-left: 0.5rem;
 }
 
-.btn-light{
-    border-style: solid 1px;
+
+.btn-success{
+    color: var(--color-primary-dark);
+    background-color: var(--color-success);
     border-color: var(--color-classic-light);
+}
+
+
+
+.btn-light{
+    color: var(--color-primary-dark);
+    border-color: var(--color-classic-light);
+    background-color: var(--color-classic-base);
 }
 .btn-light:hover,
 .btn-light:focus{
-    color: var(--color-classic-base) !important;
-    background-color: var(--color-primary) !important;
+    color: var(--color-classic-base);
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
 }
+.btn-light:hover,
+.btn-light:focus,
+.btn-light:hover *,
+.btn-light:focus *{
+    color: var(--color-classic-base);
+}
+
 
 table.listing thead{
     background-color: var(--color-primary);
@@ -156,4 +183,21 @@ table.listing td {
     content: ">";
     color: var(--color-classic-dark);
     margin-right: 0.3em;
+}
+
+.form-row--horizontal .form-group__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.form-row--horizontal .form-group__content .input-group {
+    width: 40%;
+}
+
+main .input-group{
+    border-color: var(--color-primary);
+}
+
+main .input-group input{
+    border-color: var(--color-primary);
 }

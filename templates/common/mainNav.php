@@ -7,50 +7,24 @@
             <div class="navbar-nav w-100 d-flex justify-content-between py-3 px-lg-3">
                 <div class="nav-item dropdown">
                     <a class="nav-link <?= $vars['route']['controller']=='recipe' ? "active":"" ?>"
-                        id="menu-item-recipes" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        id="menu-item-recipes" href="<?= $vars['baseUrl'] ?>recipe" >
                         <i class="fas fa-clipboard-list"></i>
                         <span>Recettes</span>
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="menu-item-recipes">
-                        <a class="dropdown-item <?= $vars['actionRoute']=='recipe/list' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>recipe/list">Liste</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='recipe/add' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>recipe/add">Création</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='recipe/edit' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>recipe/edit">Édition</a>
-                    </div>
                 </div>
-                <div class="nav-item dropdown">
+                <div class="nav-item">
                     <a class="nav-link <?= $vars['route']['controller']=='article' ? "active":"" ?>"
-                        id="menu-item-articles" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        id="menu-item-articles" href="<?= $vars['baseUrl'] ?>article">
                         <i class="fas fa-utensils"></i>
                         <span>Articles</span>
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="menu-item-articles">
-                        <a class="dropdown-item <?= $vars['actionRoute']=='article/list' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>article/list">Liste</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='article/orders' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>article/orders">Commandes</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='article/import' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>article/import">Importation</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='article/edit' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>article/edit">Édition</a>
-                    </div>
                 </div>
                 <div class="nav-item dropdown">
                     <a class="nav-link <?= $vars['route']['controller']=='user' ? "active":"" ?>"
-                        id="menu-item-users" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        id="menu-item-users" href="<?= $vars['baseUrl'] ?>user" >
                         <i class="fas fa-users"></i>
                         <span>Utilisateurs</span>
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="menu-item-users">
-                        <a class="dropdown-item <?= $vars['actionRoute']=='user/list' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>user/list">Liste</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='user/add' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>user/add">Création</a>
-                        <a class="dropdown-item <?= $vars['actionRoute']=='user/edit' ? "active":"" ?>"
-                            href="<?= $vars['baseUrl'] ?>user/edit">Édition</a>
-                    </div>
                 </div>
 
                 <a class="nav-item nav-link <?= $vars['route']['controller']=='statistics' ? "active":"" ?>"

@@ -3,8 +3,7 @@
 
 <?php include SiteUtil::toAbsolute("templates/common/head.php") ?>
 
-<body>
-
+<body class="<?= $vars["route"]["controller"] . " " . $vars["route"]["controller"] . "-" . $vars["route"]["action"] ?>">
     <?php include SiteUtil::toAbsolute("templates/common/mainNav.php") ?>
     <main>
         <?php include SiteUtil::toAbsolute("templates/common/breadcrumbs.php") ?>

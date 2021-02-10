@@ -7,5 +7,6 @@
     "unique" : "Il ne doit pas y avoir d'utilisateur existant ayant ce paramètre.",
     "strong" : "Le mot de passe doit être suffisamment fort.",
     "oneLetter" : "Le mot de passe doit contenir au moins une lettre.",
-    "oneNumber" : "Le mot de passe doit contenir au moins un chiffre."
+    "oneNumber" : "Le mot de passe doit contenir au moins un chiffre.",
+    "betweenZeroAndFive" : "La valeur doit être comprise entre 0 et 5."
 }

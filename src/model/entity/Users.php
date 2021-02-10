@@ -289,4 +289,17 @@ class Users extends BaseEntity{
     public function getFullName(){
         return $this->getFirstName() . " " . $this->getLastName();
     }
+
+    public function getChef(){
+        return ChefDao::findById($this->getId());
+    }
+
+
+    public function makeChef(){
+        if ( $this->getChef() == null ){
+            $chef = new Chef;
+            $chef->setId($this->getId());
+            ChefDao::save($chef);
+        }
+    }
 }

@@ -16,18 +16,25 @@ FormatUtil::dump($c);
 $c2->setFirstName("BOOYAKASHA");
 ChefDao::saveOrUpdate($c2);
 */
-
+/*
  FormatUtil::dump(
-     OrdersDao::findAll(["LIMIT"=>"1, 1"])
+    $_SERVER['SERVER_NAME']
  );
+
+
+
+$test = ArticleDao::findById(8);
+ FormatUtil::dump($test->getOrders(["ORDER"=>"dateCreation ASC"]));
+
+ FormatUtil::dump($test->getOrders(["ORDER"=>"dateCreation DESC"]));*/
 // FormatUtil::dump(
 //     OrdersDao::findAll(['HOUR(dateCreation) >'=>5,'HOUR(dateCreation) <'=>15, 'ORDER'=>'dateCreation'])
 // );
-unset($_COOKIE["user"]);
+
 // FormatUtil::dump(
 //     $a->getOrders( ['flag'=>'a', 'ORDER' => 'dateCreation ASC'])[0]
 // );
-// PopulateUtil::populate();
+//PopulateUtil::populate();
 // $newChef = new Chef();
 // $newChef->setLogin("dssdqsqd");
 // $newChef->setLastName("dddddd");
@@ -41,4 +48,7 @@ $q = $pdo->prepare($sql);
 $values = ["dddddd",NULL,NULL,NULL,NULL,NULL,"dssdqsqd",NULL,NULL,NULL,NULL];
 $r = $q->execute($values);*/
 
-//PopulateUtil::populate();
+
+$user = UsersDao::findOneBy('login','test');
+$user->makeChef();
+FormatUtil::dump($user);

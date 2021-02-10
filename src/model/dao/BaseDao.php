@@ -129,6 +129,7 @@ class BaseDao
             }
         }
 
+
         if ( isset ($options['ORDER']) ){
             if (preg_match(
                 "/^(.*) (DESC|ASC)$/", // look for an operator at the end of ORDER option
@@ -350,7 +351,12 @@ class BaseDao
         foreach ( self::getParentClasses() as $currentClass ) { 
             $pdo = DatabaseUtil::getConnection();
             $currentDao = $currentClass::getDaoClass();
-            
+                  
+            if($currentDao::findById($entity->getId()) != null){
+                $insertedId = $entity->getId();
+                continue;
+            }
+
             $columnNames = $currentDao::getColumnNames(false); // get column names for current table
 
             // populate values with the entity properties that correspond to the column names
@@ -359,16 +365,16 @@ class BaseDao
             // if we're dealing with an inherited table, we must insert parent id explicitly to child table
             if (self::hasParentEntity($currentClass)){
                 $columnNames[] = $currentDao::getPkColumnName();
+                
                 $values[] = $insertedId;
                 $entity->setId($insertedId);
             }
- 
             // Need a list of question marks of same size as the list of column names
             $questionMarks = array_map(function($columnName) { return '?'; }, $columnNames);
 
             $sql = "INSERT INTO " . $currentDao::getTableName() . " (" . implode(',', $columnNames) . ") 
             values(" . implode(',', $questionMarks) . ")";
-            
+
             $q = $pdo->prepare($sql);
             
             $q->execute($values);  
@@ -435,7 +441,7 @@ class BaseDao
      * @param  array $options query options, ie: [ 'articlePrice <=' => 12, 'flag' => 'a']
      * @return array of related entities
      */
-    public static function findManyToMany($startEntity, string $joinEntityClass, string $endEntityClass, array $options): array{
+    public static function findManyToMany($startEntity, string $joinEntityClass, string $endEntityClass, $options): array{
         static::initializeQueryOptions($options);
 
         $startDao = get_class($startEntity)::getDaoClass();

@@ -19,9 +19,8 @@
                           ->add('password', ['validation' => false]) ?>
                     <div class="row justify-content-end">
                     <div class="form-group ">
-                        <button type="submit" class="btn btn-info px-4 mr-2">Valider</button>
-                    </div>   
-                    </row>
+                        <button type="submit" class="btn px-4 mr-2">Valider</button>
+                    </div>  
                 </form>
             </div>
         </div>

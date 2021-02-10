@@ -15,7 +15,7 @@
         </div>
 
         <div class="col-4 col-md-3 d-flex justify-content-end">
-            <a href="<?= $vars['baseUrl'] ?>article/add" class="btn btn-light">
+            <a href="<?= $vars['baseUrl'] ?>recipe/add" class="btn btn-light">
                 <i class="fas fa-plus-circle"></i><span>Ajouter</span>
             </a>
         </div>

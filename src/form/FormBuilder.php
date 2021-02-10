@@ -84,7 +84,7 @@ class FormBuilder{
         }
 
         $vars['fieldName'] = $propertyName;
-
+        $vars['class'] = $options['class'] ?? "";
         $vars['icon'] = $options['icon'] ?? $this->propertyParameters[$propertyName]['icon'] ?? null;
         $vars['formName'] = $this->getFormName();
         $vars['value'] = $options['value'] ?? $this->formData[$propertyName] ?? "";

@@ -5,7 +5,7 @@
  * EntityValidator
  * static methods to validate Entity properties
  */
-class FormBuilderValidator{
+class FormValidator{
         
     /**
      * notEmpty
@@ -14,7 +14,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function notEmpty(string $testSting): bool{
+    public static function notEmpty(?string $testSting): bool{
         return !empty($testSting);
     }
 
@@ -25,7 +25,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function email(string $testSting): bool{
+    public static function email(?string $testSting): bool{
         return filter_var(
             $testSting,
             FILTER_VALIDATE_EMAIL
@@ -39,7 +39,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function telephone(string $testSting): bool{
+    public static function telephone(?string $testSting): bool{
         return preg_match(
             "/^\+?[0-9]+$/", // only numbers, with optional "+" in front
             $testSting
@@ -53,7 +53,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function url(string $testSting): bool{
+    public static function url(?string $testSting): bool{
         return filter_var(
             $testSting,
             FILTER_VALIDATE_URL // Need to use strict identical operator with FILTER_VALIDATE_URL
@@ -67,7 +67,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function letters(string $testSting): bool{
+    public static function letters(?string $testSting): bool{
         return preg_match(
             "/^[a-zA-ZÀ-ÿ\- ]*$/", // only letters, spaces, and hyphens (including accents)
             $testSting
@@ -83,7 +83,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function strong(string $testSting): bool{
+    public static function strong(?string $testSting): bool{
         return self::calculatePasswordStrength($testSting) > 50;
     }
 
@@ -94,7 +94,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function oneLetter(string $testSting): bool{
+    public static function oneLetter(?string $testSting): bool{
         return preg_match(
             "/^.*[a-zA-ZÀ-ÿ].*$/", // at least one letter  (including accented)
             $testSting
@@ -108,7 +108,7 @@ class FormBuilderValidator{
      * @param  String $parameterName name of property whose value we must check
      * @return bool true if validates
      */
-    public static function oneNumber(string $testSting): bool{
+    public static function oneNumber(?string $testSting): bool{
         return preg_match(
             "/^.*[\d].*$/", // at least one number
             $testSting
