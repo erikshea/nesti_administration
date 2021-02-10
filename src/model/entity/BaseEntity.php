@@ -17,21 +17,18 @@ class BaseEntity{
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return array of related entities
      */
-    public function getRelatedEntities(String $relatedEntityClass, $flag=null): array
+    public function getRelatedEntities(String $relatedEntityClass, $options=null): array
     {
         // find dao class of the related entity
         $relatedClassDao = $relatedEntityClass::getDaoClass();
 
-        // find column name of the related entity's primary key
         $thisPrimaryKeyName = static::getDaoClass()::getPkColumnName();
-
-        $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
   
         return $relatedClassDao::findAllBy(
             // joined entity's foreign key name is the same as starting entity's primary key name 
             $thisPrimaryKeyName,
             $this->getId(),
-            $flag
+            $options
         );
     }
 
@@ -43,7 +40,7 @@ class BaseEntity{
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return mixed related entity, or null if none exists
      */
-    public function getRelatedEntity(String $relatedEntityClass, $flag=null): ?BaseEntity
+    public function getRelatedEntity(String $relatedEntityClass, $options=null): ?BaseEntity
     {
         // find dao class of the related entity
         $relatedClassDao = $relatedEntityClass::getDaoClass();
@@ -56,14 +53,14 @@ class BaseEntity{
             $relatedEntity = $relatedClassDao::findById(
                 // joined entity's primary key name is the same as starting entity's corresponding foreign key 
                 EntityUtil::get($this, $relatedClassPrimaryKey) ,
-                $flag
+                $options
             );
         } else { // If foreign key is in related object
             $relatedEntity = static::getDaoClass()::findOneBy(
                 // joined entity's foreign key name is the same as starting entity's primary key
                 static::getDaoClass()::getPkColumnName(),
                 $this->getId(),
-                $flag
+                $options
             );
         }
 

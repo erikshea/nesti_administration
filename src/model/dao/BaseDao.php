@@ -140,7 +140,7 @@ class BaseDao
                 $sql .= " ORDER BY {$options['ORDER']} DESC";
             }
             unset($options['ORDER']);
-        } else {
+        } elseif (in_array(static::getPkColumnName(), static::getColumnNames())) {
             $sql .= " ORDER BY " . static::getPkColumnName() . " ASC";
         }
 

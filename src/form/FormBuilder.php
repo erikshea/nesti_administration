@@ -74,30 +74,28 @@ class FormBuilder{
     }
 
     public function add($propertyName, $options=[]){
-        $vars = [];
+        $defaultOptions = [
+            'fieldName'=>$propertyName,
+            'class' => '',
+            'icon' => null,
+            'formName' => $this->getFormName(),
+            'value' => '',
+            'type' => 'text',
+            'required' => in_array("notEmpty", $this->propertyParameters[$propertyName]['validators'])
+        ];
+
+        $vars = array_merge(
+            $defaultOptions,
+            $this->propertyParameters[$propertyName]['options'],
+            $options
+        );
+
         $vars['errorMessages'] = [];
 
         if ( !isset($options['validation']) || $options['validation'] == true ) {
             foreach ( $this->getPropertyErrors($propertyName) as $validatorName) {
                 $vars['errorMessages'][] = $this->getValidatorErrorMessages()[$validatorName];
             }
-        }
-
-        $vars['fieldName'] = $propertyName;
-        $vars['class'] = $options['class'] ?? "";
-        $vars['icon'] = $options['icon'] ?? $this->propertyParameters[$propertyName]['icon'] ?? null;
-        $vars['formName'] = $this->getFormName();
-        $vars['value'] = $options['value'] ?? $this->formData[$propertyName] ?? "";
-
-        $vars['type'] = $this->propertyParameters[$propertyName]['type'] ?? "text";
-
-        $vars['required'] = $options['required'] ?? in_array("notEmpty", $this->propertyParameters[$propertyName]['validators']);
-
-
-        if ( isset($options['label']) ){
-            $vars['label'] = $options['label'];
-        } else {
-            $vars['label'] = $this->propertyParameters[$propertyName]['label'];
         }
 
         require SiteUtil::toAbsolute("templates/form/standardFormRow.php");

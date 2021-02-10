@@ -50,4 +50,15 @@ class Product extends BaseEntity{
 
         return $this;
     }
+
+
+    public function getIngredient(){
+        return $this->getChildEntity("Ingredient");
+    }
+
+    public function makeIngredient(){
+        return $this->makeChildEntity("Ingredient");
+    }
+    
+
 }

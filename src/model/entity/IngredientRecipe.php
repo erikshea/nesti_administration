@@ -1,7 +1,7 @@
 <?php
 
 class IngredientRecipe extends BaseEntity{
-    private $idProduct;
+    private $idIngredient;
     private $idRecipe;
     private $quantity;
     private $recipePosition;
@@ -95,7 +95,7 @@ class IngredientRecipe extends BaseEntity{
     /**
      * Get the value of idProduct
      */ 
-    public function getIdProduct()
+    public function getIdIngredient()
     {
         return $this->idProduct;
     }
@@ -105,7 +105,7 @@ class IngredientRecipe extends BaseEntity{
      *
      * @return  self
      */ 
-    public function setIdProduct($idProduct)
+    public function setIdIngredient($idProduct)
     {
         $this->idProduct = $idProduct;
 

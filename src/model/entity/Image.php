@@ -14,6 +14,10 @@ class Image extends BaseEntity{
         return $this->getRelatedEntities("Article");
     }
 
+    public function getFileName(){
+        return $this->getName() . "." . $this->getFileExtension();
+    }
+
     /**
      * Get the value of fileExtension
      */ 

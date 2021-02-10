@@ -13,6 +13,10 @@
     --color-classic-base: #FFFFFF;
 
     --color-success: #AFD31B;
+    --color-success-dark: #70880e;
+
+    --color-danger: #FA3838;
+    --color-danger-dark: #a81d1d;
 
     --main-font: Nunito; 
 }
@@ -129,9 +133,14 @@ h1{
 .btn-success{
     color: var(--color-primary-dark);
     background-color: var(--color-success);
-    border-color: var(--color-classic-light);
+    border-color: var(--color-success-dark);
 }
 
+.btn-danger{
+    color: var(--color-classic-base);
+    background-color: var(--color-danger);
+    border-color: var(--color-danger-dark);
+}
 
 
 .btn-light{

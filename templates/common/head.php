@@ -11,11 +11,16 @@
         <link rel='stylesheet' type='text/css' media='screen' href='<?= "{$vars['assetsUrl']}/css/$stylesheetName.css?version={$vars['version']}" ?>'>
     <?php endforeach; ?>
     
+    <script>
+        var assetsUrl = "<?= $vars["assetsUrl"] ?>";
+    </script>
+
     <script src='<?= "{$vars['assetsUrl']}/js/jquery-3.5.1.min.js" ?>'></script>
     <script src='<?= "{$vars['assetsUrl']}/js/bootstrap.min.js" ?>'></script>
     <script src='<?= "{$vars['assetsUrl']}/js/main.js?version={$vars['version']}" ?>'></script>
     <?php foreach ($vars['assets']['js']  as $scriptName): ?>
         <script src='<?= "{$vars['assetsUrl']}/js/$scriptName.js?version={$vars['version']}" ?>'></script>
     <?php endforeach; ?>
+
 
 </head>

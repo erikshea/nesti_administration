@@ -1,65 +1,101 @@
 {
     "Users": {
         "firstName": {
-            "label": "Prénom",
+            "options": {
+                "label": "Prénom"
+            },
             "validators": ["notEmpty","letters"]
         },
         "lastName": {
-            "label": "Nom",
+            "options": {
+                "label": "Nom"
+            },
             "validators": ["notEmpty", "letters"]
         },
         "tel" : {
-            "label": "Numéro de téléphone",
+            "options": {
+                "label": "Numéro de téléphone"
+                },
             "validators": ["telephone"]
         },
         "email": {
-            "label": "Email",
+            "options": {
+                "label": "Email"
+            },
             "validators": ["email", "unique", "notEmpty"]
         },
         "login": {
-            "icon": "far fa-user",
-            "label": "Identifiant",
+            "options": {
+                "icon": "far fa-user",
+                "label": "Identifiant"
+            },
             "validators": ["email", "unique", "notEmpty"]
         },
         "address1": {
-            "label": "Addresse (ligne 1)",
+            "options": {
+                "label": "Addresse (ligne 1)"
+            },
             "validators": ["email", "unique"]
         },
         "address2": {
-            "label": "Addresse (ligne 2)",
+            "options": {
+                "label": "Addresse (ligne 2)"
+            },
             "validators": ["email", "unique"]
         },
         "zipcode": {
-            "label": "Code postal",
+            "options": {
+                "label": "Code postal"
+            },
             "validators": ["email", "unique"]
         },
         "ville": {
-            "label": "Ville",
-            "type": ":entityList:City",
+            "options": {
+                "label": "Ville",
+                "type": ":entityList:City"
+            },
             "validators": ["exists"]
         },
         "password": {
-            "icon": "fas fa-lock",
-            "label": "Mot de passe",
-            "type": "password",
+            "options": {
+                "icon": "fas fa-lock",
+                "label": "Mot de passe",
+                "type": "password"
+            },
+            "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
+        },
+        "image": {
+            "options": {
+                "icon": "fas fa-lock",
+                "label": "Mot de passe",
+                "type": "file"
+            },
             "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
         }
     },
     "Recipe": {
         "name": {
-            "label": "Nom de la recette",
+                "options": {
+                "label": "Nom de la recette"
+            },
             "validators": ["notEmpty","letters"]
         },
         "difficulty": {
-            "label": "Difficulté (note sur 5)",
+                "options": {
+                "label": "Difficulté (note sur 5)"
+            },
             "validators": ["notEmpty", "betweenZeroAndFive"]
         },
         "portions" : {
-            "label": "Nombre de personnes",
+                "options": {
+                "label": "Nombre de personnes"
+            },
             "validators": ["notEmpty"]
         },
         "preparationTime": {
-            "label": "Temps de préparation en minutes",
+                "options": {
+                "label": "Temps de préparation en minutes"
+            },
             "validators": ["notEmpty"]
         }
     }

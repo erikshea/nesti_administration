@@ -385,4 +385,9 @@ class Users extends BaseEntity{
         }    
         return $isAllowed;
     }
+
+
+
+
+    
 }

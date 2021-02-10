@@ -25,7 +25,6 @@ class MainController
                 static::$currentRoute['controller'] = static::getDefaultControllerSlug();
             }
     
-    
             if ( !isset($routeConfig[static::$currentRoute['controller']]) ) {
                 static::redirect404();
             }

@@ -49,6 +49,13 @@ $values = ["dddddd",NULL,NULL,NULL,NULL,NULL,"dssdqsqd",NULL,NULL,NULL,NULL];
 $r = $q->execute($values);*/
 
 
-$user = UsersDao::findOneBy('login','test');
-$user->makeChef();
-FormatUtil::dump($user);
+// $t = RecipeDao::findAll('ORDER'=>'recipePosition');
+
+// FormatUtil::dump($t->getIngredientRecipes(['ORDER'=>'recipePosition ASC']));
+
+
+
+$t = ProductDao::findOneBy('name','FARINE');
+FormatUtil::dump("qq");
+
+FormatUtil::dump($t);
