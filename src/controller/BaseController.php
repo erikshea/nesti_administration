@@ -11,7 +11,8 @@ class BaseController
 
     public function dispatch($actionSlug, $options= [])
     {
-        if ( !MainController::getLoggedInUser()->hasRightsForCurrentRoute() ){
+        if (    MainController::getLoggedInUser() != null 
+            &&  !MainController::getLoggedInUser()->hasRightsForCurrentRoute() ){
             MainController::forward401();
         } else {
             if ( isset($options['templateVars']) ){

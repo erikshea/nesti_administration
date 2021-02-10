@@ -19,34 +19,35 @@ class MainController
         if (    static::getLoggedInUser() == null
             &&  static::$currentRoute['controller'] != "user"
             &&  static::$currentRoute['action'] != "login"){
-            static::redirect("user/login");
+            static::forwardLogin();
+        } else {
+            if ( empty( static::$currentRoute['controller'] ) ){
+                static::$currentRoute['controller'] = static::getDefaultControllerSlug();
+            }
+    
+    
+            if ( !isset($routeConfig[static::$currentRoute['controller']]) ) {
+                static::redirect404();
+            }
+            
+            if (     $this->getLoggedInUser() != null
+                &&  !$this->getLoggedInUser()->hasRightsForCurrentController() ){
+                static::forward401();
+            }
+    
+            if ( empty( static::$currentRoute['action'] ) ){
+                static::$currentRoute['action'] = $routeConfig[static::$currentRoute['controller']]['defaultAction'];
+            }
+    
+            $controllerClass = $routeConfig[static::$currentRoute['controller']]['controller'];
+            $actionMethod = $controllerClass::translateToActionMethod(static::$currentRoute['action']);
+    
+            if ( !method_exists($controllerClass, $actionMethod) ) {
+                static::redirect404();
+            }
+    
+            static::callControllerDispatch();
         }
-
-        if ( empty( static::$currentRoute['controller'] ) ){
-            static::$currentRoute['controller'] = static::getDefaultControllerSlug();
-        }
-
-
-        if ( !isset($routeConfig[static::$currentRoute['controller']]) ) {
-            static::redirect404();
-        }
-        
-        if ( !$this->getLoggedInUser()->hasRightsForCurrentController() ){
-            static::forward401();
-        }
-
-        if ( empty( static::$currentRoute['action'] ) ){
-            static::$currentRoute['action'] = $routeConfig[static::$currentRoute['controller']]['defaultAction'];
-        }
-
-        $controllerClass = $routeConfig[static::$currentRoute['controller']]['controller'];
-        $actionMethod = $controllerClass::translateToActionMethod(static::$currentRoute['action']);
-
-        if ( !method_exists($controllerClass, $actionMethod) ) {
-            static::redirect404();
-        }
-
-        static::callControllerDispatch();
     }
 
     public static function getLoggedInUser(): ?Users{
@@ -123,6 +124,11 @@ class MainController
     }
     public static function forward401(){
         static::$currentRoute = ['controller' => 'error', 'action' => '401'];
+        static::callControllerDispatch("error/restricted");
+    }
+
+    public static function forwardLogin(){
+        static::$currentRoute = ['controller' => 'user', 'action' => 'login'];
         static::callControllerDispatch("error/restricted");
     }
 
