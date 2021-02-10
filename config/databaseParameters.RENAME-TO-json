@@ -1,11 +1,11 @@
 {
-    "MYNAME.needemand.com" : {
+    "prod" : {
         "user": "MYLOGIN",
         "db_name": "MYDB",
         "password": "MYPASS",
         "host": "localhost"
     },
-    "localhost" : {
+    "dev" : {
         "user": "root",
         "db_name": "tp_php",
         "password": "",

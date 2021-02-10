@@ -23,13 +23,7 @@ class DatabaseUtil
         }
 
         if (self::$conn == null) {
-            $address = $_SERVER['SERVER_NAME']; // get host address, without the port
-
-            if (isset(self::$connectionParameters[$address])) { 
-                $parameters = self::$connectionParameters[$address];
-            } else {
-                $parameters = self::$connectionParameters['default'];; // if no parameters specified for current host, revert to defaults
-            }
+            $parameters = self::$connectionParameters[ApplicationSettings::get("environment")];
 
             try {
                 self::$conn = new PDO(
