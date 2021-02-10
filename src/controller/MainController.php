@@ -124,12 +124,12 @@ class MainController
     }
     public static function forward401(){
         static::$currentRoute = ['controller' => 'error', 'action' => '401'];
-        static::callControllerDispatch("error/restricted");
+        static::callControllerDispatch();
     }
 
     public static function forwardLogin(){
         static::$currentRoute = ['controller' => 'user', 'action' => 'login'];
-        static::callControllerDispatch("error/restricted");
+        static::callControllerDispatch();
     }
 
     public static function callControllerDispatch($options=[]){
