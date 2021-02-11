@@ -5,7 +5,7 @@ class UsersController extends EntityController
     {
         $this->setTemplateName('common/baseBarebones', 'base');
 
-        $this->addVars(["formBuilder" => new EntityFormBuilder($this->entity)]);
+        $this->addVars(["formBuilder" => new EntityFormBuilder($this->getEntity())]);
         if (isset($_POST['Users'])) {
             $candidate = UsersDao::findOneBy('login', $_POST['Users']['login']);
 

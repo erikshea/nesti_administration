@@ -160,42 +160,6 @@ class BaseDao
         return $request;
     }
 
-    /**
-     * findOneBy
-     * create and return an entity corresponding to a given field name, and it's searched value
-     * @param  String $key field name
-     * @param  mixed $value to search
-     * @param  array $options query options, ie: 'a' or [ 'articlePrice <=' => 12, 'flag' => 'a']
-     * @return mixed entity if found, null otherwise
-     */
-    public static function findOneBy(string $key, $value, $options=null)
-    {
-        static::initializeQueryOptions($options);
-
-        $options[$key] = $value;
-
-        return static::findAll($options)[0] ?? null;
-
-        // $req = static::buildRequest($options);
-
-        // $entity = self::fetchEntity($req, $options); // set entity properties using fetched values
-
-        // return $entity ?? null; // fetchObject returns boolean false if no row found, whereas we want null
-    }
-
-    /**
-     * findById
-     * create and return an entity corresponding to a given id
-     * @param  mixed $id primary key
-     * @return mixed if found, null otherwise
-     */
-    public static function findById($id, $options=null){
-        static::initializeQueryOptions($options);
-
-        $options[self::getPkColumnName()] = $id;
-
-        return static::findAll($options)[0] ?? null;
-    }
 
     /**
      * fetchEntity
@@ -222,8 +186,8 @@ class BaseDao
             // get row data as associative array, set initial entity's properties to that of current child's properties
             $rowData = $currentRequest->fetch(PDO::FETCH_ASSOC);
 
-            if ( $rowData === false ){ // if a query option constraint fails (ie blocked flag in a parent)
-                $entity = null; // will return null
+            if ( $rowData === false ){
+                $entity = null;  // if a query option constraint fails (ie blocked flag in a parent)
             } else {
                 EntityUtil::setFromArray($entity, $rowData);
             }
@@ -249,11 +213,64 @@ class BaseDao
         $entities = [];
         // set entity properties using fetched values
         while ( ($entity = self::fetchEntity($req, $options)) !== false ) { 
-            if ($entity != null){ // entity might have a parent with a blocked flag
-                $entities[] = $entity;
+            if ($entity != null){ // entity might have a parent that didn't sastisfy remaining query options
+                if ( isset($options["INDEXBY"]) ){ // if options specify a getter to index by
+                    $key = EntityUtil::get($entity,$options["INDEXBY"]);
+                    $entities[$key] = $entity;
+                } else {
+                    $entities[] = $entity;
+                }
             }
         };
         return $entities;
+    }
+
+
+    /**
+     * findOne
+     * create and return an entity corresponding to the given query options
+     * @param  String $key field name
+     * @param  mixed $value to search
+     * @param  array $options query options, ie: 'a' or [ 'articlePrice <=' => 12, 'flag' => 'a']
+     * @return mixed entity if found, null otherwise
+     */
+    public static function findOne($options=null)
+    {
+        static::initializeQueryOptions($options);
+
+        return static::findAll($options)[0] ?? null;
+    }
+
+
+    /**
+     * findOneBy
+     * create and return an entity corresponding to a given field name, and it's searched value
+     * @param  String $key field name
+     * @param  mixed $value to search
+     * @param  array $options query options, ie: 'a' or [ 'articlePrice <=' => 12, 'flag' => 'a']
+     * @return mixed entity if found, null otherwise
+     */
+    public static function findOneBy(string $key, $value, $options=null)
+    {
+        static::initializeQueryOptions($options);
+
+        $options[$key] = $value;
+
+        return static::findOne($options);
+    }
+
+    /**
+     * findById
+     * create and return an entity corresponding to a given id
+     * @param  mixed $id primary key
+     * @return mixed if found, null otherwise
+     */
+    public static function findById($id, $options=null){
+        static::initializeQueryOptions($options);
+
+        $options[self::getPkColumnName()] = $id;
+
+        return static::findOne($options);
     }
 
 
@@ -459,13 +476,19 @@ class BaseDao
         // build request, starting from the existing join sql and values 
         $req = $endDao::buildRequest($options, $sql, $values);
 
-        $endEntities = [];
-        while ( ($entity = $endDao::fetchEntity($req, $options)) !== false ) { // set entity properties to fetched column values
-            if ($entity != null){ // entity might have a parent with a blocked flag
-                $endEntities[] = $entity;
+        $entities = [];
+        // set entity properties using fetched values
+        while ( ($entity = self::fetchEntity($req, $options)) !== false ) { 
+            if ($entity != null){ // entity might have a parent that didn't sastisfy remaining query options
+                if ( isset($options["INDEXBY"]) ){ // if options specify a getter to index by
+                    $key = EntityUtil::get($entity,$options["INDEXBY"]);
+                    $entities[$key] = $entity;
+                } else {
+                    $entities[] = $entity;
+                }
             }
-        }
+        };
 
-        return $endEntities;
+        return $entities;
     }
 }

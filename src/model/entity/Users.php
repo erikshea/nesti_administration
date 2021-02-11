@@ -346,45 +346,6 @@ class Users extends BaseEntity{
         return $this->roles;
     }
 
-    public function hasRightsForCurrentController(){
-        return $this->hasRightsForCurrentRoute(true);
-    }
-
-    public function hasRightsForCurrentRoute( $controllerOnly=false ){
-        $currentAction  = $controllerOnly ? null : MainController::getCurrentRoute()['action'];
-        $currentController  = MainController::getCurrentRoute()['controller'];
-
-        $routeParameters  = MainController::getRouteParameters();
-
-        $allowedForRoute =  $routeParameters[$currentController]['actions'][$currentAction]['allowed']
-                        ??  $routeParameters[$currentController]['allowed']
-                        ??  [ 'moderator', 'chef', "administrator"];
-        
-        $isAllowed = false;    
-
-        if (    in_array("all", $allowedForRoute)
-            ||  count(array_intersect($this->getRoles(),$allowedForRoute)) > 0 ) {
-            $isAllowed = true;
-        } else{
-            $controllerClass = $routeParameters[$currentController]['controller'];
-
-            foreach ( $allowedForRoute as $allowedItem ){
-                if( preg_match(
-                    "/^%(.*)%$/", // if function in the form %FUNCTION%
-                    $allowedItem, 
-                    $matches
-                )) {
-                    switch ( $matches[1] ){
-                        case "recipeCreator": 
-                            $recipe = MainController::getCurrentController()->getEntity();
-                            $isAllowed = $this->equals( $recipe->getChef() );
-                        break;
-                    }
-                }
-            }
-        }    
-        return $isAllowed;
-    }
 
 
 

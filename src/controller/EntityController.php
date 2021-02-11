@@ -3,14 +3,9 @@ class EntityController extends BaseController
 {
     protected  $entity;
     protected  $entityClass;
-    protected  $dao;
 
-    public function dispatch($actionSlug,$options= [])
-    {
-        $this->dao = $this->getEntityClass()::getDaoClass();
-        $this->initializeEntity();
-
-        parent::dispatch($actionSlug);
+    protected function getDaoClass(){
+        return $this->getEntityClass()::getDaoClass();
     }
 
     public function preRender()
@@ -37,21 +32,24 @@ class EntityController extends BaseController
     /**
      * initializeEntity
      * Sets user class parameter to a user from data source if specified in url, otherwise a new user
-     * @return void
+     * @return mixed entity that corresponds to current controller
      */
-    protected function initializeEntity()
+    public function getEntity()
     {
-        @[,,$id] = SiteUtil::getUrlParameters();
-        if (!empty($id)) { // If a user ID is specified in the URL
+        if ( $this->entity == null){
+            @[,,$id] = SiteUtil::getUrlParameters();
+            if (!empty($id)) { // If a user ID is specified in the URL
 
-            $this->setEntity($this->dao::findById($id)); // find corresponding user in data source
+                $this->setEntity($this->getDaoClass()::findById($id)); // find corresponding user in data source
+            }
+
+            if (!$this->entity) { // If no ID specified, or wrong ID specified
+                $class =  $this->getEntityClass();
+
+                $this->setEntity(new $class);
+            }
         }
-
-        if (!$this->getEntity()) { // If no ID specified, or wrong ID specified
-            $class =  $this->getEntityClass();
-
-            $this->setEntity(new $class);
-        }
+        return $this->entity;
     }
 
 
@@ -64,13 +62,13 @@ class EntityController extends BaseController
     {
         $this->addVars([
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
-            "formBuilder" => new EntityFormBuilder($this->entity)
+            "formBuilder" => new EntityFormBuilder($this->getEntity())
         ]);
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             $this->getEntity()->setParametersFromArray($_POST[$this->getEntityClass()]);
             if ($this->getEntity()->isValid()) {
-                $this->dao::saveOrUpdate($this->getEntity());
+                $this->getDaoClass()::saveOrUpdate($this->getEntity());
                 MainController::redirect();
             } else {
                 $this->addVars(["errors" => $this->getEntity()->getErrors()]);
@@ -86,7 +84,7 @@ class EntityController extends BaseController
     public function actionDelete()
     {
         if (!empty($_POST)) { // if we arrived here by way of the submit button in the delete view
-            $this->dao::delete($this->getEntity());
+            $this->getDaoClass()::delete($this->getEntity());
             MainController::redirect();
         }
     }
@@ -101,25 +99,17 @@ class EntityController extends BaseController
                 $queryOptions[$parameterName . " LIKE"] = "%$value%";
             }
         }
-
-        $this->addVars(['entities' => $this->dao::findAll($queryOptions)]);
+  
+        $this->addVars(['entities' => $this->getDaoClass()::findAll($queryOptions)]);
     }
 
 
-    /**
-     * Get the value of entity
-     */
-    public function getEntity()
-    {
-        return $this->entity;
-    }
 
     /**
      * Get the value of entity
      */
     public function setEntity($entity)
     {
-
         $this->entity = $entity;
     }
 

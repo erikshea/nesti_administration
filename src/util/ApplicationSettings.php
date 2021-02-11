@@ -9,6 +9,11 @@ class ApplicationSettings {
                     SiteUtil::toAbsolute(static::CONFIG_FILE)
                 );
                 static::$settings = json_decode($jsonString,true);
+
+                // random version number in dev, to auto-refresh all assets
+                if ( static::$settings["environment"] == "dev"){
+                    static::$settings["version"] = random_int(0,8000000000000000);
+                }
             }
 
             return static::$settings[$key] ?? null;

@@ -63,14 +63,6 @@
                 "type": "password"
             },
             "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
-        },
-        "image": {
-            "options": {
-                "icon": "fas fa-lock",
-                "label": "Mot de passe",
-                "type": "file"
-            },
-            "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
         }
     },
     "Recipe": {
@@ -97,6 +89,13 @@
                 "label": "Temps de préparation en minutes"
             },
             "validators": ["notEmpty"]
+        },
+        "image": {
+            "options": {
+                "label": "Mot de passe",
+                "type": "%image%",
+                "placeHolder": "/images/content/__placeHolder.jpg"
+            }
         }
     }
 }

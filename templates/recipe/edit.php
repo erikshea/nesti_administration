@@ -13,29 +13,9 @@
         </div>
 
         <div class="col-6 d-flex justify-content-center flex-column image-group">
-
-            <div class="image-upload">
-                <div class="image-upload__edit d-flex">
-                    <div >
-                        <input type='file' id="image-upload__add" accept=".png, .jpg, .jpeg" />
-                        <label for="image-upload__add" class="btn btn-sm btn-success"><i class="fas fa-retweet"></i>Changer</label>
-                    </div>
-                    <a href="#" id="image-upload__delete" class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i></a>
-                </div>
-                <div class="image-upload__content">
-                    <div id="image-upload__preview" style="background-image: url(<?=
-                        $vars["assetsUrl"] . "/images/content/"
-                            .   ($vars['entity']->getImage() != null ?
-                                $vars['entity']->getImage()->getFileName()
-                                : "__placeHolder.jpg")
-                        ?>);">
-                    </div>
-                </div>
-
-            </div>
-
+            <?php $vars["formBuilder"]->add("image", [ "initialBackground" => $vars["imageUrl"] ] ) ?>
         </div>
-        <div class="filename image-group__button-bar"><?= $vars['entity']->getImage()->getFileName() ?><a><i class="far fa-trash-alt"></i></a></div>
+
     </div>
 
 

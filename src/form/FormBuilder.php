@@ -74,6 +74,8 @@ class FormBuilder{
     }
 
     public function add($propertyName, $options=[]){
+        $validators = $this->propertyParameters[$propertyName]['validators'] ?? [];
+
         $defaultOptions = [
             'fieldName'=>$propertyName,
             'class' => '',
@@ -81,24 +83,34 @@ class FormBuilder{
             'formName' => $this->getFormName(),
             'value' => '',
             'type' => 'text',
-            'required' => in_array("notEmpty", $this->propertyParameters[$propertyName]['validators'])
+            'required' => in_array("notEmpty", $validators),
+            "template" => 'standardFormRow',
+            "assetsUrl" => SiteUtil::url("public/assets/"),
+            "version" => ApplicationSettings::get("version")
         ];
 
+
         $vars = array_merge(
-            $defaultOptions,
+            $defaultOptions, 
             $this->propertyParameters[$propertyName]['options'],
-            $options
+            $options // method parameter options will overwrite the previous two for identical keys
         );
 
         $vars['errorMessages'] = [];
 
-        if ( !isset($options['validation']) || $options['validation'] == true ) {
+        if ( !isset($vars['validation']) || $vars['validation'] == true ) {
             foreach ( $this->getPropertyErrors($propertyName) as $validatorName) {
                 $vars['errorMessages'][] = $this->getValidatorErrorMessages()[$validatorName];
             }
         }
 
-        require SiteUtil::toAbsolute("templates/form/standardFormRow.php");
+        if ( $vars['type'] == '%image%' ){
+            $vars["placeHolder"] = SiteUtil::url("public/assets") . $vars["placeHolder"];
+            $vars["type"] = "file";
+            $vars["template"] = "imageUpload";
+            $vars["initialBackground"] = $vars["initialBackground"] ?? $vars["placeHolder"];
+        }
+        require SiteUtil::toAbsolute("templates/form/{$vars["template"]}.php");
 
         return $this;
     }

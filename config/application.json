@@ -1,3 +1,4 @@
 {
-    "environment" : "dev"
+    "environment" : "dev",
+    "version" : "0.1"
 }

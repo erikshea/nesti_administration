@@ -11,16 +11,11 @@ class BaseController
 
     public function dispatch($actionSlug, $options= [])
     {
-        if (    MainController::getLoggedInUser() != null 
-            &&  !MainController::getLoggedInUser()->hasRightsForCurrentRoute() ){
-            MainController::forward401();
-        } else {
-            if ( isset($options['templateVars']) ){
-                $this->addVars( $options['templateVars'] );
-            }
-    
-            $this->forward($actionSlug);
+        if ( isset($options['templateVars']) ){
+            $this->addVars( $options['templateVars'] );
         }
+
+        $this->forward($actionSlug);
     }
 
     protected function forward($actionSlug){
@@ -50,7 +45,7 @@ class BaseController
             // Add shared parameters to the existing ones
             $this->addVars([
                 'title' => MainController::getActionParameters()["title"] ?? null,
-                'version' => random_int(0,8000000000000000), // absolute url of site root
+                'version' => ApplicationSettings::get("version"),
                 'baseUrl' => SiteUtil::url(), // absolute url of site root
                 'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
                 'route' =>   MainController::getCurrentRoute(), 

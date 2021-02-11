@@ -1,6 +1,5 @@
 $ ( () => {
     let preview = $('#image-upload__preview');
-    let placeHolder = `url('${assetsUrl}/images/content/__placeHolder.jpg')`;
 
     function updatePreview(property){
         preview.css('background-image', property);

@@ -16,9 +16,7 @@ class MainController
 
         $routeConfig = static::getRouteParameters();
 
-        if (    static::getLoggedInUser() == null
-            &&  static::$currentRoute['controller'] != "user"
-            &&  static::$currentRoute['action'] != "login"){
+        if ( static::getLoggedInUser() == null ){
             static::forwardLogin();
         } else {
             if ( empty( static::$currentRoute['controller'] ) ){
@@ -29,8 +27,7 @@ class MainController
                 static::redirect404();
             }
             
-            if (     $this->getLoggedInUser() != null
-                &&  !$this->getLoggedInUser()->hasRightsForCurrentController() ){
+            if ( !static::loggedInUserHasRightsForController() ){
                 static::forward401();
             }
     
@@ -92,7 +89,9 @@ class MainController
         $defaultSlug = 'error';
         
         foreach ( static::getRouteParameters() as $slug => $parameters){
-            if ( count(
+            if ( 
+                
+                count(
                     array_intersect(static::getLoggedInUser()->getRoles(),
                     $parameters['isDefault'] ?? [] )
                 ) > 0 ) {
@@ -133,8 +132,62 @@ class MainController
 
     public static function callControllerDispatch($options=[]){
         $controllerClass = static::getRouteParameters()[static::$currentRoute['controller']]['controller'];
+        
         static::$currentController = new $controllerClass;
 
-        static::$currentController->dispatch(static::$currentRoute['action'],$options);
+        if ( !static::loggedInUserHasRights() ){
+            static::forward401();
+        } else {
+            static::$currentController->dispatch(static::$currentRoute['action'],$options);
+        }
+    }
+
+
+
+    
+    public static function loggedInUserHasRightsForController(){
+        return static::loggedInUserHasRights(true);
+    }
+
+    public static function loggedInUserHasRights($controllerOnly=false ){
+        $user = static::getLoggedInUser();
+
+        if (    $user == null 
+        &&  static::getCurrentRoute()['controller'] == "user"
+        &&  static::getCurrentRoute()['action'] == "login" ){
+            $isAllowed = true;
+        } else {
+            $currentAction  = $controllerOnly ? null : static::getCurrentRoute()['action'];
+            $currentController  = static::getCurrentRoute()['controller'];
+
+            $routeParameters  = static::getRouteParameters();
+
+            $allowedForRoute =  $routeParameters[$currentController]['actions'][$currentAction]['allowed']
+                            ??  $routeParameters[$currentController]['allowed']
+                            ??  [ 'moderator', 'chef', "administrator"];
+            
+            $isAllowed = false;    
+
+            if (    in_array("all", $allowedForRoute)
+                ||  count(array_intersect($user->getRoles(),$allowedForRoute)) > 0 ) {
+                $isAllowed = true;
+            } else{
+                foreach ( $allowedForRoute as $allowedItem ){
+                    if( preg_match(
+                        "/^%(.*)%$/", // if function in the form %FUNCTION%
+                        $allowedItem, 
+                        $matches
+                    )) {
+                        switch ( $matches[1] ){
+                            case "recipeCreator": 
+                                $recipe = static::getCurrentController()->getEntity();
+                                $isAllowed = $user->equals( $recipe->getChef() );
+                            break;
+                        }
+                    }
+                }
+            }    
+        }
+        return $isAllowed;
     }
 }
