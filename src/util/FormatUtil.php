@@ -18,6 +18,11 @@ class FormatUtil {
         echo "<pre>".htmlentities(print_r($var, true))."</pre>";
     }
 
+    public static function dd($var){
+        self::dump($var);
+        die();
+    }
+
     
     /**
      * endsWith
@@ -52,11 +57,6 @@ class FormatUtil {
         return substr( $haystack, -$length ) === $needle;
     }
 
-
-    public static function dd($var){
-        self::dump($var);
-        die();
-    }
 
 
     public static function formatTime($minutes){

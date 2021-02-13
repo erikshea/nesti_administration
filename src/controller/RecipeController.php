@@ -16,11 +16,15 @@ class RecipeController extends EntityController
                 $paragraph = ParagraphDao::findById($paragraphArray['idParagraph']);
             }
 
-            $paragraph->setContent($paragraphArray["content"]);
-            $paragraph->setParagraphPosition($index+1);
-
-            ParagraphDao::saveOrUpdate($paragraph);
-            $result[] = EntityUtil::toArray($paragraph);
+            if ( $paragraphArray["toDelete"] ?? false ){
+                ParagraphDao::delete($paragraph);
+            } else {
+                $paragraph->setContent($paragraphArray["content"]);
+                $paragraph->setParagraphPosition($index+1);
+    
+                ParagraphDao::saveOrUpdate($paragraph);
+                $result[] = EntityUtil::toArray($paragraph);
+            }
         }
 
         echo json_encode($result);

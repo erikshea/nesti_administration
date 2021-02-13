@@ -28,9 +28,9 @@ class BaseDao
     /**
      * getEntityClass
      * get primary key column of current table, ie "RecipeId"
-     * @return String entity class name in data source
+     * @return mixed entity class name in data source
      */
-    public static function getPkColumnName(): String{
+    public static function getPkColumnName(){
         return 'id' . self::getEntityClass(); 
     }
     
@@ -299,9 +299,23 @@ class BaseDao
      */
     public static function delete($entity) {
         $pdo = DatabaseUtil::getConnection();
-        $sql = "DELETE FROM " . self::getTableName() . " WHERE " . self::getPkColumnName() . " = ?";
+        $sql = "DELETE FROM " . self::getTableName() . " WHERE ";
+
+        $values = [];
+        $columns = [];
+        if ( !is_array(static::getPkColumnName())  ){
+            $columns = [static::getPkColumnName()];
+        } else {
+            $columns = static::getPkColumnName();
+        }
+
+        foreach ($columns as $pkColumnName) {
+            $sql .= "$pkColumnName = ? ";
+            $values[] = EntityUtil::get($entity, $pkColumnName);
+        }
+        
         $q = $pdo->prepare($sql);
-        $q->execute([EntityUtil::get($entity, self::getPkColumnName()) ?? null]); // if entity doesn't exist, null instead of pk
+        $q->execute($values);
     }
 
     /**
