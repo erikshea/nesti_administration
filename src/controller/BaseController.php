@@ -1,12 +1,10 @@
 <?php
 SiteUtil::require('util/FormatUtil.php');
 
-
-
 class BaseController
 {
     protected $actionSlug;
-    protected $templateVars = [];
+    protected $templateVars = [ 'assets' => ["js" => [], "css" => []]];
     protected $templateNames = ['base'=>'common/base'];
 
     public function dispatch($actionSlug, $options= [])
@@ -24,7 +22,9 @@ class BaseController
         $actionMethod = static::translateToActionMethod($actionSlug); 
         $this->$actionMethod();
 
-        $this->render();
+        if  ( !FormatUtil::endsWith($actionMethod, "Ajax") ){
+            $this->render();
+        }
     }
 
     /**
@@ -35,28 +35,28 @@ class BaseController
      */
     protected function render()
     {
-        $this->preRender();
+        if ( $this->templateNames != null ){ // skip render phase if no template
+            $this->preRender();
     
-        $vars = $this->templateVars; // templates only use $vars
-        include_once SiteUtil::toAbsolute("templates/{$this->templateNames['base']}.php");
+            $this->translateAssetOptions();
+
+            $vars = $this->templateVars; // templates only use $vars
+            include_once SiteUtil::toAbsolute("templates/{$this->templateNames['base']}.php");
+        }
     }
 
     public function preRender(){
-            // Add shared parameters to the existing ones
-            $this->addVars([
-                'title' => MainController::getActionParameters()["title"] ?? null,
-                'version' => ApplicationSettings::get("version"),
-                'baseUrl' => SiteUtil::url(), // absolute url of site root
-                'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
-                'route' =>   MainController::getCurrentRoute(), 
-                'breadcrumbs' => $this->getBreadcrumbs(),
-                'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
-                'currentUser' => MainController::getLoggedInUser(),
-                'assets' => [
-                    "js" => [], // JavaScript files to include
-                    "css" => [] // Stylesheets include
-                ]
-            ]);
+        // Add shared parameters to the existing ones
+        $this->addVars([
+            'title' => MainController::getActionParameters()["title"] ?? null,
+            'version' => ApplicationSettings::get("version"),
+            'baseUrl' => SiteUtil::url(), // absolute url of site root
+            'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
+            'route' =>   MainController::getCurrentRoute(), 
+            'breadcrumbs' => $this->getBreadcrumbs(),
+            'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
+            'currentUser' => MainController::getLoggedInUser()
+        ]);
     }
 
     public function addVars($templateVars){
@@ -69,26 +69,7 @@ class BaseController
 
     public function setTemplateName($name, $type='action'){
         $this->templateNames[$type] = $name;
-    }   
-
-
-    /**
-     * getActualControllerSlug
-     * returns the actual controller route slug called
-     * a "/" homepage url may call "recipes" controller, so we can't rely on actual URL for this.
-     * @return void
-     */
-    public function getActualControllerSlug()
-    {
-        // derive controller slug from controller class name
-        $route = strtolower(substr(static::class, 0, -10));
-        //  controller slugs are pluralized by convention
-        if ( !FormatUtil::endsWith($route,'s') ){
-            $route .= 's';
-        }
-
-        return $route;
-    }
+    }  
 
     public static function translateToActionMethod($actionSlug){
         return 'action' . ucfirst($actionSlug);
@@ -108,4 +89,32 @@ class BaseController
 
         return $breadcrumbs;
     }
+
+    protected function translateAssetOptions(){
+        $lastAdded = ["css"=>[], "js"=>[]];
+
+        foreach ( $this->templateVars['assets'] as $assetType=>&$assetList ){
+            foreach ( $assetList as $i=>&$asset){
+                $urlKey = $assetType == "css"?"href":"src";
+
+                if ( !is_array($asset) ) {
+                    $asset = [ $urlKey=>$asset ];
+                }
+                if ( strpos($asset[$urlKey],'/') === false ){
+                    $asset[$urlKey] = SiteUtil::url("public/assets/$assetType/{$asset[$urlKey]}");
+                }
+
+                $asset[$urlKey] .= "?version=".ApplicationSettings::get("version");
+
+                if ( $asset["addLast"] ?? false ){
+                    unset($asset["addLast"]);
+                    $lastAdded[$assetType][] =  $asset;
+                    unset($assetList[$i]);;
+
+                }
+            }
+        }
+        $this->templateVars['assets'] = (array_merge_recursive($this->templateVars['assets'], $lastAdded));
+    }
+
 }

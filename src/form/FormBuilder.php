@@ -105,7 +105,7 @@ class FormBuilder{
         }
 
         if ( $vars['type'] == '%image%' ){
-            $vars["placeHolder"] = SiteUtil::url("public/assets") . $vars["placeHolder"];
+            $vars["placeHolder"] = SiteUtil::url("public/assets/") . $vars["placeHolder"];
             $vars["type"] = "file";
             $vars["template"] = "imageUpload";
             $vars["initialBackground"] = $vars["initialBackground"] ?? $vars["placeHolder"];

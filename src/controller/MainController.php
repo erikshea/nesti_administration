@@ -10,9 +10,8 @@ class MainController
         SiteUtil::sanitize($_POST); // need recursive sanitizing for multidimensional array
         SiteUtil::sanitize($_GET);
 
-        @[  static::$currentRoute['controller'],
-            static::$currentRoute['action']
-        ] = SiteUtil::getUrlParameters();
+        static::$currentRoute['controller'] = SiteUtil::getUrlParameters()[0] ?? "";
+        static::$currentRoute['action'] = SiteUtil::getUrlParameters()[1] ?? "";
 
         $routeConfig = static::getRouteParameters();
 

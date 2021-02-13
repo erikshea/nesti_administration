@@ -15,13 +15,20 @@
         <div class="col-6 d-flex justify-content-center flex-column image-group">
             <?php $vars["formBuilder"]->add("image", [ "initialBackground" => $vars["imageUrl"] ] ) ?>
         </div>
-
     </div>
 
 
     <div class="container">
-
-
+        <div class="row">
+            <div class="col-7 d-flex flex-column">
+                <h2>Préparations</h2>
+                <div id="recipe__paragraph-list">
+                </div>
+            </div>
+            <div class="col-5">
+                
+            </div>
+        </div>
     </div>
 
 </form>

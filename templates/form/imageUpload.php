@@ -13,7 +13,7 @@
         <a href="#" id="image-upload__delete" class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i></a>
     </div>
     <div class="image-upload__content">
-        <div id="image-upload__preview" style="background-image: url(<?= $options["initialBackground"] ?>);">
+        <div id="image-upload__preview" style="background-image: <?= $options["initialBackground"] ? "url({$options['initialBackground']})":"none" ?>">
         </div>
     </div>
 </div>

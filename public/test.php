@@ -55,7 +55,32 @@ $r = $q->execute($values);*/
 
 
 
-$t = ProductDao::findOneBy('name','FARINE');
+// $t = ProductDao::findOneBy('name','tesdsssdt');
+// $t->makeIngredient();
+
+
+/*$t->makeIngredient();
 FormatUtil::dump("qq");
 
 FormatUtil::dump($t);
+
+*/
+/*$p = new Product();
+
+$p->setName("tesddddsssdt");
+ProductDao::save($p);
+FormatUtil::dump($p);
+
+$p->makeIngredient();*/
+
+/*
+$test = new IngredientRecipe;
+
+$test->setIdIngredient(2);
+$test->setIdRecipe(2);
+$test->setIdUnit(3);
+IngredientRecipeDao::save($test);*/
+
+
+
+FormatUtil::dump(RecipeDao::findAll(["INDEXBY"=>"name"]));

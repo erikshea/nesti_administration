@@ -149,6 +149,7 @@ class BaseEntity{
         if ( $this->getChildEntity($childEntityClass) == null ) {
             $child = new $childEntityClass;
             $child->setId($this->getId());
+            FormatUtil::dump($child);
             $childEntityClass::getDaoClass()::save($child);
         }
 
@@ -160,5 +161,10 @@ class BaseEntity{
             &&     is_a($this,get_class($other)) // $this must either be class/sublass of $other
                 || is_a($other,get_class($this)) // or vice-versa
             && $this->getId() == $other->getId();
+    }
+
+
+    public function hasCompositeKey(){
+        return $this->getId() === false;
     }
 }

@@ -33,7 +33,7 @@ class UsersController extends EntityController
     public function preRender()
     {
         parent::preRender();
-        $this->templateVars['assets']['css'][] = "user";
+        $this->templateVars['assets']['css'][] = "user.css";
     }
 
 }

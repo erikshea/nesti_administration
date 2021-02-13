@@ -310,13 +310,13 @@ class BaseDao
      * @param  mixed $entity
      * @return void
      */
-    public static function saveOrUpdate(?BaseEntity &$entity){
+    public static function saveOrUpdate(?BaseEntity &$entity, $skipNull=true){
         $pdo = DatabaseUtil::getConnection();
         if(!empty( EntityUtil::get($entity, self::getPkColumnName()) )){
-            self::update($entity);  // if entity has a primary key set, it already exists in data source
+            self::update($entity, $skipNull);  // if entity has a primary key set, it already exists in data source
         }
         else {
-            self::save($entity); // If no primary key set, insert new row
+            self::save($entity, $skipNull); // If no primary key set, insert new row
         }
     }
     
@@ -326,13 +326,19 @@ class BaseDao
      * @param  BaseEntity $entity to update in table
      * @return void
      */
-    public static function update(?BaseEntity &$entity) {
+    public static function update(?BaseEntity &$entity, $skipNull=true) {
         // Loop through inherited tables (from parent to child), updating the relevant entity properties
         foreach ( self::getParentClasses() as $currentClass ) { 
             $pdo = DatabaseUtil::getConnection();
             $currentDao = $currentClass::getDaoClass();
 
             $columnNames = $currentDao::getColumnNames(false);
+            
+            if ( $skipNull){
+                $columnNames = array_values(array_filter($columnNames, function ($name) use ($entity) {
+                    return EntityUtil::get($entity,$name) !=null;
+                } ));
+            }
 
             // update conditions are in the form "COLUMN_NAME = ?, COLUMN_NAME2 = ?, ..."
             $conditions = array_map(function($columnName) { return "$columnName = ?"; }, $columnNames);
@@ -362,19 +368,26 @@ class BaseDao
      * @param  BaseEntity $entity to base new row on
      * @return int inserted entity's PK
      */
-    public static function save(?BaseEntity &$entity) {
+    public static function save(?BaseEntity &$entity,$skipNull=true) {
         $insertedId = null;
         // Loop through inherited tables (from parent to child), inserting the relevant entity properties
         foreach ( self::getParentClasses() as $currentClass ) { 
             $pdo = DatabaseUtil::getConnection();
             $currentDao = $currentClass::getDaoClass();
                   
-            if($currentDao::findById($entity->getId()) != null){
+            if(!$entity->hasCompositeKey() && $currentDao::findById($entity->getId()) != null){
                 $insertedId = $entity->getId();
                 continue;
             }
 
-            $columnNames = $currentDao::getColumnNames(false); // get column names for current table
+            // get column names for current table
+            $columnNames = $currentDao::getColumnNames(false); 
+
+            if ( $skipNull){
+                $columnNames = array_values(array_filter($columnNames, function ($name) use ($entity) {
+                    return EntityUtil::get($entity,$name) !=null;
+                } ));
+            }
 
             // populate values with the entity properties that correspond to the column names
             $values = array_map(function($columnName) use ($entity) { return EntityUtil::get($entity,$columnName); }, $columnNames);
@@ -392,6 +405,7 @@ class BaseDao
             $sql = "INSERT INTO " . $currentDao::getTableName() . " (" . implode(',', $columnNames) . ") 
             values(" . implode(',', $questionMarks) . ")";
 
+
             $q = $pdo->prepare($sql);
             
             $q->execute($values);  
@@ -399,6 +413,9 @@ class BaseDao
 
             $insertedId = $pdo->lastInsertId();
         }
+
+        $entity->setId($insertedId);
+        
         return $entity->getId(); // Last inserted ID is entity's id
     }
 
@@ -441,8 +458,11 @@ class BaseDao
         if (!$includePk){
             // Get index of primary key in table schema (usually but not always first)
             $primaryKeyIndex = array_search(self::getPkColumnName(), $names);
-            unset($names[$primaryKeyIndex]); // unset it
-            $names = array_values($names); // re-establish indexes starting from 0
+            // always include all keys if entity has composite key
+            if ( $primaryKeyIndex !== false ){
+                unset($names[$primaryKeyIndex]); // unset it
+                $names = array_values($names); // re-establish indexes starting from 0
+            }
         }
 
         return $names;

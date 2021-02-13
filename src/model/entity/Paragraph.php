@@ -3,7 +3,7 @@
 class Paragraph extends BaseEntity{
     private $idParagraph;
     private $content;
-    private $paragraphOrder;
+    private $paragraphPosition;
     private $dateCreation;
     private $idRecipe;
 
@@ -59,9 +59,9 @@ class Paragraph extends BaseEntity{
     /**
      * Get the value of paragraphOrder
      */ 
-    public function getParagraphOrder()
+    public function getParagraphPosition()
     {
-        return $this->paragraphOrder;
+        return $this->paragraphPosition;
     }
 
     /**
@@ -69,9 +69,9 @@ class Paragraph extends BaseEntity{
      *
      * @return  self
      */ 
-    public function setParagraphOrder($paragraphOrder)
+    public function setParagraphPosition($paragraphPosition)
     {
-        $this->paragraphOrder = $paragraphOrder;
+        $this->paragraphPosition = $paragraphPosition;
 
         return $this;
     }

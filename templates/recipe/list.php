@@ -7,7 +7,7 @@
                         <div class="input-group-prepend">
                             <button type="submit" class="btn btn-info"><i class="fas fa-search"></i></button>
                         </div>
-                        <input value="<?= @$_POST['search']['name']?>"
+                        <input value="<?= $_POST['search']['name'] ?? "" ?>"
                             type="text" name="search[name]" class="form-control" id="searchInput" >
                     </div>
                 </div>

@@ -37,7 +37,7 @@ class EntityController extends BaseController
     public function getEntity()
     {
         if ( $this->entity == null){
-            @[,,$id] = SiteUtil::getUrlParameters();
+            $id = SiteUtil::getUrlParameters()[2] ?? null;
             if (!empty($id)) { // If a user ID is specified in the URL
 
                 $this->setEntity($this->getDaoClass()::findById($id)); // find corresponding user in data source

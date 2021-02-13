@@ -92,9 +92,8 @@
         },
         "image": {
             "options": {
-                "label": "Mot de passe",
                 "type": "%image%",
-                "placeHolder": "/images/content/__placeHolder.jpg"
+                "placeHolder": "images/content/__placeHolder.jpg"
             }
         }
     }

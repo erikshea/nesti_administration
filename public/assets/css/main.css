@@ -81,6 +81,11 @@ h1{
     font-weight: 900;
 }
 
+h2{
+    font-size: 1.7em;
+    font-weight: 900;
+}
+
 .no-validate .is-invalid,
 .no-validate .is-valid{
     border-color: var(--color-primary);
@@ -92,18 +97,21 @@ h1{
 
 
 
-
+.primary-border {
+    border-style: solid 1px;
+    border-color: var(--color-primary);
+    border-radius: 0.4rem;
+}
 
 
 .btn{
     border-style: solid 1px;
+    border-color: var(--color-primary);
     font-family: Nunito;
     color: var(--color-classic-base);
     height: calc(1.5em + .75rem + 2px);
     text-decoration: none;
     background-color: var(--color-primary-light);
-    border-color: var(--color-primary);
-    
 }
 
 .btn:hover,

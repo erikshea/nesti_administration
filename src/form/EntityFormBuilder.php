@@ -11,6 +11,14 @@ class EntityFormBuilder extends FormBuilder{
         $this->setEntity($entity);
     }
 
+    public function add($propertyName, $options=[]){
+        $options = array_merge([
+            'value'=> EntityUtil::get( $this->getEntity(), $propertyName ) ?? ""
+        ], $options);
+        return parent::add($propertyName, $options);
+    }
+
+
     /**
      * validateProperty
      * Loops through all validators for that property (if any), and returns a list of failed validators
@@ -42,11 +50,14 @@ class EntityFormBuilder extends FormBuilder{
         return $propertyErrors;
     }
 
-    protected function setEntity($entity){
-        $this->formData = EntityUtil::getArray($entity);
+    public function setEntity($entity){
+        $this->formData = EntityUtil::toArray($entity);
         $this->entity = $entity;
         $this->setFormName(get_class($entity));
         $this->setPropertyParametersFromConfig();
-            
+    }
+
+    public function getEntity(){
+        return $this->entity;
     }
 }
