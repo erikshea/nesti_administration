@@ -5,15 +5,20 @@ class EntityUtil
     public static function get($entity, $propertyName)
     {
         $method =  'get' . ucFirst($propertyName);
+        if(!method_exists($entity, $method) ) {
+            throw new InvalidArgumentException("Undefined method \"$method\" in class ". get_class($entity));
+        }
 
-        return method_exists($entity, $method) ? $entity->$method() : false;
+        return $entity->$method();
     }
 
     public static function set(&$entity, $propertyName, $propertyValue)
     {
         $method =  'set' . ucFirst($propertyName);
-
-        return method_exists($entity, $method) ? $entity->$method($propertyValue) : false;
+        if(!method_exists($entity, $method) ) {
+            throw new InvalidArgumentException("Undefined method \"$method\" in class ". get_class($entity));
+        }
+        return $entity->$method($propertyValue);
     }
 
     public static function setFromArray($entity, $properties)

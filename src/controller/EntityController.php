@@ -60,18 +60,21 @@ class EntityController extends BaseController
      */
     public function actionEdit()
     {
+        $formBuilder = new EntityFormBuilder($this->getEntity());
+
         $this->addVars([
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
-            "formBuilder" => new EntityFormBuilder($this->getEntity())
+            "formBuilder" => $formBuilder
         ]);
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
-            $this->getEntity()->setParametersFromArray($_POST[$this->getEntityClass()]);
-            if ($this->getEntity()->isValid()) {
+            $formBuilder->setFormData($_POST[$this->getEntityClass()]);
+
+            if ($formBuilder->isValid()) {
                 $this->getDaoClass()::saveOrUpdate($this->getEntity());
                 MainController::redirect();
             } else {
-                $this->addVars(["errors" => $this->getEntity()->getErrors()]);
+                $this->addVars(["errors" => $formBuilder->getAllErrors()]);
             }
         }
     }

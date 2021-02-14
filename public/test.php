@@ -73,14 +73,35 @@ FormatUtil::dump($p);
 
 $p->makeIngredient();*/
 
-/*
-$test = new IngredientRecipe;
 
-$test->setIdIngredient(2);
-$test->setIdRecipe(2);
-$test->setIdUnit(3);
-IngredientRecipeDao::save($test);*/
+// $test = new IngredientRecipe;
+
+// $test->setIdIngredient(17);
+// $test->setIdRecipe(2);
+// $test->setIdUnit(3);
+// $test->setQuantity(322222);
+// IngredientRecipeDao::saveOrUpdate($test);
 
 
 
-FormatUtil::dump(RecipeDao::findAll(["INDEXBY"=>"name"]));
+//FormatUtil::dump(RecipeDao::findAll(["INDEXBY"=>"name"]));
+
+
+//  $newChef = new Chef();
+
+// //$newChef = ChefDao::findOneBy("login","ZZZZaaaa");
+// $newChef->setLogin("SQDQSDSQQSD");
+// $newChef->setLastName("aDSQSQDSQDSQDSQDa");
+// $newChef->setEmail("a@aadddddddddddaZ.cc");
+// ChefDao::saveOrUpdate($newChef);
+// FormatUtil::dump($newChef);
+
+//FormatUtil::dump(ChefDao::findAll(["INDEXBY"=>"lastName"]));
+
+// $test = UsersDao::findById(3);
+// $r = $test->getRecipes(["ORDER"=>"dateCreation DESC"]);
+
+// $t2 = $test->getRecipes(["ORDER"=>"dateCreation DESC"])[0]->getName();
+// FormatUtil::dump($t2);
+
+FormatUtil::dump(UsersDao::findAll(['INDEXBY' =>"login"]));

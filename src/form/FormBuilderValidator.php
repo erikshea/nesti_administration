@@ -127,7 +127,7 @@ class FormBuilderValidator{
             $value = (float) $value;
         }
 
-        return 0 < $value && $value < 5;
+        return 0 <= $value && $value <= 5;
     }
 
     private static function calculatePasswordStrength($password){

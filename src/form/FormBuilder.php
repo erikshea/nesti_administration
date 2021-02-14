@@ -81,7 +81,7 @@ class FormBuilder{
             'class' => '',
             'icon' => null,
             'formName' => $this->getFormName(),
-            'value' => '',
+            'value' => $this->formData[$propertyName] ?? '',
             'type' => 'text',
             'required' => in_array("notEmpty", $validators),
             "template" => 'standardFormRow',
@@ -128,11 +128,11 @@ class FormBuilder{
         return $this->validatorErrorMessages;
     }
 
-    protected function setFormDataValue($key,$value){
+    public function setFormDataValue($key,$value){
         $this->formData[$key] = $value;
     }
 
-    protected function setFormData($formData){
+    public function setFormData($formData){
         $this->formData = $formData;
     }
     

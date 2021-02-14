@@ -83,3 +83,7 @@ body {
     font-size: 0.8rem;
     padding: 0.4rem;
 }
+
+.ingredient-list__items {
+    height: 25rem;
+}

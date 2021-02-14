@@ -111,8 +111,16 @@ class BaseEntity{
      * @return void
      */
     public function getId(){
-        $idColumnName = static::getDaoClass()::getPkColumnName();
-        return EntityUtil::get($this, $idColumnName);
+        if ( !$this->hasCompositeKey() ){
+            $idColumnName = static::getDaoClass()::getPkColumnName();
+            $result = EntityUtil::get($this, $idColumnName);
+        } else {
+            $result = [];
+            foreach( static::getDaoClass()::getPkColumnName() as $pkColumn ){
+                $result[] = EntityUtil::get($this, $pkColumn);
+            }
+        }
+        return $result;
     }
 
     /**
@@ -160,11 +168,64 @@ class BaseEntity{
         return $other != null
             &&     is_a($this,get_class($other)) // $this must either be class/sublass of $other
                 || is_a($other,get_class($this)) // or vice-versa
-            && $this->getId() == $other->getId();
+            && $this->hasSamePrimaryKey($other);
+    }
+
+    public function hasPrimaryKey(){
+        if ( !$this->hasCompositeKey() ){
+            $keys = [$this->getId()];
+        } else {
+            $keys = $this->getId();
+        }
+
+        $hasPk = true;
+
+        foreach( $keys as $key ){
+            $hasPk &= ($key != null);
+        }
+
+        return $hasPk;
+    }
+
+    public function hasCompositeKey(){
+        return is_array(static::getDaoClass()::getPkColumnName());
     }
 
 
-    public function hasCompositeKey(){
-        return $this->getId() === false;
+    public function hasSamePrimaryKey($other){
+        $otherDao = get_class($other)::getDaoClass();
+
+        if ( $this->hasCompositeKey() ){
+            $samePk = true;
+
+            if ( $other->hasCompositeKey() ){
+                foreach( static::getDaoClass()::getPkColumnName() as $pkNameIndex=>$pkName){
+                    // check if same pk column values
+                    $samePk &= (
+                        $this->getId()[$pkNameIndex] ?? null
+                    === ( $other->getId()[$pkNameIndex] ?? false )
+                    );
+                }
+            }
+        } else {
+            $samePk = $this->getId() == $other->getId();
+        }
+
+        return $samePk;
+    }
+
+    public function existsInDataSource(){
+        if ( !$this->hasCompositeKey()){
+            $exists = $this->hasPrimaryKey();
+        } else {
+            $options = [];
+            foreach ( static::getDaoClass()::getPkColumnName() as $pkName ){
+                $options[$pkName] = EntityUtil::get($this, $pkName);
+            }
+
+            $exists = ( static::getDaoClass()::findOne($options) != null );
+        }
+
+        return $exists;
     }
 }

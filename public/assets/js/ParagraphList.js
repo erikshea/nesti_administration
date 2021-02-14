@@ -1,7 +1,8 @@
 
-
 class ParagraphList extends React.Component {
     state = { paragraphs: [] };
+     // we need to keep input values separated from state to avoid re-rendering all paragraphs when just one is edited.
+     // state and input values will be synchronized whenever a paragraph is moved, added or deleted.
     inputValues = [];
 
     constructor(props) {
@@ -10,67 +11,73 @@ class ParagraphList extends React.Component {
         this.add = this.add.bind(this);
         this.move = this.move.bind(this);
         this.updateInputValue = this.updateInputValue.bind(this);
-        this.updateSource = this.updateSource.bind(this);
+        this.updateSource = this.synchronizeSource.bind(this);
     }
 
     componentDidMount() {
         $.post(baseUrl + 'recipe/getParagraphsAjax/' + urlParameters[2], {}, (response) => {
             let responseParagraphs = JSON.parse(response);
             this.setState({ paragraphs: responseParagraphs });
+            // initialize input values from source content
             this.inputValues = responseParagraphs.map( (paragraph) => { return paragraph.content } );
         });
     }
 
     add() {
         let newParagraphs = [...this.state.paragraphs];
+        
+        newParagraphs.push({ 'content': '', 'status': 'toAdd' }); // status tells source to create a new paragraph
 
-        newParagraphs.push({ 'content': '', 'idParagraph': null });
-
-        this.updateSource(newParagraphs);
+        this.synchronizeSource(newParagraphs);
     }
 
     move(index, ammount) {
         let newParagraphs = [...this.state.paragraphs];
+
+        // need to update content state with current input values before sending to source
         newParagraphs.forEach((value, key, me) => {
-            me[key].content = this.inputValues[key];
+            me[key].content = this.inputValues[key]; 
         })
         newParagraphs.move(index, index+ammount);
 
-        this.updateSource(newParagraphs);
+        this.synchronizeSource(newParagraphs);
     }
     
     remove(index) {
-        let newParagraphs = [...this.state.paragraphs];
-        newParagraphs[index].toDelete = true;
-
-        this.updateSource(newParagraphs);
+        if (window.confirm('Voulez-vous vraiment effacer ce paragraphe?')){
+            let newParagraphs = [...this.state.paragraphs];
+            
+            newParagraphs[index].status = "toDelete"; // tells source to delete paragraph
+    
+            this.synchronizeSource(newParagraphs);
+        }
     }
 
     updateInputValue(index,value) {
         this.inputValues[index] = value;
     }
 
-    updateSource(newParagraphs) {
+    synchronizeSource(newParagraphs) {
+        // send new paragraph data to source
         $.post(baseUrl + 'recipe/updateParagraphsAjax/' + urlParameters[2], { "paragraphs": newParagraphs }, (response) => {
-            let responseParagraphs = JSON.parse(response);
-            this.setState({ paragraphs: responseParagraphs });
-            this.inputValues = responseParagraphs.map( (paragraph) => { return paragraph.content } );
+            let responseParagraphs = JSON.parse(response); // receive updated paragraph data.
+            this.setState({ paragraphs: responseParagraphs }); // component state is now synchronized with source
+            this.inputValues = responseParagraphs.map( (paragraph) => { return paragraph.content } ); // as are sanitized input values
         });
     }
 
 
     render() {
         const paragraphs = this.state.paragraphs.map((paragraph, index) => {
-            return (<Paragraph
-                key={paragraph.idParagraph + paragraph.content}
+            return <Paragraph
+                key={paragraph.idParagraph + paragraph.content} // key includes content, to re-mount if content changes on add,remove,move...
                 index={index}
-                isFirst={index == 0}
                 isLast={index == this.state.paragraphs.length - 1}
                 remove={this.remove}
                 move={this.move}
-                updateInputValue={this.updateInputValue}
+                updateInputValue={this.updateInputValue} // keep track of input values
                 {...paragraph}
-            />);
+            />;
         }
 
         );
@@ -81,44 +88,49 @@ class ParagraphList extends React.Component {
                     <div className={paragraphs.length ? "invisible" : ""}>Aucun paragraphe.</div>
                     {paragraphs}
                 </div>
-                <a id="paragraph-list__add-button" onClick={() => this.add()}><i className="far fa-plus-square"></i></a>
+                <a id="paragraph-list__add-button" onClick={this.add}><i className="far fa-plus-square"></i></a>
             </div>
         );
     }
 }
 
-class Paragraph extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { content: props.content }
-        this.inputChange = this.inputChange.bind(this);
-    }
+const Paragraph = (props) => { 
+    let isFirst = (props.index == 0);
+    
+    return (
+        <div className="d-flex paragraph-list__paragraph align-items-center">
+            <div className="paragraph-list__buttons d-flex flex-column">
+                {!isFirst && <a
+                    className='move'
+                    onClick={() => props.move(props.index, -1)}>
+                        <i className="fas fa-arrow-alt-circle-up"></i>
+                </a>}
+                <a
+                    className='remove'
+                    onClick={() => props.remove(props.index)}>
+                        <i className="far fa-trash-alt"></i>
+                </a>
+                {!props.isLast && <a
+                    className='move'
+                    onClick={() => props.move(props.index, 1)}>
+                        <i className="fas fa-arrow-alt-circle-down"></i>
+                </a>}
+            </div>
 
-    inputChange(e){
-        this.setState({ content:e.target.value });
-        this.props.updateInputValue(this.props.index,e.target.value);
-    }
-
-    render() {
-        return (
-            <div className="d-flex paragraph-list__paragraph align-items-center">
-                <div className="paragraph-list__buttons d-flex flex-column">
-                    {!this.props.isFirst && <a className='move' onClick={() => this.props.move(this.props.index, -1)}><i className="fas fa-arrow-alt-circle-up"></i></a>}
-                    <a className='remove' onClick={() => this.props.remove(this.props.index)}><i className="far fa-trash-alt"></i></a>
-                    {!this.props.isLast && <a className='move' onClick={() => this.props.move(this.props.index, 1)}><i className="fas fa-arrow-alt-circle-down"></i></a>}
-                </div>
-
-                <div className="move paragraph-list__content">
-                    <textarea className='content primary-border'
-                        onChange={this.inputChange}
-                        ref ={this.props.inputRef}
-                        value={`${this.state.content  || ""}`}
-                        onBlur ={ ()=> this.props.move(this.props.index, 0)}
-                    ></textarea>
-                </div>
-            </div>);
-    }
+            <div className="move paragraph-list__content">
+                <textarea className='content primary-border'
+                    onChange={ (e)=>{props.updateInputValue(props.index,e.target.value)}}
+                    defaultValue={props.content  || ""}
+                    onBlur ={ ()=> props.move(props.index, 0)} // on unfocus, move 0 distance to save content to source
+                ></textarea>
+            </div>
+        </div>);
 }
+
+Array.prototype.move = function(from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
+};
+
 
 $(() => ReactDOM.render(<ParagraphList />,
     document.getElementById('recipe__paragraph-list')));

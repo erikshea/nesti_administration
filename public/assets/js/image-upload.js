@@ -14,6 +14,7 @@ $ ( () => {
     $("#image-upload__add").change((e) => {
         let input = e.target;
         if (input.files && input.files[0]) {
+            $("#image-upload__status").val("changed");
             var reader = new FileReader();
             reader.onload = (e) => {
                 updatePreview('url(' + e.target.result + ')');
@@ -23,7 +24,8 @@ $ ( () => {
     });
 
     $("#image-upload__delete").click(() => {
-        $("#image-upload__add").val(null).clone(true);
+        $("#image-upload__add").val("").clone(true);
+        $("#image-upload__status").val("deleted");
         updatePreview(placeHolder);
     });
 })

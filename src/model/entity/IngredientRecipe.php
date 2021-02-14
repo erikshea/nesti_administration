@@ -131,4 +131,9 @@ class IngredientRecipe extends BaseEntity{
 
         return $this;
     }
+
+
+    public function getFormatted(){
+        return $this->getQuantity() . " " . $this->getUnit()->getName() . " : " . $this->getIngredient()->getName();
+    }
 }

@@ -70,7 +70,7 @@
                 "options": {
                 "label": "Nom de la recette"
             },
-            "validators": ["notEmpty","letters"]
+            "validators": ["notEmpty"]
         },
         "difficulty": {
                 "options": {

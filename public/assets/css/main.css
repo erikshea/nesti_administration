@@ -98,9 +98,12 @@ h2{
 
 
 .primary-border {
-    border-style: solid 1px;
+    border-style: solid;
+    border-width: 1px;
     border-color: var(--color-primary);
     border-radius: 0.4rem;
+    background-color: var(--color-classic-base);
+    padding: 0.5rem;
 }
 
 
@@ -112,6 +115,10 @@ h2{
     height: calc(1.5em + .75rem + 2px);
     text-decoration: none;
     background-color: var(--color-primary-light);
+}
+
+input{
+    height: calc(1.5em + .75rem + 2px);
 }
 
 .btn:hover,
@@ -217,4 +224,8 @@ main .input-group{
 
 main .input-group input{
     border-color: var(--color-primary);
+}
+
+.btn-sm {
+    padding-top: 0.4rem;
 }

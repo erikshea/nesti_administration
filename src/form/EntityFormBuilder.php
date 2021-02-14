@@ -12,9 +12,9 @@ class EntityFormBuilder extends FormBuilder{
     }
 
     public function add($propertyName, $options=[]){
-        $options = array_merge([
-            'value'=> EntityUtil::get( $this->getEntity(), $propertyName ) ?? ""
-        ], $options);
+        // $options = array_merge([
+        //     'value'=> EntityUtil::get( $this->getEntity(), $propertyName ) ?? ""
+        // ], $options);
         return parent::add($propertyName, $options);
     }
 

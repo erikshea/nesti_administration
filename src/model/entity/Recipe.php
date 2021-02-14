@@ -36,6 +36,10 @@ class Recipe extends BaseEntity{
         $this->setRelatedEntity($c);
     }
 
+    public function getIngredients($options){
+        $this->getIndirectlyRelatedEntities("Ingredient", "IngredientRecipe", $options);
+    }
+
     /**
      * Get the value of idImage
      */
