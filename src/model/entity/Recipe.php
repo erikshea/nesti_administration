@@ -11,10 +11,6 @@ class Recipe extends BaseEntity{
     private $idChef;
     private $idImage;
 
-    function __construct(){
-        $this->flag="a";
-    }
-    
     public function getComments(): array{
         return $this->getRelatedEntities("Comment");
     }

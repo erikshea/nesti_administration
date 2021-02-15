@@ -1,12 +1,5 @@
 
-
-
-
-<form
-    class="container <?= $vars["isSubmitted"] ? "" : "no-validate" ?>"
-    action="<?= $vars["baseUrl"] ?>recipe/edit/<?= $vars["entity"]->getId() ?>"
-    method="post"
-    enctype="multipart/form-data">
+<div class="container">
     <div class="row">
         <div class="col">
 <?php if (($vars['message'] ?? null) == "edited"): ?>
@@ -21,6 +14,13 @@
 <?php endif ?>
         </div>
     </div>
+    </div>
+<form
+    class="container <?= $vars["isSubmitted"] ? "" : "no-validate" ?>"
+    action="<?= $vars["baseUrl"] ?>recipe/edit/<?= $vars["entity"]->getId() ?>"
+    method="post"
+    enctype="multipart/form-data">
+
     <div class="row justify-content-between">
         <div class="col-6">
 
@@ -49,7 +49,7 @@
         </div>
         <div class="col-5">
             <h2>Liste des ingrédients</h2>
-            <div id="recipe-ingredients">
+            <div id="recipe__ingredients">
             </div>
         </div>
     </div>

@@ -1,7 +1,7 @@
 <?php
 class BaseDao
 {
-    protected static $cachedData = ['columnNames' => []];
+    protected static $cachedData = ['columnNames' => [], 'columnDefaults'=>[]];
     protected static $pkColumns = null;
 
     public const FLAGS = [
@@ -342,13 +342,13 @@ class BaseDao
      * @param  mixed $entity
      * @return void
      */
-    public static function saveOrUpdate(&$entity, $skipNull = true)
+    public static function saveOrUpdate(&$entity, $skipNullIfDefaultValue = true)
     {
         $pdo = DatabaseUtil::getConnection();
         if ($entity->existsInDataSource()) {
-            static::update($entity, $skipNull);
+            static::update($entity, $skipNullIfDefaultValue);
         } else {
-            static::save($entity, $skipNull);
+            static::save($entity, $skipNullIfDefaultValue);
         }
     }
 
@@ -358,7 +358,7 @@ class BaseDao
      * @param  BaseEntity $entity to update in table
      * @return void
      */
-    public static function update(&$entity, $skipNull = true)
+    public static function update(&$entity, $skipNullIfDefaultValue = true)
     {
         // Loop through inherited tables (from parent to child), updating the relevant entity properties
         foreach (static::getParentClasses() as $currentClass) {
@@ -367,9 +367,10 @@ class BaseDao
             
             $columnNames = $currentDao::getColumnNames();
 
-            if ($skipNull) {
+            // if we're not saving null values in columns where data source can set defaults (such as current timestamp)
+            if ($skipNullIfDefaultValue) {
                 $columnNames = array_values(array_filter($columnNames, function ($name) use ($entity) {
-                    return EntityUtil::get($entity, $name) != null;
+                    return  !(isset( static::getColumnDefaults()[$name] ) && EntityUtil::get($entity, $name) == null);
                 }));
             }
 
@@ -419,7 +420,7 @@ class BaseDao
      * @param  BaseEntity $entity to base new row on
      * @return int either inserted ID (if auto-incremented), or existing composite pk
      */
-    public static function save(&$entity, $skipNull = true)
+    public static function save(&$entity, $skipNullIfDefaultValue = true)
     {
         $insertedId = null;
         // Loop through inherited tables (from parent to child), inserting the relevant entity properties
@@ -436,10 +437,10 @@ class BaseDao
             // (else let data source deal with creating a new one)
             $columnNames = $currentDao::getColumnNames($entity->hasCompositeKey());
 
-            // if we're not saving null values (to let data source set defaults, such as current timestamp)
-            if ($skipNull) {
+            // if we're not saving null values in columns where data source can set defaults (such as current timestamp)
+            if ($skipNullIfDefaultValue) {
                 $columnNames = array_values(array_filter($columnNames, function ($name) use ($entity) {
-                    return EntityUtil::get($entity, $name) != null;
+                    return  !(isset( static::getColumnDefaults()[$name] ) && EntityUtil::get($entity, $name) == null);
                 }));
             }
 
@@ -542,7 +543,29 @@ class BaseDao
         return $names;
     }
 
-
+    /**
+     * getColumnNames
+     * get an array of column names, in the same order as they appear in the database schema
+     * 
+     * @param  bool $includePk include primary key in result?
+     * @return void
+     */
+    public static function getColumnDefaults(bool $includePk = true): array
+    {
+        if (!isset(self::$cachedData['columnDefaults'][get_called_class()])) {
+            $pdo = DatabaseUtil::getConnection();
+            $sql = "SELECT COLUMN_NAME, COLUMN_DEFAULT
+            FROM information_schema.columns
+            WHERE TABLE_NAME = '" . static::getTableName() ."'
+            AND COLUMN_DEFAULT != 'NULL'";
+            $q = $pdo->prepare($sql);
+            $q->execute();
+            self::$cachedData['columnDefaults'][get_called_class()]
+                = $q->fetchAll(PDO::FETCH_KEY_PAIR);
+        }
+        return self::$cachedData['columnDefaults'][get_called_class()];
+    }
+    
     /**
      * getManyToMany
      * find related entities through a join table

@@ -131,6 +131,7 @@ Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
-
-$(() => ReactDOM.render(<ParagraphList />,
-    document.getElementById('recipe__paragraph-list')));
+let paragraphsDiv =  document.getElementById('recipe__paragraph-list');
+if ( paragraphsDiv ){
+    $(() => ReactDOM.render(<ParagraphList />, paragraphsDiv));
+}

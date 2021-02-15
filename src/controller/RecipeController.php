@@ -160,7 +160,7 @@ class RecipeController extends EntityController
                         "message" => "created"
                     ]);
                 }
-                $this->getDaoClass()::saveOrUpdate($entity,false);
+                $this->getDaoClass()::saveOrUpdate($entity);
                 $this->setEntity($entity);
                 // MainController::redirect();
             } else {

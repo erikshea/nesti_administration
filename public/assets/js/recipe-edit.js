@@ -104,6 +104,7 @@ const IngredientRecipe = (props)=>{
     );
 }
 
-
-$(() => ReactDOM.render(<IngredientList />,
-    document.getElementById('recipe-ingredients')));
+let ingredientsDiv = document.getElementById('recipe__ingredients');
+if ( ingredientsDiv ){
+    $(() => ReactDOM.render(<IngredientList />, ingredientsDiv) );
+}

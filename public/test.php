@@ -104,4 +104,8 @@ $p->makeIngredient();*/
 // $t2 = $test->getRecipes(["ORDER"=>"dateCreation DESC"])[0]->getName();
 // FormatUtil::dump($t2);
 
-FormatUtil::dump(UsersDao::findAll(['INDEXBY' =>"login"]));
+$a = ArticleDao::getColumnDefaults();
+
+
+
+FormatUtil::dump(ParagraphDao::getColumnDefaults());
