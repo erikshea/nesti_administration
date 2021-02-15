@@ -148,11 +148,20 @@ class RecipeController extends EntityController
                     move_uploaded_file($_FILES["image"]["tmp_name"], $image->getAbsolutePath());
                     $entity->setImage($image);
                 }
+                $formBuilder->applyDataTo($entity);
+                $entity->setChef(MainController::getLoggedInUser()->getChef());
 
+                if ( $entity->existsInDataSource()){
+                    $this->addVars([
+                        "message" => "edited"
+                    ]);
+                } else {
+                    $this->addVars([
+                        "message" => "created"
+                    ]);
+                }
                 $this->getDaoClass()::saveOrUpdate($entity,false);
-                $this->addVars([
-                    "message" => "success"
-                ]);
+                $this->setEntity($entity);
                 // MainController::redirect();
             } else {
                 $this->addVars(["errors" => $formBuilder->getAllErrors()]);

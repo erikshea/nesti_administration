@@ -26,11 +26,12 @@
             "edit": {
                 "name": "édition",
                 "title": "Édition d'une recette",
-                "allowed": [ "%recipeCreator%" ]
+                "allowed": [ "%recipeCreator%", "administrator" ]
             },
             "add": {
                 "name": "création",
-                "title": "Création d'une recette"
+                "title": "Création d'une recette",
+                "allowed": [ "chef" ]
             },
             "list": {
                 "title": "Recettes"

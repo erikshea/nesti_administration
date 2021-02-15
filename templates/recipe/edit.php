@@ -9,9 +9,14 @@
     enctype="multipart/form-data">
     <div class="row">
         <div class="col">
-<?php if ($vars['message'] ?? null == "success"): ?>
+<?php if (($vars['message'] ?? null) == "edited"): ?>
             <div class="alert alert-success text-center p-3" role="alert">
                 Vos modifications ont été enregistrées.
+            </div>
+<?php endif ?>
+<?php if (($vars['message'] ?? null) == "created"): ?>
+            <div class="alert alert-success text-center p-3" role="alert">
+                Votre recette a été créée.
             </div>
 <?php endif ?>
         </div>
@@ -34,7 +39,7 @@
         </div>
     </div>
 </form>
-
+<?php if ($vars['entity']->existsInDataSource()): ?>
 <div class="container">
     <div class="row">
         <div class="col-7 d-flex flex-column">
@@ -49,3 +54,4 @@
         </div>
     </div>
 </div>
+<?php endif ?>

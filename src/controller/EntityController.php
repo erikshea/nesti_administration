@@ -26,6 +26,8 @@ class EntityController extends BaseController
             'entity' =>  $this->getEntity(),
             'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
         ]);
+
+        $this->templateVars['javascriptVariables']['entity'] = EntityUtil::toArray( $this->getEntity());
     }
 
 
@@ -52,6 +54,16 @@ class EntityController extends BaseController
         return $this->entity;
     }
 
+
+    /**
+     * edit
+     * edit an existing recipe, or a newly-created one
+     * @return void
+     */
+    public function actionAdd()
+    {
+        $this->actionEdit();
+    }
 
     /**
      * edit
@@ -115,7 +127,6 @@ class EntityController extends BaseController
     {
         $this->entity = $entity;
     }
-
 
     
     public function getEntityClass()

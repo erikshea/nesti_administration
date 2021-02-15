@@ -12,9 +12,7 @@
     <?php endforeach; ?>
     
     <script>
-        var baseUrl = "<?= $vars["baseUrl"] ?>";
-        var assetsUrl = "<?= $vars["assetsUrl"] ?>";
-        var urlParameters = <?= json_encode(SiteUtil::getUrlParameters()) ?>
+        var vars = <?= json_encode($vars["javascriptVariables"]) ?>;
     </script>
 
     <script src='<?= "{$vars['assetsUrl']}/js/jquery-3.5.1.min.js" ?>'></script>

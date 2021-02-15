@@ -92,14 +92,14 @@ class BaseEntity{
                 $relatedClassPrimaryKey,
                 $relatedEntity->getId()
             );
-            static::getDaoClass()::saveOrUpdate($this);
+            //static::getDaoClass()::saveOrUpdate($this);
         } else { // If foreign key is in related object
             EntityUtil::set(
                 $relatedEntity,
                 static::getDaoClass()::getPkColumnName(),
                 $this->getId()
             );
-            $relatedClassDao::saveOrUpdate($relatedEntity);
+            //$relatedClassDao::saveOrUpdate($relatedEntity);
         }
     }
 

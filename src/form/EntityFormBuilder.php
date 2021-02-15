@@ -60,4 +60,12 @@ class EntityFormBuilder extends FormBuilder{
     public function getEntity(){
         return $this->entity;
     }
+
+    public function applyDataTo(&$entity){
+        foreach ( get_class($entity)::getDaoClass()::getColumnNames() as $columnName){
+            if ( isset($this->formData[$columnName])){
+                EntityUtil::set($entity, $columnName, $this->formData[$columnName]);
+            }
+        }
+    }
 }

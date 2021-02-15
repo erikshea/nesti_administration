@@ -55,7 +55,8 @@ class BaseController
             'route' =>   MainController::getCurrentRoute(), 
             'breadcrumbs' => $this->getBreadcrumbs(),
             'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
-            'currentUser' => MainController::getLoggedInUser()
+            'currentUser' => MainController::getLoggedInUser(),
+            'javascriptVariables' => [ 'baseUrl'=>SiteUtil::url() ]
         ]);
     }
 

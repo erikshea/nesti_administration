@@ -15,7 +15,7 @@ class ParagraphList extends React.Component {
     }
 
     componentDidMount() {
-        $.post(baseUrl + 'recipe/getParagraphsAjax/' + urlParameters[2], {}, (response) => {
+        $.post(vars['baseUrl'] + 'recipe/getParagraphsAjax/' + vars['entity']['idRecipe'], {}, (response) => {
             let responseParagraphs = JSON.parse(response);
             this.setState({ paragraphs: responseParagraphs });
             // initialize input values from source content
@@ -59,7 +59,7 @@ class ParagraphList extends React.Component {
 
     synchronizeSource(newParagraphs) {
         // send new paragraph data to source
-        $.post(baseUrl + 'recipe/updateParagraphsAjax/' + urlParameters[2], { "paragraphs": newParagraphs }, (response) => {
+        $.post(vars['baseUrl'] + 'recipe/updateParagraphsAjax/' + vars['entity']['idRecipe'], { "paragraphs": newParagraphs }, (response) => {
             let responseParagraphs = JSON.parse(response); // receive updated paragraph data.
             this.setState({ paragraphs: responseParagraphs }); // component state is now synchronized with source
             this.inputValues = responseParagraphs.map( (paragraph) => { return paragraph.content } ); // as are sanitized input values
