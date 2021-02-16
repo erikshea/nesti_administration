@@ -3,7 +3,7 @@
 class Lot extends BaseEntity{
     private $idSupplierOrder;
     private $unitCost;
-    private $dateCreation;
+    private $dateReception;
     private $quantity;
     private $idArticle;
 
@@ -68,9 +68,9 @@ class Lot extends BaseEntity{
     /**
      * Get the value of dateCreation
      */
-    public function getDateCreation()
+    public function getDateReception()
     {
-        return $this->dateCreation;
+        return $this->dateReception;
     }
 
     /**
@@ -78,9 +78,9 @@ class Lot extends BaseEntity{
      *
      * @return  self
      */
-    public function setDateCreation($dateCreation)
+    public function setDateReception($dateReception)
     {
-        $this->dateCreation = $dateCreation;
+        $this->dateReception = $dateReception;
 
         return $this;
     }

@@ -17,19 +17,16 @@ class BaseEntity{
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return array of related entities
      */
-    public function getRelatedEntities(String $relatedEntityClass, $options=null): array
+    public function getRelatedEntities(String $relatedEntityClass, $options=[]): array
     {
         // find dao class of the related entity
         $relatedClassDao = $relatedEntityClass::getDaoClass();
 
         $thisPrimaryKeyName = static::getDaoClass()::getPkColumnName();
   
-        return $relatedClassDao::findAllBy(
-            // joined entity's foreign key name is the same as starting entity's primary key name 
-            $thisPrimaryKeyName,
-            $this->getId(),
-            $options
-        );
+        $options[ $thisPrimaryKeyName ] = $this->getId();
+
+        return $relatedClassDao::findAll($options);
     }
 
         
@@ -40,31 +37,21 @@ class BaseEntity{
      * @param  mixed $relatedEntityClass Class of the related entity to look for
      * @return mixed related entity, or null if none exists
      */
-    public function getRelatedEntity(String $relatedEntityClass, $options=null): ?BaseEntity
+    public function getRelatedEntity(String $relatedEntityClass, $options=[]): ?BaseEntity
     {
-        // find dao class of the related entity
-        $relatedClassDao = $relatedEntityClass::getDaoClass();
-
         // find column name of the related entity's primary key
-        $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
+        $relatedClassPrimaryKey = $relatedEntityClass::getDaoClass()::getPkColumnName();
+
+        $relatedDao = $relatedEntityClass::getDaoClass();
 
         // If foreign key is in current instance
         if (  property_exists($this, $relatedClassPrimaryKey) ){
-            $relatedEntity = $relatedClassDao::findById(
-                // joined entity's primary key name is the same as starting entity's corresponding foreign key 
-                EntityUtil::get($this, $relatedClassPrimaryKey) ,
-                $options
-            );
+            $options[ $relatedDao::getPkColumnName() ] = EntityUtil::get($this, $relatedClassPrimaryKey);
         } else { // If foreign key is in related object
-            $relatedEntity = static::getDaoClass()::findOneBy(
-                // joined entity's foreign key name is the same as starting entity's primary key
-                static::getDaoClass()::getPkColumnName(),
-                $this->getId(),
-                $options
-            );
+            $options[ static::getDaoClass()::getPkColumnName() ] = $this->getId();
         }
 
-        return $relatedEntity;
+        return $relatedDao::findOne($options);
     }
 
 

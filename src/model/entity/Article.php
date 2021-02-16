@@ -17,8 +17,8 @@ class Article extends BaseEntity{
         return $this->getRelatedEntities("ArticlePrice");
     }
 
-    public function getLots(): array{
-        return $this->getRelatedEntities("Lot");
+    public function getLots($options=[]): array{
+        return $this->getRelatedEntities("Lot", $options);
     }
 
     public function getOrderLines(): array{
@@ -53,6 +53,32 @@ class Article extends BaseEntity{
 
     public function getOrders($options='a'): array{
         return $this->getIndirectlyRelatedEntities("Orders", "OrderLine", $options); 
+    }
+
+    public function getSellingPrice(){
+        $highestPricedLot = $this->getLots(['ORDER' => 'unitCost DESC'])[0] ?? null;
+    
+        $price = null;
+        if ( $highestPricedLot != null ){
+            $price = $highestPricedLot->getUnitCost() * 1.2;
+        }
+
+        return number_format($price, 2, ",", "") . "€";
+    }
+
+    public function getLastImportationDate(){
+        $lastImportedLot = $this->getLots(['ORDER'=>'dateReception DESC'])[0] ?? null;
+
+        $date = null;
+        if ( $lastImportedLot != null ){
+            $date = $lastImportedLot->getDateReception();
+        }
+
+        return $date;
+    }
+
+    public function getStock(){
+        return (float) $this->getLots(["SELECT"=>"SUM(quantity)"])[0][0] ?? 0;
     }
 
     /**

@@ -83,7 +83,8 @@ class BaseDao
 
         // if no starting sql specified, select all
         if ($sql == null) {
-            $sql = "SELECT * FROM " . static::getTableName();
+            $sql = "SELECT " . ($options["SELECT"] ?? '*')
+                . " FROM " . static::getTableName();
         }
 
 
@@ -95,8 +96,8 @@ class BaseDao
         $conditions = [];
         array_walk($options, function ($value, $key) use (&$conditions, &$options) {
             if (preg_match(
-                "/^(.*)(=|>|<|>=|<=|<>|!=|LIKE|NOT LIKE)$/", // look for an operator at the end of option key
-                $key,
+                "/^(.*)(=|>|<|>=|<=|<>|!=|LIKE|NOT LIKE|IN|NOT IN)$/", // look for an operator at the end of option key
+                trim($key),
                 $matches
             )) {
                 $propertyKey = trim($matches[1]);
@@ -107,7 +108,12 @@ class BaseDao
                 $operator = "=";
             }
 
-            $condition = "$propertyKey $operator ?";
+            if ( FormatUtil::endsWith($operator, "IN")){
+                $condition = "$propertyKey $operator $value";
+                $value = null;
+            } else {
+                $condition = "$propertyKey $operator ?";
+            }
 
             if (preg_match(
                 "/^.*\((.*)\)$/", // is remaining part of key an sql function call?
@@ -142,7 +148,10 @@ class BaseDao
             }
 
             $sql .= $optionParameters['condition'];
-            $values[] = $optionParameters['value'];
+            if ( $optionParameters['value'] != null )
+            {
+                $values[] = $optionParameters['value'];
+            }
 
             // don't add another AND if we're done adding WHERE conditions
             if ($i != array_key_last($conditions)) {
@@ -177,8 +186,13 @@ class BaseDao
         }
 
         $request = $pdo->prepare($sql);
-        $request->execute($values);
-
+        Try{
+            $request->execute($values);
+        } catch (Exception $e){
+            FormatUtil::dump("Exception executing request for table " . static::getTableName() . " with SQL:");
+            FormatUtil::dump($sql);
+            var_dump($e->getMessage());
+        }
         return $request;
     }
 
@@ -233,7 +247,7 @@ class BaseDao
 
         $req = static::buildRequest($options);
 
-        return static::getEntitiesFromRequest($req, $options);
+        return static::getResultFromRequest($req, $options);
     }
 
 
@@ -525,7 +539,7 @@ class BaseDao
         $names = self::$cachedData['columnNames'][get_called_class()];
 
         if (!$includePk) {
-            // Get index(es) of primary key(s) in table schema (usually but not always first)
+            // Get index(es) of primary key(s) in table schema
             if (!is_array(static::getPkColumnName())) {
                 $keys = [static::getPkColumnName()];
             } else {
@@ -545,19 +559,18 @@ class BaseDao
 
     /**
      * getColumnNames
-     * get an array of column names, in the same order as they appear in the database schema
+     * get an array of column defaults (ignoring null defaults)
      * 
-     * @param  bool $includePk include primary key in result?
-     * @return void
+     * @return array
      */
-    public static function getColumnDefaults(bool $includePk = true): array
+    public static function getColumnDefaults(): array
     {
         if (!isset(self::$cachedData['columnDefaults'][get_called_class()])) {
             $pdo = DatabaseUtil::getConnection();
             $sql = "SELECT COLUMN_NAME, COLUMN_DEFAULT
-            FROM information_schema.columns
-            WHERE TABLE_NAME = '" . static::getTableName() ."'
-            AND COLUMN_DEFAULT != 'NULL'";
+                FROM information_schema.columns
+                WHERE TABLE_NAME = '" . static::getTableName() ."'
+                AND COLUMN_DEFAULT != 'NULL'";
             $q = $pdo->prepare($sql);
             $q->execute();
             self::$cachedData['columnDefaults'][get_called_class()]
@@ -567,8 +580,8 @@ class BaseDao
     }
     
     /**
-     * getManyToMany
-     * find related entities through a join table
+     * findManyToMany
+     * find entities related by way of a join table
      * @param  mixed $startEntity for which we're looking for relations
      * @param  string  $joinEntityClass join table entity class
      * @param  string  $endEntityClass that are related to the stating entity through the join class
@@ -583,9 +596,14 @@ class BaseDao
         $joinDao = $joinEntityClass::getDaoClass();
         $endDao = $endEntityClass::getDaoClass();
 
+        if ( isset($options["SELECT"]) ) {
+            $options["SELECT"] = "e." . $options["SELECT"];
+        }
+
         // create standard many-to-many join sql
-        $sql = "SELECT e.* FROM " . $joinDao::getTableName() . " j" .
-            " JOIN " . $endDao::getTableName() . " e" .
+        $sql = "SELECT " . ($options["SELECT"] ?? "*") .
+            " FROM " . $endDao::getTableName() . " e" .
+            " JOIN " . $joinDao::getTableName() . " j" .
             " ON e." . $endDao::getPkColumnName() . " = j." . $endDao::getPkColumnName() .
             " AND  j." . $startDao::getPkColumnName() . " = ? ";
 
@@ -594,33 +612,37 @@ class BaseDao
         // apply request options, starting from the existing join sql and id value 
         $req = $endDao::buildRequest($options, $sql, $values);
 
-        return $endDao::getEntitiesFromRequest($req, $options);
+        return $endDao::getResultFromRequest($req, $options);
     }
 
     /**
-     * getEntitiesFromRequest
+     * getResultFromRequest
      * builds an array of entities from a request's result set
      * 
      * @param  mixed $req request object to get entities from
      * @param  mixed $options request options 
      * @return array of fetched entities
      */
-    protected static function getEntitiesFromRequest($req, $options): array
+    protected static function getResultFromRequest($req, $options): array
     {
-        $entities = [];
+        $result = [];
         // set entity properties using fetched values
-        while (($entity = static::fetchEntity($req, $options)) !== false) {
-            if ($entity != null) { // entity might have a parent that didn't sastisfy remaining query options
-                if (isset($options["INDEXBY"])) {
-                    // if options specify a getter to index by
-                    $key = EntityUtil::get($entity, $options["INDEXBY"]);
-                    $entities[$key] = $entity;
-                } else {
-                    $entities[] = $entity;
+        if (isset($options["SELECT"])){
+            $result = $req->fetchAll(PDO::FETCH_NUM);
+        } else {
+            while (($entity = static::fetchEntity($req, $options)) !== false) {
+                if ($entity != null) { // entity might have a parent that didn't sastisfy remaining query options
+                    if (isset($options["INDEXBY"])) {
+                        // if options specify a getter to index by
+                        $key = EntityUtil::get($entity, $options["INDEXBY"]);
+                        $result[$key] = $entity;
+                    } else {
+                        $result[] = $entity;
+                    }
                 }
-            }
-        };
-
-        return $entities;
+            };
+    
+        }
+        return $result;
     }
 }

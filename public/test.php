@@ -1,4 +1,7 @@
 <?php
+
+use phpDocumentor\Reflection\DocBlock\Tags\Formatter;
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -104,8 +107,9 @@ $p->makeIngredient();*/
 // $t2 = $test->getRecipes(["ORDER"=>"dateCreation DESC"])[0]->getName();
 // FormatUtil::dump($t2);
 
-$a = ArticleDao::getColumnDefaults();
-
-
-
-FormatUtil::dump(ParagraphDao::getColumnDefaults());
+// $queryOptions=[];
+// $productIds = [];
+// FormatUtil::dump($productIds);
+// $articles = ArticleDao::findAll(["idProduct IN" => "(" . implode(",", $productIds) . ")"]);
+// FormatUtil::dump(["idProduct IN " => "(" . implode(",", $productIds) . ")"]);
+// FormatUtil::dump($articles);
