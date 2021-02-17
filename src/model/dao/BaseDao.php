@@ -1,6 +1,7 @@
 <?php
 class BaseDao
 {
+    protected const  IGNORE_VALUE = 7894123532137898798797467644653978789798;
     protected static $cachedData = ['columnNames' => [], 'columnDefaults'=>[]];
     protected static $pkColumns = null;
 
@@ -123,7 +124,7 @@ class BaseDao
 
             if ( FormatUtil::endsWith($operator, "IN")){
                 $condition = "$propertyKey $operator $value";
-                $value = null;
+                $value = static::IGNORE_VALUE;
             } else {
                 $condition = "$propertyKey $operator ?";
             }
@@ -166,12 +167,10 @@ class BaseDao
             }
 
             $sql .= $optionParameters['condition'];
-            if ( $optionParameters['value'] != null )
+            if ( $optionParameters['value'] != static::IGNORE_VALUE )
             {
                 $values[] = $optionParameters['value'];
             }
-
-
         }
 
 

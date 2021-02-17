@@ -9,9 +9,11 @@ class IngredientList extends React.Component {
     }
 
     componentDidMount() {
-        $.post(vars['baseUrl'] + 'recipe/getIngredientRecipesAjax/' + vars['entity']['idRecipe'], {}, (response) => {
-            this.setState(JSON.parse(response));
-        });
+        $.post(
+            vars.baseUrl + 'recipe/getIngredientRecipesAjax/' + vars.entity.idRecipe,
+            {},
+            (response) => { this.setState(JSON.parse(response)); }
+        );
     }
     
     remove(index) {
@@ -32,9 +34,11 @@ class IngredientList extends React.Component {
     }
     
     updateSource(newIrs) {
-        $.post(vars['baseUrl'] + 'recipe/updateIngredientRecipesAjax/' + vars['entity']['idRecipe'], { "ingredientRecipes": newIrs }, (response) => {
-            this.setState(JSON.parse(response));
-        });
+        $.post(
+            vars.baseUrl + 'recipe/updateIngredientRecipesAjax/' + vars.entity.idRecipe,
+            { "ingredientRecipes": newIrs },
+            (response) => { this.setState(JSON.parse(response)); }
+        );
     }
 
 
@@ -81,8 +85,8 @@ class IngredientList extends React.Component {
                             {units}
                         </datalist>
                         <a
-                        onClick={this.add}
-                        className="w-25 ingredient-list__add-button btn btn-sm btn-success">
+                            onClick={this.add}
+                            className="w-25 ingredient-list__add-button btn btn-sm btn-success">
                             OK
                         </a>
                     </div>

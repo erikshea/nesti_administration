@@ -5,7 +5,7 @@ class OrderItems extends React.Component {
     state = { orderItems: []};
 
     showOrder(id) {
-        $.post(vars['baseUrl'] + 'article/getOrderItemsAjax', { "idOrders": id }, (response) => {
+        $.post(vars.baseUrl + 'article/getOrderItemsAjax', { "idOrders": id }, (response) => {
             this.setState(JSON.parse(response));
         });
     }
