@@ -108,6 +108,19 @@ class BaseDao
                 $operator = "=";
             }
 
+            if (preg_match(
+                "/^(AND|OR) +(.*)$/", // look for a boolean operator at beginning of key
+                $propertyKey,
+                $matches
+            )) {
+                $propertyKey = $matches[2];
+                $booleanOperator  = $matches[1];
+            } else {
+                // if no operator specified, assume "AND"
+                $booleanOperator = "AND";
+            }
+
+
             if ( FormatUtil::endsWith($operator, "IN")){
                 $condition = "$propertyKey $operator $value";
                 $value = null;
@@ -126,7 +139,7 @@ class BaseDao
 
             // only add if it has an equivalent table column
             if (in_array($propertyKey, static::getColumnNames())) {
-                $conditions[] = ['condition' => $condition, 'value' => $value];
+                $conditions[] = ['condition' => $condition, 'value' => $value, 'booleanOperator'=>$booleanOperator];
                 // remove property from options in case we reuse the same options in parent entity query
                 unset($options[$key]);
             }
@@ -147,16 +160,18 @@ class BaseDao
                 $sql .= " WHERE ";
             }
 
+            // don't add another AND if we're done adding WHERE conditions
+            if ($i != array_key_first($conditions)) {
+                $sql .= " {$optionParameters['booleanOperator']} ";
+            }
+
             $sql .= $optionParameters['condition'];
             if ( $optionParameters['value'] != null )
             {
                 $values[] = $optionParameters['value'];
             }
 
-            // don't add another AND if we're done adding WHERE conditions
-            if ($i != array_key_last($conditions)) {
-                $sql .= " AND ";
-            }
+
         }
 
 

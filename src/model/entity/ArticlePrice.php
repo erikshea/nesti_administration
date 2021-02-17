@@ -18,6 +18,7 @@ class ArticlePrice extends BaseEntity{
     }
 
 
+
     /**
      * Get the value of idArticle
      */

@@ -3,7 +3,7 @@
 
 <?php include SiteUtil::toAbsolute("templates/common/head.php") ?>
 
-<body class="<?= $vars["route"]["controller"] . " " . $vars["route"]["controller"] . "-" . $vars["route"]["action"] ?>">
+<body class="<?= $vars["route"]["controller"] . " " . $vars["route"]["controller"] . "__" . $vars["route"]["action"] ?>">
     <main>
         <?php include $vars["actionTemplate"] ?>
     </main>

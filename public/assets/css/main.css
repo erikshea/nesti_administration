@@ -112,7 +112,8 @@ h2{
     border-color: var(--color-primary);
     font-family: Nunito;
     color: var(--color-classic-base);
-    height: calc(1.5em + .75rem + 2px);
+    height: fit-content;
+    min-height: calc(1.5em + .75rem + 2px);
     text-decoration: none;
     background-color: var(--color-primary-light);
 }
@@ -164,8 +165,8 @@ input{
 }
 
 .btn-secondary:hover{
-    background-color: var(--color-primary);
-    border-color: var(--color-primary-dark);
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
 }
 
 .btn-secondary:hover *{

@@ -1,0 +1,4 @@
+.article__orders tbody tr:hover{
+    cursor: pointer;
+    background-color: var(--color-secondary);
+}

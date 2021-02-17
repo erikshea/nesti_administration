@@ -75,6 +75,12 @@ class FormatUtil {
 
         return $result;
     }
+
+    public static function frenchTime($date){
+        setlocale(LC_TIME, "fr_FR.utf8", "French");
+        return utf8_encode(strftime("%d %B %G, %Hh%M", strtotime($date)));
+        setlocale(LC_ALL, 0);
+    }
 }
 
 ?>

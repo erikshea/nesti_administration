@@ -51,6 +51,11 @@ class Article extends BaseEntity{
         $this->setRelatedEntity($i);
     }
 
+    public function getArticlePriceAt($date){
+        return $this->getArticlePrices(["dateStart <" => $date, "ORDER" => "dateStart DESC"])[0] ?? null;
+    }
+
+
     public function getOrders($options='a'): array{
         return $this->getIndirectlyRelatedEntities("Orders", "OrderLine", $options); 
     }

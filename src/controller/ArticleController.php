@@ -6,102 +6,19 @@ class ArticleController extends EntityController
         $this->forward('edit');
     }
 
-    public function actionUpdateParagraphsAjax(){
-        $result = [];
-        foreach ($_POST["paragraphs"] as $index=>$paragraphArray ){
-            if ( ($paragraphArray['status'] ?? null) == 'toAdd' ){
-                $paragraph = new Paragraph;
-                $paragraph->setIdRecipe($this->getEntity()->getId());
-            } else {
-                $paragraph = ParagraphDao::findById($paragraphArray['idParagraph']);
-            }
+    public function actionGetOrderItemsAjax(){
+        $order = OrdersDao::findById($_POST["idOrders"]);
 
-            if ( ($paragraphArray['status'] ?? null) == 'toDelete' ){
-                ParagraphDao::delete($paragraph);
-            } else {
-                $paragraph->setContent($paragraphArray["content"]);
-                $paragraph->setParagraphPosition($index+1);
-    
-                ParagraphDao::saveOrUpdate($paragraph);
-                $result[] = EntityUtil::toArray($paragraph);
-            }
-        }
-
-        echo json_encode($result);
-    }
-
-    public function actionGetParagraphsAjax(){
-        $paragraphs = $this->getEntity()->getParagraphs(["ORDER"=>"paragraphPosition ASC"]);
-        
-        echo json_encode(EntityUtil::toArray($paragraphs));
-    }
-
-    public function actionGetIngredientRecipesAjax(){
-        $result["ingredientRecipes"] = $this->getIngredientRecipesArray();
-        $result["ingredients"] = static::getIngredientsArray();
-        $result["units"] = EntityUtil::toArray(UnitDao::findAll());
-        echo json_encode($result);
-    }
-
-    public function actionUpdateIngredientRecipesAjax(){
-        foreach ($_POST["ingredientRecipes"] as $index=>$irArray ){
-            if ( isset($irArray['status']) ){
-                $ingredient = IngredientDao::findOneBy('name', $irArray['ingredientName']);
-                if ( $ingredient == null ){
-                    $ingredient = new Ingredient();
-                    $ingredient->setName($irArray['ingredientName']);
-                    IngredientDao::save($ingredient);
-                }
-
-                $ir = IngredientRecipeDao::findOne([
-                    'idRecipe' => $this->getEntity()->getId(),
-                    'idIngredient' => $ingredient->getId(),
-                ]);
-                
-                if ( $irArray['status'] == 'toAdd' ) {
-                    if ( $ir == null ){
-                        $ir = new IngredientRecipe();
-                        $ir->setIdRecipe($this->getEntity()->getid());
-                        $ir->setIdIngredient($ingredient->getId());
-                    }
-        
-                    $unit = UnitDao::findOneBy('name', $irArray['unitName']);
-                    if ( $unit == null ){
-                        $unit = new Unit();
-                        $unit->setName($irArray['unitName']);
-                        UnitDao::save($unit);
-                    }
-                    $ir->setUnit($unit);
-                    $ir->setQuantity($irArray['quantity']);
-                    IngredientRecipeDao::saveOrUpdate($ir);
-                } elseif($irArray['status'] == 'toDelete')  {
-                    IngredientRecipeDao::delete($ir);
-                }
-            }
-        }
-        
-        $this->actionGetIngredientRecipesAjax();
-    }
-
-
-    protected function getIngredientRecipesArray(){
-        return array_map( function($ir) {
+        $orderItems = array_map( function($ol) {
             return [
-                'quantity' => $ir->getQuantity(),
-                'unitName' => $ir->getUnit()->getName(),
-                'ingredientName' => $ir->getIngredient()->getName(),
-                'ingredientId' => $ir->getIngredient()->getId()
+                'idArticle' => $ol->getArticle()->getId(),
+                'quantity' => $ol->getQuantity(),
+                'unitName' => $ol->getArticle()->getUnit()->getName(),
+                'articleName' => $ol->getArticle()->getProduct()->getName()
             ];
-        }, $this->getEntity()->getIngredientRecipes(["ORDER"=>"recipePosition ASC"]));
+        }, $order->getOrderLines());
 
-    }
-
-    protected static function getIngredientsArray(){
-        return array_map( function($ingredient) {
-            return [
-                "name"=>$ingredient->getName()
-            ];
-        }, IngredientDao::findAll());
+        echo json_encode(['orderItems' => $orderItems]);
     }
 
     public function actionEdit()
@@ -174,6 +91,31 @@ class ArticleController extends EntityController
         ]);
     }
 
+    public function actionOrders()
+    {
+        $queryOptions = [];
+        $this->setTemplateName('common/baseNoCrumbs', 'base');
+
+        if ( !empty( $_POST["search"] )){
+            $like = "%" . $_POST["search"] . "%";
+            $queryOptions["firstName LIKE"] =  $like;
+            $queryOptions["OR lastName LIKE"] = $like;
+        }
+
+        $userIds = array_map(function($product){
+            return $product->getId();
+        }, UsersDao::findAll($queryOptions));
+
+
+        if (!empty ($userIds)){
+            $orders = OrdersDao::findAll(["idUsers IN " => "(" . implode(",", $userIds) . ")"]);
+        } else {
+            $orders=[];
+        }
+        $this->addVars(['orders' => $orders]);
+    }
+
+
     public function actionList()
     {
         $queryOptions = [];
@@ -196,11 +138,10 @@ class ArticleController extends EntityController
         $this->addVars(['entities' => $articles]);
     }
 
-
     public function preRender()
     {
         parent::preRender();
-        $this->templateVars['assets']['css'][] = "aricle.css";
+        $this->templateVars['assets']['css'][] = "article.css";
         $this->templateVars['assets']['css'][] = "image-upload.css";
         $this->templateVars['assets']['js'][] = [
             'src' => 'react.development.js'
@@ -210,6 +151,10 @@ class ArticleController extends EntityController
         ];
         $this->templateVars['assets']['js'][] = [
             'src' => 'babel.min.js'
+        ];
+        $this->templateVars['assets']['js'][] = [
+            'src' => 'article.js',
+            "type" => "text/babel"
         ];
     }
 }

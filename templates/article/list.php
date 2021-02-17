@@ -14,7 +14,7 @@
             </form>
         </div>
 
-        <div class="col-5 d-flex justify-content-end">
+        <div class="col-7 d-flex justify-content-end">
             <a href="<?= $vars['baseUrl'] ?>article/orders" class="btn btn-secondary mr-4 ">
             <i class="far fa-eye"></i><span>Commandes</span>
             </a>

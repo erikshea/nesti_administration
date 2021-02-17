@@ -6,17 +6,40 @@ class Orders extends BaseEntity{
     private $dateCreation;
     private $idUsers;
 
-    
-    public function getOrderLines(): array{
-        return $this->getRelatedEntities("OrderLine");
+    public function getStatus(){
+        switch( $this->getFlag()){
+            case "a":
+                $status = "Payée";
+                break;
+            case "w":
+                $status = "En attente";
+                break;
+            default:
+                $status = "Annulée";
+            break;
+        }
+        return $status;
+    }
+    public function getOrderLines($options=[]): array{
+        return $this->getRelatedEntities("OrderLine", $options);
     }
     
-    public function getUser(): ?Users{
-        return $this->getRelatedEntity("Users");
+    public function getUser($options=[]): ?Users{
+        return $this->getRelatedEntity("Users", $options);
     }
 
     public function setUser(Users $user){
         $this->setRelatedEntity($user);
+    }
+
+    public function getTotal(){
+        $total=0;
+
+        foreach ( $this->getOrderLines() as $ol){
+            $total += $ol->getSubTotal();
+        }
+        
+        return $total;
     }
 
     /**

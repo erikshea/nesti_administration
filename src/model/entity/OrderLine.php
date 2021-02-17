@@ -23,7 +23,16 @@ class OrderLine extends BaseEntity{
     }
 
 
+    public function getSubTotal(){
+        return $this->getArticle()->getArticlePriceAt($this->getOrder()->getDateCreation())->getPrice()
+         * $this->getQuantity();
+    }
 
+    public function getFormatted(){
+        return $this->getQuantity() . " " .
+            $this->getArticle()->getUnit()->getName() . " : " .
+            $this->getArticle()->getProduct()->getName();
+    }
     /**
      * Get the value of idOrders
      */
