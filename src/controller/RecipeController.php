@@ -62,7 +62,6 @@ class RecipeController extends EntityController
                     if ( $ir == null ){
                         $ir = new IngredientRecipe();
                         $ir->setIdRecipe($this->getEntity()->getid());
-                        $ir->setIdIngredient($ingredient->getId());
                     }
         
                     $unit = UnitDao::findOneBy('name', $irArray['unitName']);
@@ -72,6 +71,7 @@ class RecipeController extends EntityController
                         UnitDao::save($unit);
                     }
                     $ir->setUnit($unit);
+                    $ir->setIngredient($ingredient);
                     $ir->setQuantity($irArray['quantity']);
                     IngredientRecipeDao::saveOrUpdate($ir);
                 } elseif($irArray['status'] == 'toDelete')  {
@@ -110,6 +110,12 @@ class RecipeController extends EntityController
 
 
         $formBuilder = new EntityFormBuilder($entity);
+        
+        $this->templateVars['assets']['js'][] = [
+            'src'=>"DeleteModal.js",
+            "type" => "text/babel",
+            "addLast" => true
+        ];
 
         $this->templateVars['assets']['js'][] = [
             'src'=>"recipe-edit.js",
@@ -122,6 +128,7 @@ class RecipeController extends EntityController
             "type" => "text/babel",
             "addLast" => true
         ];
+
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             $formBuilder->setFormData($_POST[$this->getEntityClass()]);

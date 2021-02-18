@@ -98,10 +98,10 @@ class EntityController extends BaseController
      */
     public function actionDelete()
     {
-        if (!empty($_POST)) { // if we arrived here by way of the submit button in the delete view
-            $this->getDaoClass()::delete($this->getEntity());
-            MainController::redirect();
-        }
+        $entity = $this->getEntity();
+        $entity->setFlag("b");
+        get_class($entity)::getDaoClass()::saveOrUpdate($entity);
+        MainController::redirect();
     }
 
     public function actionList()
@@ -114,7 +114,13 @@ class EntityController extends BaseController
                 $queryOptions[$parameterName . " LIKE"] = "%$value%";
             }
         }
-  
+        
+        $this->templateVars['assets']['js'][] = [
+            'src'=>"DeleteModal.js",
+            "type" => "text/babel",
+            "addLast" => true
+        ];
+
         $this->addVars(['entities' => $this->getDaoClass()::findAll($queryOptions)]);
     }
 

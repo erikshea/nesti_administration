@@ -503,13 +503,12 @@ class BaseDao
 
 
             $insertedId = $pdo->lastInsertId();
+            // if id was auto-incremented, set entity id to new one in data source
+            if (!$entity->hasCompositeKey() && $entity->getId() == null) {
+                $entity->setId($insertedId);
+            }
         }
-
-        // if id was auto-incremented, set entity id to new one in data source
-        if (!$entity->hasCompositeKey()) {
-            $entity->setId($insertedId);
-        }
-
+        
         return $entity->getId();
     }
 

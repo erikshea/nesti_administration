@@ -44,13 +44,11 @@ class ParagraphList extends React.Component {
     }
     
     remove(index) {
-        if (window.confirm('Voulez-vous vraiment effacer ce paragraphe?')){
-            let newParagraphs = [...this.state.paragraphs];
-            
-            newParagraphs[index].status = "toDelete"; // tells source to delete paragraph
-    
-            this.synchronizeSource(newParagraphs);
-        }
+        let newParagraphs = [...this.state.paragraphs];
+        
+        newParagraphs[index].status = "toDelete"; // tells source to delete paragraph
+
+        this.synchronizeSource(newParagraphs);
     }
 
     updateInputValue(index,value) {
@@ -89,6 +87,7 @@ class ParagraphList extends React.Component {
                     {paragraphs}
                 </div>
                 <a id="paragraph-list__add-button" onClick={this.add}><i className="far fa-plus-square"></i></a>
+                <div id="paragraph-list__delete-modal"></div>
             </div>
         );
     }
@@ -105,10 +104,13 @@ const Paragraph = (props) => {
                     onClick={() => props.move(props.index, -1)}>
                         <i className="fas fa-arrow-alt-circle-up"></i>
                 </a>}
-                <a
-                    className='remove'
-                    onClick={() => props.remove(props.index)}>
-                        <i className="far fa-trash-alt"></i>
+                <a  className='remove'
+                    onClick={ ()=>ReactDOM.render(
+                        <DeleteModal
+                            elementName={`Paragraphe ${props.index + 1}`}
+                            confirm={() => props.remove(props.index)}/>,
+                        document.getElementById("paragraph-list__delete-modal")) }>
+                    <i className="far fa-trash-alt"></i>
                 </a>
                 {!props.isLast && <a
                     className='move'

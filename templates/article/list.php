@@ -48,7 +48,10 @@
                         <td>
                             <div class="listing__actions">
                                 <a href="<?= $vars['baseUrl'] . "article/edit/" . $article->getId() ?>">Modifier</a>
-                                <a href="<?= $vars['baseUrl'] . "article/delete/" . $article->getId() ?>">Supprimer</a>
+                                <a href="#" onclick="ReactDOM.render(
+                                    React.createElement(DeleteModal, {elementName: `<?= $article->getProduct()->getName() ?>`,
+                                                                          confirm: 'article/delete/<?= $article->getId() ?>'}),
+                                    document.getElementById('delete-modal') )">Supprimer</a>
                             </div>
                         </td>
                     </tr>
@@ -58,3 +61,5 @@
         </div>
     </div>
 </div>
+
+<div id="delete-modal"></div>

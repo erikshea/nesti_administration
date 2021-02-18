@@ -47,7 +47,12 @@
                         <td>
                             <div class="listing__actions">
                                 <a href="<?= $vars['baseUrl'] . "recipe/edit/" . $recipe->getId() ?>">Modifier</a>
-                                <a href="<?= $vars['baseUrl'] . "recipe/delete/" . $recipe->getId() ?>">Supprimer</a>
+                                <a href="#" onclick="ReactDOM.render(
+                                    React.createElement(DeleteModal, {elementName: `<?= $recipe->getName() ?>`,
+                                                                          confirm: 'recipe/delete/<?= $recipe->getId() ?>'}),
+                                    document.getElementById('delete-modal') )">
+                                    Supprimer
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -57,3 +62,5 @@
         </div>
     </div>
 </div>
+
+<div id="delete-modal"></div>

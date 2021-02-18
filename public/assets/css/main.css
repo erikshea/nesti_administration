@@ -54,6 +54,11 @@ body{
     font-weight: 900;
 }
 
+
+.color-danger{
+    color: var(--color-danger);
+}
+
 a {
     color: var(--color-primary-dark);
 }

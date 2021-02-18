@@ -17,15 +17,14 @@ class IngredientList extends React.Component {
     }
     
     remove(index) {
-        if (window.confirm('Voulez-vous vraiment effacer cet ingrédient?')){
-            let newIngredientRecipes = [...this.state.ingredientRecipes];
-            newIngredientRecipes[index].status = "toDelete";
-    
-            this.updateSource(newIngredientRecipes);
-        }
+        let newIngredientRecipes = [...this.state.ingredientRecipes];
+        newIngredientRecipes[index].status = "toDelete";
+
+        this.updateSource(newIngredientRecipes);
     }
 
-    add() {
+    add(e) {
+        e.preventDefault();
         let newIngredientRecipes = [...this.state.ingredientRecipes];
 
         newIngredientRecipes.push(this.addFields);
@@ -61,9 +60,9 @@ class IngredientList extends React.Component {
                     <div className={this.state.ingredientRecipes ? "invisible" : ""}>Aucun ingrédient.</div>
                     {ingredientRecipes}
                 </div>
-                <div className="ingredient-list__add d-flex flex-column">
+                <form className="ingredient-list__add d-flex flex-column">
                     <h3>Ajouter un ingrédient</h3>
-                    <input 
+                    <input required
                         onChange={(e)=>{this.addFields.ingredientName = e.target.value}}
                         className="w-100 mr-3 mb-3 ingredient-list__ingredient-name"
                         list="ingredient-suggestions"
@@ -72,11 +71,11 @@ class IngredientList extends React.Component {
                         {ingredients}
                     </datalist>
                     <div className="d-flex " >
-                        <input
+                        <input required
                             onChange={(e)=>{this.addFields.quantity = e.target.value}}
                             className="w-50 mr-3 ingredient-list__quantity"
                             placeholder="Quantité"/>
-                        <input
+                        <input required
                             onChange={(e)=>{this.addFields.unitName = e.target.value}}
                             className="w-25 mr-3 ingredient-list__unit"
                             list="unit-suggestions"
@@ -84,13 +83,14 @@ class IngredientList extends React.Component {
                         <datalist id="unit-suggestions">
                             {units}
                         </datalist>
-                        <a
+                        <button type="submit"
                             onClick={this.add}
                             className="w-25 ingredient-list__add-button btn btn-sm btn-success">
                             OK
-                        </a>
+                        </button>
                     </div>
-                </div>
+                </form>
+                <div id="ingredient-list__delete-modal"></div>
             </div>
         );
     }
@@ -103,7 +103,15 @@ const IngredientRecipe = (props)=>{
                 <span>{props.quantity} {props.unitName} : </span>
                 <strong>{props.ingredientName}</strong>
             </div>
-            <a href="#recipe-ingredients" onClick={props.remove} className="ingredient-list__delete">Supprimer</a>
+            <a href="#recipe-ingredients"
+                onClick={ ()=>ReactDOM.render(
+                    <DeleteModal
+                        elementName={props.ingredientName}
+                        confirm={() => props.remove(props.index)}/>,
+                    document.getElementById("ingredient-list__delete-modal")) }
+                className="ingredient-list__delete">
+                Supprimer
+            </a>
         </div>
     );
 }
