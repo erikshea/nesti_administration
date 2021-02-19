@@ -2,7 +2,7 @@
 class BaseDao
 {
     protected const  IGNORE_VALUE = 7894123532137898798797467644653978789798;
-    protected static $cachedData = ['columnNames' => [], 'columnDefaults'=>[]];
+    protected static $cachedData = ['columnNames' => [], 'columnDefaults'=>[], 'primaryKeyColumns'=>[]];
     protected static $pkColumns = null;
 
     public const FLAGS = [
@@ -48,7 +48,19 @@ class BaseDao
                 $pkCol = $pkCol[0];
             }
         }
-
+        // if ( !isset(self::$cachedData['primaryKeyColumns'][static::getTableName()]) )
+        // {
+        //     self::$cachedData['primaryKeyColumns'][static::getTableName()] = [];
+        //     $sql = "SHOW INDEX FROM IngredientRecipe WHERE Key_name = 'PRIMARY'";
+        //     $pdo = DatabaseUtil::getConnection();
+        //     $request = $pdo->prepare($sql);
+        //     $request->execute();
+        //     $info = $request->fetchAll(PDO::FETCH_ASSOC);
+        //     foreach ( $info as $infoRow ){
+        //         self::$cachedData['primaryKeyColumns'][static::getTableName()][]= $infoRow['Column_name'];
+        //     }
+        // }
+        
         return $pkCol;
     }
 
@@ -245,7 +257,9 @@ class BaseDao
 
             $currentClass = get_parent_class($currentClass);
         }
-
+        if ( $entity != null ){
+            $entity->setOriginalId($entity->getId());
+        }
         return $entity;
     }
 
@@ -345,15 +359,14 @@ class BaseDao
         $values = [];
         $columns = [];
         $pkColumns = [];
-        if (!is_array(static::getPkColumnName())) {
+        if (!$entity->hasCompositeKey()) {
             $pkColumns = [static::getPkColumnName()];
+            array_push( $values, $entity->getId());
         } else {
             $pkColumns = static::getPkColumnName();
+            array_push( $values, ...array_values($entity->getId()));
         }
 
-        foreach ($pkColumns as $pkColumnName) {
-            $values[] = EntityUtil::get($entity, $pkColumnName);
-        }
 
         $whereConditions = array_map(function ($columnName) {
             return "$columnName = ?";
@@ -416,16 +429,16 @@ class BaseDao
                 $columnNames
             );
 
-
+            // For WHERE conditions, we need to use original IDs (as in data source),
+            // not current id properties which may've been modified
             $pkColumns = [];
+            $originalId = $entity->getOriginalId();
             if (!$entity->hasCompositeKey()) {
                 $pkColumns = [$currentDao::getPkColumnName()];
+                array_push($values, $originalId );
             } else {
-                $pkColumns = $currentDao::getPkColumnName();
-            }
-
-            foreach ($pkColumns as $pkColumnName) {
-                $values[] = EntityUtil::get($entity, $pkColumnName);
+                $pkColumns = array_keys($originalId );
+                array_push($values, ...array_values($originalId));
             }
 
             $whereConditions = array_map(function ($columnName) {
@@ -461,9 +474,13 @@ class BaseDao
                 continue;
             }
 
-            // get column names for current table. only include IDs if entity has composite PK 
+            // get column names for current table, whose corresponding entity properties will be inserted. only include IDs if:
+            //  - entity has parent entity (need to set its ID to the same one as its parent)
+            //  - or a composite key
+            //  - or its ID was manually set
             // (else let data source deal with creating a new one)
-            $columnNames = $currentDao::getColumnNames($entity->hasCompositeKey());
+            $includePks = static::hasParentEntity($currentClass) || $entity->hasCompositeKey() || $entity->hasPrimaryKey();
+            $columnNames = $currentDao::getColumnNames($includePks); // TODO: check if auto increment instead.
 
             // if we're not saving null values in columns where data source can set defaults (such as current timestamp)
             if ($skipNullIfDefaultValue) {
@@ -477,17 +494,6 @@ class BaseDao
                 return EntityUtil::get($entity, $columnName);
             }, $columnNames);
 
-            // if we're dealing with an inherited table, we must insert parent id explicitly to child table
-            if (static::hasParentEntity($currentClass)) {
-                // if composite key, just insert existing pks
-                if ($entity->hasCompositeKey()) {
-                    array_push($columnNames, $currentDao::getPkColumnName());
-                    array_push($values, $entity->getId());
-                } else { //else, id was auto-incremented so insert last inserted id
-                    $columnNames[] = $currentDao::getPkColumnName();
-                    $values[] = $insertedId;
-                }
-            }
             // Need a list of question marks of same size as the list of column names
             $questionMarks = array_map(function ($columnName) {
                 return '?';
@@ -496,19 +502,22 @@ class BaseDao
             $sql = "INSERT INTO " . $currentDao::getTableName() . " (" . implode(',', $columnNames) . ") 
             values(" . implode(',', $questionMarks) . ")";
 
-
             $q = $pdo->prepare($sql);
 
             $q->execute($values);
 
-
             $insertedId = $pdo->lastInsertId();
             // if id was auto-incremented, set entity id to new one in data source
-            if (!$entity->hasCompositeKey() && $entity->getId() == null) {
+            if (!$entity->hasCompositeKey() && !$entity->hasPrimaryKey()) {
+                $entity->setOriginalId($insertedId);
                 $entity->setId($insertedId);
-            }
+            } 
         }
-        
+
+        if ( $entity->hasCompositeKey()){
+            $entity->setOriginalId($entity->getId());
+        }
+
         return $entity->getId();
     }
 

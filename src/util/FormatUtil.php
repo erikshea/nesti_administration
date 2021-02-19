@@ -81,6 +81,11 @@ class FormatUtil {
         return utf8_encode(strftime("%d %B %G, %Hh%M", strtotime($date)));
         setlocale(LC_ALL, 0);
     }
+
+    public static function currentSqlDate(){
+        $dt = new DateTime();
+        return $dt->format('Y-m-d H:i:s');
+    }
 }
 
 ?>

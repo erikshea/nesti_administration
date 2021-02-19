@@ -96,5 +96,44 @@
                 "placeHolder": "images/content/__placeHolder.jpg"
             }
         }
+    },
+    "Article": {
+        "displayName": {
+                "options": {
+                "label": "Nom de l'article pour l'utilisateur"
+            },
+            "validators": ["notEmpty"]
+        },
+        "name": {
+            "options": {
+                "label": "Nom d'usine de l'article",
+                "readOnly": true
+            }
+        },
+        "idArticle": {
+            "options": {
+                "label": "Identifiant",
+                "readOnly": true
+            }
+        },
+        "sellingPrice": {
+            "options": {
+                "label": "Prix de vente",
+                "readOnly": true
+            }
+        },
+        "stock": {
+            "options": {
+                "label": "Stock",
+                "readOnly": true
+            }
+        },
+        "image": {
+            "options": {
+                "type": "%image%",
+                "placeHolder": "images/content/__placeHolder.jpg"
+            }
+        }
+
     }
 }

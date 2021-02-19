@@ -16,6 +16,7 @@
                     name="<?= "{$vars['formName']}[{$vars['fieldName']}]" ?>"
                     type="<?= $vars['type'] ?>"
                     value="<?= $vars['value'] ?>"
+                    <?= ($vars['readOnly'] ?? false )?"readonly":""?>
         <?php if ($vars['required']): ?>
                     required="required"
                     oninvalid="this.setCustomValidity('Ce champ doit être renseigné')"

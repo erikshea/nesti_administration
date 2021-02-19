@@ -27,13 +27,11 @@ class ArticleController extends EntityController
 
 
         $formBuilder = new EntityFormBuilder($entity);
-
-        $this->templateVars['assets']['js'][] = [
-            'src'=>"article-edit.js",
-            "type" => "text/babel",
-            "addLast" => true
-        ];
-
+        $formBuilder->addFormData([
+            "name" => $entity->getProduct()->getName(),
+            'sellingPrice' => $entity->getSellingPrice(),
+            'stock' => $entity->getStock()
+        ]);
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             $formBuilder->setFormData($_POST[$this->getEntityClass()]);
@@ -61,20 +59,12 @@ class ArticleController extends EntityController
                     $entity->setImage($image);
                 }
                 $formBuilder->applyDataTo($entity);
-                $entity->setChef(MainController::getLoggedInUser()->getChef());
 
-                if ( $entity->existsInDataSource()){
-                    $this->addVars([
-                        "message" => "edited"
-                    ]);
-                } else {
-                    $this->addVars([
-                        "message" => "created"
-                    ]);
-                }
+                $this->addVars([
+                    "message" => "edited"
+                ]);
                 $this->getDaoClass()::saveOrUpdate($entity);
                 $this->setEntity($entity);
-                // MainController::redirect();
             } else {
                 $this->addVars(["errors" => $formBuilder->getAllErrors()]);
             }

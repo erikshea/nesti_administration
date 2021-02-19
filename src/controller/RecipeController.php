@@ -45,7 +45,9 @@ class RecipeController extends EntityController
 
     public function actionUpdateIngredientRecipesAjax(){
         foreach ($_POST["ingredientRecipes"] as $index=>$irArray ){
-            if ( isset($irArray['status']) ){
+            if (    isset($irArray['status'])
+                && !empty($irArray['ingredientName'])
+                && !empty($irArray['unitName']) ){
                 $ingredient = IngredientDao::findOneBy('name', $irArray['ingredientName']);
                 if ( $ingredient == null ){
                     $ingredient = new Ingredient();
@@ -151,6 +153,7 @@ class RecipeController extends EntityController
                     ); 
                     $image->setName($matches[1]);
                     $image->setFileExtension($matches[2]);
+                    $image->setDateModification(FormatUtil::currentSqlDate());
                     ImageDao::saveOrUpdate($image);
                     move_uploaded_file($_FILES["image"]["tmp_name"], $image->getAbsolutePath());
                     $entity->setImage($image);
@@ -169,7 +172,6 @@ class RecipeController extends EntityController
                 }
                 $this->getDaoClass()::saveOrUpdate($entity);
                 $this->setEntity($entity);
-                // MainController::redirect();
             } else {
                 $this->addVars(["errors" => $formBuilder->getAllErrors()]);
             }
@@ -177,8 +179,9 @@ class RecipeController extends EntityController
 
         $imageUrl = null;
         if ($entity != null && $entity->getImage() != null ){
-            $imageUrl = $entity->getImage()->getUrl();
+            $imageUrl = $entity->getImage()->getUrl() . "?dateModification=" . urlencode($entity->getImage()->getDateModification());
         }
+        FormatUtil::dump($imageUrl);
         $this->addVars([
             "imageUrl" => $imageUrl,
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),

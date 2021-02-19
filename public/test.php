@@ -90,14 +90,14 @@ $p->makeIngredient();*/
 //FormatUtil::dump(RecipeDao::findAll(["INDEXBY"=>"name"]));
 
 
-//  $newChef = new Chef();
+  $newChef = new Chef();
 
-// //$newChef = ChefDao::findOneBy("login","ZZZZaaaa");
-// $newChef->setLogin("SQDQSDSQQSD");
-// $newChef->setLastName("aDSQSQDSQDSQDSQDa");
-// $newChef->setEmail("a@aadddddddddddaZ.cc");
-// ChefDao::saveOrUpdate($newChef);
-// FormatUtil::dump($newChef);
+//$newChef = ChefDao::findOneBy("login","ZZZZaaaa");
+$newChef->setLogin("SQDQSDSAQQSD");
+$newChef->setLastName("aDSQSQDSQDSQDSQDa");
+$newChef->setEmail("a@aadddDddddddddaZ.cc");
+ChefDao::saveOrUpdate($newChef);
+FormatUtil::dump($newChef);
 
 //FormatUtil::dump(ChefDao::findAll(["INDEXBY"=>"lastName"]));
 
@@ -113,3 +113,15 @@ $p->makeIngredient();*/
 // $articles = ArticleDao::findAll(["idProduct IN" => "(" . implode(",", $productIds) . ")"]);
 // FormatUtil::dump(["idProduct IN " => "(" . implode(",", $productIds) . ")"]);
 // FormatUtil::dump($articles);
+
+
+// $sql = "SHOW INDEX FROM IngredientRecipe WHERE Key_name = 'PRIMARY'";
+// $pdo = DatabaseUtil::getConnection();
+// $request = $pdo->prepare($sql);
+// $request->execute();
+// FormatUtil::dump($request->fetchAll(PDO::FETCH_ASSOC));
+
+
+// $r = RecipeDao::findById(2);
+
+// var_dump($r);

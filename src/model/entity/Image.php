@@ -4,6 +4,7 @@ class Image extends BaseEntity{
     private $dateCreation;
     private $name;
     private $fileExtension;
+    private $dateModification;
 
     
     public function getRecipes(): array{
@@ -102,6 +103,26 @@ class Image extends BaseEntity{
     public function setIdImage($idImage)
     {
         $this->idImage = $idImage;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dateModification
+     */ 
+    public function getDateModification()
+    {
+        return $this->dateModification;
+    }
+
+    /**
+     * Set the value of dateModification
+     *
+     * @return  self
+     */ 
+    public function setDateModification($dateModification)
+    {
+        $this->dateModification = $dateModification;
 
         return $this;
     }

@@ -128,14 +128,13 @@ class FormBuilder{
         return $this->validatorErrorMessages;
     }
 
-    public function setFormDataValue($key,$value){
-        $this->formData[$key] = $value;
-    }
 
     public function setFormData($formData){
         $this->formData = $formData;
     }
-    
+    public function addFormData($formData){
+        $this->formData = array_merge($this->formData, $formData);
+    }
     
 
     /**

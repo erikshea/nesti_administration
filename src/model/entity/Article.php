@@ -11,6 +11,7 @@ class Article extends BaseEntity{
     private $idImage;
     private $idUnit;
     private $idProduct;
+    private $displayName;
 
 
     public function getArticlePrices(): array{
@@ -243,6 +244,26 @@ class Article extends BaseEntity{
     public function setDateModification($dateModification)
     {
         $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of displayName
+     */ 
+    public function getDisplayName()
+    {
+        return $this->displayName;
+    }
+
+    /**
+     * Set the value of displayName
+     *
+     * @return  self
+     */ 
+    public function setDisplayName($displayName)
+    {
+        $this->displayName = $displayName;
 
         return $this;
     }
