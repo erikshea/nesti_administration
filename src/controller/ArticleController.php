@@ -41,21 +41,12 @@ class ArticleController extends EntityController
                     $entity->setIdImage(null);
                 } elseif ( $_FILES["image"]["error"] == 0 ) {
                     $image = $entity->getImage();
-                    if ( $image != null ){
-                        unlink ( $image->getAbsolutePath() );
-                    }else {
+                    if ( $image == null ){
                         $image = new Image;
                     }
+                    
+                    $image->setFromFiles("image");
 
-                    preg_match(
-                        "/(.*)\.([^\.]+)$/", // capture filename + ext
-                        $_FILES["image"]["name"],
-                        $matches
-                    ); 
-                    $image->setName($matches[1]);
-                    $image->setFileExtension($matches[2]);
-                    ImageDao::saveOrUpdate($image);
-                    move_uploaded_file($_FILES["image"]["tmp_name"], $image->getAbsolutePath());
                     $entity->setImage($image);
                 }
                 $formBuilder->applyDataTo($entity);

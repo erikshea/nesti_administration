@@ -140,22 +140,12 @@ class RecipeController extends EntityController
                     $entity->setIdImage(null);
                 } elseif ( $_FILES["image"]["error"] == 0 ) {
                     $image = $entity->getImage();
-                    if ( $image != null ){
-                        unlink ( $image->getAbsolutePath() );
-                    }else {
+                    if ( $image == null ){
                         $image = new Image;
                     }
 
-                    preg_match(
-                        "/(.*)\.([^\.]+)$/", // capture filename + ext
-                        $_FILES["image"]["name"],
-                        $matches
-                    ); 
-                    $image->setName($matches[1]);
-                    $image->setFileExtension($matches[2]);
-                    $image->setDateModification(FormatUtil::currentSqlDate());
-                    ImageDao::saveOrUpdate($image);
-                    move_uploaded_file($_FILES["image"]["tmp_name"], $image->getAbsolutePath());
+                    $image->setFromFiles("image");
+
                     $entity->setImage($image);
                 }
                 $formBuilder->applyDataTo($entity);
@@ -179,9 +169,9 @@ class RecipeController extends EntityController
 
         $imageUrl = null;
         if ($entity != null && $entity->getImage() != null ){
-            $imageUrl = $entity->getImage()->getUrl() . "?dateModification=" . urlencode($entity->getImage()->getDateModification());
+            $imageUrl = $entity->getImage()->getUrl();
         }
-        FormatUtil::dump($imageUrl);
+ 
         $this->addVars([
             "imageUrl" => $imageUrl,
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),

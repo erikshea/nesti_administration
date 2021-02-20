@@ -24,7 +24,8 @@ class Image extends BaseEntity{
     }
 
     public function getUrl(){
-        return SiteUtil::url("public/assets/images/content/" . $this->getFileName());
+        return SiteUtil::url("public/assets/images/content/" . $this->getFileName())
+            . "?dateModification=" . urlencode($this->getDateModification());
     }
  
     /**
@@ -125,5 +126,24 @@ class Image extends BaseEntity{
         $this->dateModification = $dateModification;
 
         return $this;
+    }
+
+
+    public function setFromFiles($fileKey)
+    {
+        if ( file_exists($this->getAbsolutePath()) ){
+            unlink ( $this->getAbsolutePath() );
+        }
+
+        preg_match(
+            "/(.*)\.([^\.]+)$/", // capture filename + ext
+            $_FILES[$fileKey]["name"],
+            $matches
+        ); 
+        $this->setName($matches[1]);
+        $this->setFileExtension($matches[2]);
+        $this->setDateModification(FormatUtil::currentSqlDate());
+        ImageDao::saveOrUpdate($this);
+        move_uploaded_file($_FILES[$fileKey]["tmp_name"], $this->getAbsolutePath());
     }
 }
