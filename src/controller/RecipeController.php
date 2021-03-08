@@ -113,6 +113,38 @@ class RecipeController extends EntityController
 
         $formBuilder = new EntityFormBuilder($entity);
         
+
+
+        if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
+            $formBuilder->setFormData($_POST[$this->getEntityClass()]);
+
+            if ($formBuilder->isValid()) {
+                if ( $_POST[$this->getEntityClass()]["imageStatus"] == "deleted" ) {
+                    $entity->setIdImage(null);
+                } elseif ( $_FILES["image"]["error"] == 0 ) {
+                    $image = $entity->getImage() ?? new Image;
+
+                    $image->setFromFiles("image");
+
+                    $entity->setImage($image);
+                }
+                $formBuilder->applyDataTo($entity);
+                $entity->setChef(MainController::getLoggedInUser()->getChef());
+
+                $this->addVars([ "message" => $entity->existsInDataSource()?"edited":"created" ]);
+
+                $this->getDaoClass()::saveOrUpdate($entity);
+                $this->setEntity($entity);
+            } else {
+                $this->addVars(["errors" => $formBuilder->getAllErrors()]);
+            }
+        }
+
+        $imageUrl = null;
+        if ($entity != null && $entity->getImage() != null ){
+            $imageUrl = $entity->getImage()->getUrl();
+        }
+
         $this->templateVars['assets']['js'][] = [
             'src'=>"DeleteModal.js",
             "type" => "text/babel",
@@ -131,47 +163,6 @@ class RecipeController extends EntityController
             "addLast" => true
         ];
 
-
-        if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
-            $formBuilder->setFormData($_POST[$this->getEntityClass()]);
-
-            if ($formBuilder->isValid()) {
-                if ( $_POST[$this->getEntityClass()]["imageStatus"] == "deleted" ) {
-                    $entity->setIdImage(null);
-                } elseif ( $_FILES["image"]["error"] == 0 ) {
-                    $image = $entity->getImage();
-                    if ( $image == null ){
-                        $image = new Image;
-                    }
-
-                    $image->setFromFiles("image");
-
-                    $entity->setImage($image);
-                }
-                $formBuilder->applyDataTo($entity);
-                $entity->setChef(MainController::getLoggedInUser()->getChef());
-
-                if ( $entity->existsInDataSource()){
-                    $this->addVars([
-                        "message" => "edited"
-                    ]);
-                } else {
-                    $this->addVars([
-                        "message" => "created"
-                    ]);
-                }
-                $this->getDaoClass()::saveOrUpdate($entity);
-                $this->setEntity($entity);
-            } else {
-                $this->addVars(["errors" => $formBuilder->getAllErrors()]);
-            }
-        }
-
-        $imageUrl = null;
-        if ($entity != null && $entity->getImage() != null ){
-            $imageUrl = $entity->getImage()->getUrl();
-        }
- 
         $this->addVars([
             "imageUrl" => $imageUrl,
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
@@ -180,6 +171,23 @@ class RecipeController extends EntityController
     }
 
 
+    public function actionImport()
+    {
+        $entity = $this->getEntity();
+
+        if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
+ 
+
+            if ( $_FILES["image"]["error"] == 0 ) {
+
+            }
+        }
+
+        $this->addVars([
+            "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
+        ]);
+    }
+    
     public function preRender()
     {
         parent::preRender();

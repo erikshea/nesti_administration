@@ -90,14 +90,14 @@ $p->makeIngredient();*/
 //FormatUtil::dump(RecipeDao::findAll(["INDEXBY"=>"name"]));
 
 
-  $newChef = new Chef();
+ // $newChef = new Chef();
 
 //$newChef = ChefDao::findOneBy("login","ZZZZaaaa");
-$newChef->setLogin("SQDQSDSAQQSD");
+/*$newChef->setLogin("SQDQSDSAQQSD");
 $newChef->setLastName("aDSQSQDSQDSQDSQDa");
 $newChef->setEmail("a@aadddDddddddddaZ.cc");
 ChefDao::saveOrUpdate($newChef);
-FormatUtil::dump($newChef);
+FormatUtil::dump($newChef);*/
 
 //FormatUtil::dump(ChefDao::findAll(["INDEXBY"=>"lastName"]));
 
@@ -125,3 +125,10 @@ FormatUtil::dump($newChef);
 // $r = RecipeDao::findById(2);
 
 // var_dump($r);
+
+
+$t = new Importation();
+$t->setIdAdministrator(4);
+$t->setIdArticle(7);
+$t->setIdSupplierOrder(156);
+ImportationDao::saveOrUpdate($t);

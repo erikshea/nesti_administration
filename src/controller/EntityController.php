@@ -36,7 +36,7 @@ class EntityController extends BaseController
      * Sets user class parameter to a user from data source if specified in url, otherwise a new user
      * @return mixed entity that corresponds to current controller
      */
-    public function getEntity()
+    public function getEntity(): mixed
     {
         if ( $this->entity == null){
             $id = SiteUtil::getUrlParameters()[2] ?? null;

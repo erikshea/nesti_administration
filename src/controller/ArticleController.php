@@ -40,10 +40,7 @@ class ArticleController extends EntityController
                 if ( $_POST[$this->getEntityClass()]["imageStatus"] == "deleted" ) {
                     $entity->setIdImage(null);
                 } elseif ( $_FILES["image"]["error"] == 0 ) {
-                    $image = $entity->getImage();
-                    if ( $image == null ){
-                        $image = new Image;
-                    }
+                    $image = $entity->getImage() ?? new Image;
                     
                     $image->setFromFiles("image");
 

@@ -437,8 +437,14 @@ class BaseDao
                 $pkColumns = [$currentDao::getPkColumnName()];
                 array_push($values, $originalId );
             } else {
-                $pkColumns = array_keys($originalId );
-                array_push($values, ...array_values($originalId));
+                // was entity fetched from DB originally?
+                if ( $originalId == null ){
+                    $pkColumns = $currentDao::getPkColumnName();
+                    array_push($values, ...array_values($entity->getId()));
+                } else {
+                    $pkColumns = array_keys($originalId );
+                    array_push($values, ...array_values($originalId));
+                }
             }
 
             $whereConditions = array_map(function ($columnName) {
