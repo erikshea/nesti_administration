@@ -45,7 +45,7 @@ class EntityController extends BaseController
                 $this->setEntity($this->getDaoClass()::findById($id)); // find corresponding user in data source
             }
 
-            if (!$this->entity) { // If no ID specified, or wrong ID specified
+            if ($this->entity == null) { // If no ID specified, or wrong ID specified
                 $class =  $this->getEntityClass();
 
                 $this->setEntity(new $class);

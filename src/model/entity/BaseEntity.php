@@ -20,10 +20,11 @@ class BaseEntity{
      * getRelatedEntities
      * Get an array of entities that are joined to the current instance by a foreign key
      * 
-     * @param  mixed $relatedEntityClass Class of the related entity to look for
+     * @param  string $relatedEntityClass Class of the related entity to look for
+     * @param  array $options
      * @return array of related entities
      */
-    public function getRelatedEntities(String $relatedEntityClass, $options=[]): array
+    public function getRelatedEntities(string $relatedEntityClass, array $options=[]): array
     {
         // find dao class of the related entity
         $relatedClassDao = $relatedEntityClass::getDaoClass();
@@ -40,10 +41,11 @@ class BaseEntity{
      * getRelatedEntity
      * Get an entity that is joined to the current instance by a foreign key
      * 
-     * @param  mixed $relatedEntityClass Class of the related entity to look for
+     * @param  string $relatedEntityClass Class of the related entity to look for
+     * @param  array $options
      * @return mixed related entity, or null if none exists
      */
-    public function getRelatedEntity(String $relatedEntityClass, $options=[]): ?BaseEntity
+    public function getRelatedEntity(string $relatedEntityClass, array $options=[])
     {
         // find column name of the related entity's primary key
         $relatedClassPrimaryKey = $relatedEntityClass::getDaoClass()::getPkColumnName();
@@ -242,11 +244,6 @@ class BaseEntity{
         return $result;
     }
 
-    /**
-     * Set the value of originalId
-     *
-     * @return  self
-     */ 
     public function setOriginalId($value, $columnName = null )
     {
         if ( $columnName == null ){

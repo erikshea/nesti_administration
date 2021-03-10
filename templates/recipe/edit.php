@@ -16,7 +16,7 @@
     </div>
     </div>
 <form
-    class="container <?= $vars["isSubmitted"] ? "" : "no-validate" ?>"
+    class="container <?= $vars["isSubmitted"] ? "needs-validation" : "no-validate" ?>"
     action="<?= $vars["baseUrl"] ?>recipe/edit/<?= $vars["entity"]->getId() ?>"
     method="post"
     enctype="multipart/form-data">

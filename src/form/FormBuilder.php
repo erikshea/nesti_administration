@@ -37,7 +37,8 @@ class FormBuilder{
             // Loop through each validator for that field
             foreach($this->propertyParameters[$propertyName]['validators'] as $validatorName){
                 // store error states (negated validator) with the validator name as key
-                if ( method_exists('FormBuilderValidator', $validatorName)){
+                
+                if ( method_exists('FormBuilderValidator', $validatorName) && isset($this->formData[$propertyName])){
                     $errored = !FormBuilderValidator::$validatorName($this->formData[$propertyName]);
                     if ( $errored ) {
                         $propertyErrors[] = $validatorName;
@@ -109,7 +110,10 @@ class FormBuilder{
             $vars["type"] = "file";
             $vars["template"] = "imageUpload";
             $vars["initialBackground"] = $vars["initialBackground"] ?? $vars["placeHolder"];
+        } elseif ( $vars['type'] == "checkbox"){
+            $vars['template'] = "checkboxFormRow";
         }
+        
         require SiteUtil::toAbsolute("templates/form/{$vars["template"]}.php");
 
         return $this;
@@ -136,6 +140,9 @@ class FormBuilder{
         $this->formData = array_merge($this->formData, $formData);
     }
     
+    public function getFormData(){
+        return $this->formData;
+    }
 
     /**
      * Get the value of propertyParameters

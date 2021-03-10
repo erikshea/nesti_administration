@@ -10,19 +10,33 @@ class FormBuilderValidator{
     /**
      * notEmpty
      * validates if property value is not empty
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
-    public static function notEmpty(?string $testSting): bool{
-        return !empty($testSting);
+    public static function notEmpty($test): bool{
+        return !empty($test);
     }
+        
+    /**
+     * isRole
+     * validates if property value is not empty
+     * @param  string $testSting
+     * @return bool true if validates
+     */
+    public static function isRole($roles): bool{
+        $isRole = !empty($roles);
+        $allRoles = ["moderator","administrator", "chef"];
+        foreach ($roles as $role){
+            $isRole &= in_array($role,$allRoles);
+        }
+        return $isRole;
+    }
+
 
      /**
      * email
      * validates if property value is a valid email
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
     public static function email(?string $testSting): bool{
@@ -35,8 +49,7 @@ class FormBuilderValidator{
      /**
      * telephone
      * validates if property value is a valid telephone number
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
     public static function telephone(?string $testSting): bool{
@@ -49,22 +62,20 @@ class FormBuilderValidator{
      /**
      * url
      * validates if property value is a valid url 
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
     public static function url(?string $testSting): bool{
         return filter_var(
             $testSting,
             FILTER_VALIDATE_URL // Need to use strict identical operator with FILTER_VALIDATE_URL
-        ) === true;  
+        ) !== false;  
     }
 
      /**
      * url
      * validates if property value is made up of letters, spaces, and hyphens
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
     public static function letters(?string $testSting): bool{
@@ -79,19 +90,17 @@ class FormBuilderValidator{
      /**
      * url
      * validates if property value is a strong password.
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
     public static function strong(?string $testSting): bool{
-        return self::calculatePasswordStrength($testSting) > 50;
+        return self::calculatePasswordStrength($testSting) > 60;
     }
 
      /**
      * url
      * validates if property value contains at least one letter.
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
     public static function oneLetter(?string $testSting): bool{
@@ -104,8 +113,7 @@ class FormBuilderValidator{
      /**
      * url
      * validates if property value contains at least one number.
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $testSting
      * @return bool true if validates
      */
     public static function oneNumber(?string $testSting): bool{
@@ -118,8 +126,7 @@ class FormBuilderValidator{
      /**
      * url
      * validates if property value contains at least one number.
-     * @param  mixed $entity whose property we must check
-     * @param  String $parameterName name of property whose value we must check
+     * @param  string $value
      * @return bool true if validates
      */
     public static function betweenZeroAndFive($value): bool{

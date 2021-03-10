@@ -30,7 +30,6 @@ class BaseController
     /**
      * render
      * renders a template
-     * @param  string $templateName template name , or null to redirect to default action
      * @return void
      */
     protected function render()

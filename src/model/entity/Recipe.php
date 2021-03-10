@@ -33,11 +33,11 @@ class Recipe extends BaseEntity{
     }
 
     public function setChef(Chef $c){
-        $this->setRelatedEntity($c);
+        return $this->setRelatedEntity($c);
     }
 
-    public function getIngredients($options){
-        $this->getIndirectlyRelatedEntities("Ingredient", "IngredientRecipe", $options);
+    public function getIngredients($options=[]){
+        return $this->getIndirectlyRelatedEntities("Ingredient", "IngredientRecipe", $options);
     }
 
     /**

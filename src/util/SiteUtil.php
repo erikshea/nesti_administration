@@ -26,10 +26,10 @@ class SiteUtil
     /**
      * toAbsolute
      * Turns a relative file path parameter into an absolute path (from project root);
-     * @param  mixed $relativePath
-     * @return String absolute path
+     * @param  string $relativePath
+     * @return string absolute path
      */
-    public static function toAbsolute(String $relativePath=""): String
+    public static function toAbsolute(string $relativePath=""): string
     {
         return __DIR__ . "/../../$relativePath";
     }
@@ -37,10 +37,10 @@ class SiteUtil
     /**
      * url
      * Transforms a relative (to project root) URL into an absolute one
-     * @param  String URL $relative to project root
+     * @param  string $relativeUrl URL $relative to project root
      * @return String absolute url
      */
-    public static function url(String $relativeUrl = ""): String
+    public static function url(string $relativeUrl = ""): String
     {
         // base url is originally called script's directory
         $baseUrl = dirname($_SERVER["SCRIPT_NAME"]);
@@ -109,7 +109,7 @@ class SiteUtil
      * 
      * @param  mixed $haystack
      * @param  mixed $needle
-     * @return void
+     * @return bool true if $haystack ends with $needs, false otherwise
      */
     public static function endsWith($haystack, $needle)
     {
@@ -126,7 +126,7 @@ class SiteUtil
 
      * @param  mixed $dirty reference array or variable to sanitize
      * @param  int $filter filter to use with filter_var
-     * @return void 
+     * @return mixed sanitized array or string 
      */
     public static function sanitize(&$dirty, int $filter = FILTER_SANITIZE_STRING)
     {

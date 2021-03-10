@@ -15,6 +15,9 @@ class EntityFormBuilder extends FormBuilder{
         // $options = array_merge([
         //     'value'=> EntityUtil::get( $this->getEntity(), $propertyName ) ?? ""
         // ], $options);
+        if ( ($this->propertyParameters[$propertyName]['options']['type'] ?? "") == "checkbox"){
+            $options["checked"] = EntityUtil::get($this->getEntity(), $propertyName);
+        }
         return parent::add($propertyName, $options);
     }
 
@@ -22,18 +25,20 @@ class EntityFormBuilder extends FormBuilder{
     /**
      * validateProperty
      * Loops through all validators for that property (if any), and returns a list of failed validators
-     * @param  String $fieldName
+     * @param  String $propertyName
+     * @param  String $validatorClass
      * @return Array errors found, by validator name (or empty array if none found)
+     * 
      * example return array:
      * ['notEmpty'],   // error found: empty value
      */
-    public function getPropertyErrors(string $propertyName, $validatorClass = 'FormBuilderValidator'){
+    public function getPropertyErrors(string $propertyName,string $validatorClass = 'FormBuilderValidator'){
         $propertyErrors = parent::getPropertyErrors($propertyName);
         
         if ( isset($this->propertyParameters[$propertyName]['validators']) ) {
             // Loop through each validator for that field
             foreach($this->propertyParameters[$propertyName]['validators'] as $validatorName){
-                if ( method_exists('EntityPropertyValidator', $validatorName)){
+                if ( method_exists('EntityPropertyValidator', $validatorName) && isset($this->formData[$propertyName])){
                     // store error states (negated validator) with the validator name as key
                     $errored = !EntityPropertyValidator::$validatorName(
                         $this->formData[$propertyName],
@@ -63,9 +68,13 @@ class EntityFormBuilder extends FormBuilder{
 
     public function applyDataTo(&$entity){
         foreach ( get_class($entity)::getDaoClass()::getColumnNames() as $columnName){
-            if ( isset($this->formData[$columnName])){
-                EntityUtil::set($entity, $columnName, $this->formData[$columnName]);
-            }
+            $this->applyDataElementTo($entity, $columnName);
+        }
+    }
+
+    public function applyDataElementTo(&$entity, $name){
+        if ( isset($this->formData[$name])){
+            EntityUtil::set($entity, $name, $this->formData[$name]);
         }
     }
 }

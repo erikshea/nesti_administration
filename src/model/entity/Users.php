@@ -28,16 +28,22 @@ class Users extends BaseEntity{
         return $this->getRelatedEntities("Orders");
     }
 
-    public function getConnectionLogs(): array{
-        return $this->getRelatedEntities("ConnectionLog");
+    public function getConnectionLogs($options=[]): array{
+        return $this->getRelatedEntities("ConnectionLog", $options);
     }
 
-    public function getComments(): array{
-        return $this->getRelatedEntities("Comment", BaseDao::FLAGS['active']);
+    public function getComments($options=['a']): array{
+        return $this->getRelatedEntities("Comment", $options);
     }
 
-    public function getRecipes(): array{
-        return $this->getIndirectlyRelatedEntities("Recipe", "Grades", BaseDao::FLAGS['active']); 
+    public function getRecipes($options=['a']): array{
+        return $this->getIndirectlyRelatedEntities("Recipe", "Grades", $options); 
+    }
+
+    public function getLatestConnectionDate(){
+        $log = $this->getConnectionLogs(["ORDER"=>"dateConnection DESC"])[0] ?? null;
+
+        return $log == null? null : $log->getDateConnection();
     }
 
     /**
@@ -59,6 +65,8 @@ class Users extends BaseEntity{
 
         return $this;
     }
+
+
 
     /**
      * Get the value of flag
@@ -347,5 +355,19 @@ class Users extends BaseEntity{
     }
 
 
+
+    public function setRoles($roles){
+        if ( in_array("chef", $roles)){
+            $this->makeChef();
+        }
+
+        if ( in_array("moderator", $roles)){
+            $this->makeModerator();
+        }
+
+        if ( in_array("administrator", $roles)){
+            $this->makeAdministrator();
+        }
+    }
     
 }

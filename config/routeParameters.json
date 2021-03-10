@@ -13,6 +13,9 @@
             "add": {
                 "name": "création",
                 "title": "Création d'un utilisateur"
+            },
+            "list": {
+                "title": "Utilisateurs"
             }
         }
     },

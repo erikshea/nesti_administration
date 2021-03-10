@@ -125,10 +125,22 @@ FormatUtil::dump($newChef);*/
 // $r = RecipeDao::findById(2);
 
 // var_dump($r);
+$r = RecipeDao::findById(2);
+$ing = $r->getIngredients();
 
+FormatUtil::dump($ing);
 
+/*
+
+$a = ArticleDao::findById(1);
+$o = $a->getOrders();
+
+FormatUtil::dump($o);
+*/
+
+/*
 $t = new Importation();
 $t->setIdAdministrator(4);
 $t->setIdArticle(7);
 $t->setIdSupplierOrder(156);
-ImportationDao::saveOrUpdate($t);
+ImportationDao::saveOrUpdate($t);*/

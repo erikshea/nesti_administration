@@ -20,6 +20,7 @@
         },
         "email": {
             "options": {
+                "icon": "fas fa-envelope-open",
                 "label": "Email"
             },
             "validators": ["email", "unique", "notEmpty"]
@@ -29,7 +30,7 @@
                 "icon": "far fa-user",
                 "label": "Identifiant"
             },
-            "validators": ["email", "unique", "notEmpty"]
+            "validators": ["unique", "notEmpty"]
         },
         "address1": {
             "options": {
@@ -58,11 +59,19 @@
         },
         "password": {
             "options": {
-                "icon": "fas fa-lock",
                 "label": "Mot de passe",
-                "type": "password"
+                "type": "password",
+                "template": "indicatedPasswordFormRow"
             },
             "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
+        },
+        "roles": {
+            "options": {
+                "label": "Rôle",
+                "type": "checkbox",
+                "choices": ["moderator","administrator","chef"]
+            },
+            "validators": ["isRole"]
         }
     },
     "Recipe": {

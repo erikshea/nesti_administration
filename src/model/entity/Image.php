@@ -16,11 +16,13 @@ class Image extends BaseEntity{
     }
 
     public function getFileName(){
-        return $this->getId() . "." . $this->getFileExtension();
+        return $this->getFileExtension() == null ?
+            null : $this->getId() . "." . $this->getFileExtension();
     }
 
     public function getAbsolutePath(){
-        return SiteUtil::toAbsolute("public/assets/images/content/" . $this->getFileName());
+        return $this->getFileExtension() == null ?
+            null : SiteUtil::toAbsolute("public/assets/images/content/" . $this->getFileName());
     }
 
     public function getUrl(){

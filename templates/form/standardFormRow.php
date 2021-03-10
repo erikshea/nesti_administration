@@ -12,7 +12,7 @@
         <?php endif ?>
                 <input
                     id="<?= $vars['fieldName'] ?>"
-                    class="form-control <?= empty($vars['errorMessages'])?'invalid':'is-invalid' ?>"
+                    class="form-control <?= empty($vars['errorMessages'])?'is-valid':'is-invalid' ?>"
                     name="<?= "{$vars['formName']}[{$vars['fieldName']}]" ?>"
                     type="<?= $vars['type'] ?>"
                     value="<?= $vars['value'] ?>"
@@ -26,7 +26,7 @@
             </div>
         </div>
 <?php foreach ($vars['errorMessages'] as $errorMessage): ?>
-        <div class='invalid-feedback'><?= $errorMessage ?></div>
+        <div class='invalid-feedback d-block'><?= $errorMessage ?></div>
 <?php endforeach ?>
     </div>
 </div>

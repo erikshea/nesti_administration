@@ -14,8 +14,8 @@ class Article extends BaseEntity{
     private $displayName;
 
 
-    public function getArticlePrices(): array{
-        return $this->getRelatedEntities("ArticlePrice");
+    public function getArticlePrices($options): array{
+        return $this->getRelatedEntities("ArticlePrice",$options);
     }
 
     public function getLots($options=[]): array{
@@ -57,7 +57,7 @@ class Article extends BaseEntity{
     }
 
 
-    public function getOrders($options='a'): array{
+    public function getOrders($options=[]): array{
         return $this->getIndirectlyRelatedEntities("Orders", "OrderLine", $options); 
     }
 
@@ -253,6 +253,10 @@ class Article extends BaseEntity{
      */ 
     public function getDisplayName()
     {
+        if ( $this->displayName == null && $this->getProduct() != null ){
+          $this->displayName = $this->getProduct()->getName();
+        }
+
         return $this->displayName;
     }
 

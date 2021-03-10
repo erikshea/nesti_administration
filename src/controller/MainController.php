@@ -163,7 +163,7 @@ class MainController
 
             $allowedForRoute =  $routeParameters[$currentController]['actions'][$currentAction]['allowed']
                             ??  $routeParameters[$currentController]['allowed']
-                            ??  [ 'moderator', 'chef', "administrator"];
+                            ??  ['all'];
             
             $isAllowed = false;    
 

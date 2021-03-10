@@ -28,11 +28,11 @@ class FormatUtil {
      * endsWith
      * check if a string starts with another string
      * 
-     * @param  mixed $haystack
-     * @param  mixed $needle
-     * @return void
+     * @param  string $haystack
+     * @param  string $needle
+     * @return bool
      */
-    public static function startsWith( $haystack, $needle ) {
+    public static function startsWith( string $haystack, string $needle ) {
         $length = strlen( $needle );
         if( !$length ) {
             return true;
@@ -47,7 +47,7 @@ class FormatUtil {
      * 
      * @param  mixed $haystack
      * @param  mixed $needle
-     * @return void
+     * @return bool true if $haystack ends with $needle, false otherwise
      */
     public static function endsWith( $haystack, $needle ) {
         $length = strlen( $needle );
@@ -77,14 +77,58 @@ class FormatUtil {
     }
 
     public static function frenchTime($date){
-        setlocale(LC_TIME, "fr_FR.utf8", "French");
-        return utf8_encode(strftime("%d %B %G, %Hh%M", strtotime($date)));
-        setlocale(LC_ALL, 0);
+        if ($date ==null){
+            $formattedDate = "-";
+        } else {
+            setlocale(LC_TIME, "fr_FR.utf8", "French");
+            $formattedDate = utf8_encode(strftime("%d %B %G, %Hh%M", strtotime($date)));
+        }
+
+        return $formattedDate;
     }
 
     public static function currentSqlDate(){
         $dt = new DateTime();
         return $dt->format('Y-m-d H:i:s');
+    }
+
+    public static function translateFlag($flag){
+        switch ($flag) {
+            case 'a' : 
+                $translated = "Actif";
+                break;
+            case 'w' :
+                $translated = "En attente";
+                break;
+            default :
+                $translated = "Bloqué";
+        }
+
+        return $translated;
+    }
+
+
+    public static function translateRoles( $roles ){
+        $translatedRoles = [];
+        foreach( $roles as $role) {
+            $translatedRoles[] = static::translate($role);
+        }
+        return $translatedRoles;
+    }
+
+    public static function translate( $english ){
+
+        switch ($english) {
+            case 'administrator' : 
+                $french = "Admin";
+                break;
+            case 'moderator' :
+                $french = "Modérateur";
+                break;
+            case 'chef' :
+                $french = "Chef";
+        }
+        return $french;
     }
 }
 
