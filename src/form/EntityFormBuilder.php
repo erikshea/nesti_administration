@@ -15,7 +15,8 @@ class EntityFormBuilder extends FormBuilder{
         // $options = array_merge([
         //     'value'=> EntityUtil::get( $this->getEntity(), $propertyName ) ?? ""
         // ], $options);
-        if ( ($this->propertyParameters[$propertyName]['options']['type'] ?? "") == "checkbox"){
+        $type = $this->propertyParameters[$propertyName]['options']['type'] ?? "";
+        if ( $type == "checkbox" || $type == "radio"){
             $options["checked"] = EntityUtil::get($this->getEntity(), $propertyName);
         }
         return parent::add($propertyName, $options);

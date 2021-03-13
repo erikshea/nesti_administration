@@ -4,7 +4,7 @@
             "options": {
                 "label": "Prénom"
             },
-            "validators": ["notEmpty","letters"]
+            "validators": ["notEmpty", "letters"]
         },
         "lastName": {
             "options": {
@@ -12,10 +12,10 @@
             },
             "validators": ["notEmpty", "letters"]
         },
-        "tel" : {
+        "tel": {
             "options": {
                 "label": "Numéro de téléphone"
-                },
+            },
             "validators": ["telephone"]
         },
         "email": {
@@ -69,32 +69,42 @@
             "options": {
                 "label": "Rôle",
                 "type": "checkbox",
-                "choices": ["moderator","administrator","chef"]
+                "template": "checkboxFormRow",
+                "choices": ["moderator", "administrator", "chef"]
             },
             "validators": ["isRole"]
+        },
+        "flag": {
+            "options": {
+                "label": "État",
+                "type": "radio",
+                "template": "checkboxFormRow",
+                "choices": ["a", "w", "b"]
+            },
+            "validators": ["isFlag"]
         }
     },
     "Recipe": {
         "name": {
-                "options": {
+            "options": {
                 "label": "Nom de la recette"
             },
             "validators": ["notEmpty"]
         },
         "difficulty": {
-                "options": {
+            "options": {
                 "label": "Difficulté (note sur 5)"
             },
             "validators": ["notEmpty", "betweenZeroAndFive"]
         },
-        "portions" : {
-                "options": {
+        "portions": {
+            "options": {
                 "label": "Nombre de personnes"
             },
             "validators": ["notEmpty"]
         },
         "preparationTime": {
-                "options": {
+            "options": {
                 "label": "Temps de préparation en minutes"
             },
             "validators": ["notEmpty"]
@@ -108,7 +118,7 @@
     },
     "Article": {
         "displayName": {
-                "options": {
+            "options": {
                 "label": "Nom de l'article pour l'utilisateur"
             },
             "validators": ["notEmpty"]

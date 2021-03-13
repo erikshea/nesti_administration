@@ -79,6 +79,15 @@ body{
     color: var(--color-danger);
 }
 
+.color-secondary-dark{
+    color: var(--color-secondary-dark);
+}
+
+
+.bg-color-secondary{
+    background-color: var(--color-secondary);
+}
+
 a {
     color: var(--color-primary-dark);
 }
@@ -111,6 +120,16 @@ h2{
     font-weight: 900;
 }
 
+h3{
+    font-size: 1.4em;
+    font-weight: 900;
+}
+
+h4{
+    font-size: 1.1em;
+    font-weight: 900;
+}
+
 .no-validate .is-invalid,
 .no-validate .is-valid{
     border-color: var(--color-primary);
@@ -129,6 +148,10 @@ h2{
     border-radius: 0.4rem;
     background-color: var(--color-classic-base);
     padding: 0.5rem;
+}
+
+.list-group .list-group-item{
+    padding: 0.3rem 1.25rem;
 }
 
 
@@ -268,4 +291,8 @@ main .input-group input{
 
 .btn-sm {
     padding-top: 0.4rem;
+}
+
+.orders__table tbody tr{
+    cursor: pointer;
 }

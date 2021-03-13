@@ -55,7 +55,9 @@ class BaseController
             'breadcrumbs' => $this->getBreadcrumbs(),
             'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
             'currentUser' => MainController::getLoggedInUser(),
-            'javascriptVariables' => [ 'baseUrl'=>SiteUtil::url() ]
+            'javascriptVariables' => array_merge(
+                [ 'baseUrl'=>SiteUtil::url() ],
+                $this->templateVars['javascriptVariables'] ?? [] )
         ]);
     }
 
@@ -109,7 +111,7 @@ class BaseController
                 if ( $asset["addLast"] ?? false ){
                     unset($asset["addLast"]);
                     $lastAdded[$assetType][] =  $asset;
-                    unset($assetList[$i]);;
+                    unset($assetList[$i]);
 
                 }
             }

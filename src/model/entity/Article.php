@@ -14,6 +14,47 @@ class Article extends BaseEntity{
     private $displayName;
 
 
+
+    public function getQuantitySold(){
+        $quantity = 0;
+
+        foreach ($this->getOrderLines() as $orderLine){
+            $quantity += $orderLine->getQuantity();
+        }
+
+        return $quantity;
+    }
+
+    public function getTotalSales(){
+        $total = 0;
+
+        foreach ($this->getOrderLines() as $orderLine){
+            $total += $orderLine->getSubTotal();
+        }
+
+        return $total;
+    }
+
+    public function getQuantityPurchased(){
+        $quantity = 0;
+
+        foreach ($this->getLots() as $lot){
+            $quantity += $lot->getQuantity();
+        }
+
+        return $quantity;
+    }
+
+    public function getTotalPurchases(){
+        $total = 0;
+
+        foreach ($this->getLots() as $lot){
+            $total += $lot->getSubTotal();
+        }
+
+        return $total;
+    }
+
     public function getArticlePrices($options): array{
         return $this->getRelatedEntities("ArticlePrice",$options);
     }
@@ -55,6 +96,7 @@ class Article extends BaseEntity{
     public function getArticlePriceAt($date){
         return $this->getArticlePrices(["dateStart <" => $date, "ORDER" => "dateStart DESC"])[0] ?? null;
     }
+
 
 
     public function getOrders($options=[]): array{

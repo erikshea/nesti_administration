@@ -16,15 +16,19 @@ $ ( () => {
         if (input.files && input.files[0]) {
             $("#image-upload__status").val("changed");
             var reader = new FileReader();
+
+            reader.readAsDataURL(input.files[0]);
+
             reader.onload = (e) => {
                 updatePreview('url(' + e.target.result + ')');
             }
-            reader.readAsDataURL(input.files[0]);
         }
     });
 
     $("#image-upload__delete").click(() => {
+        // reset input value (file) while keeping attached event handlers
         $("#image-upload__add").val("").clone(true);
+        
         $("#image-upload__status").val("deleted");
         updatePreview(placeHolder);
     });

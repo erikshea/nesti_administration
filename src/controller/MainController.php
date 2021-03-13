@@ -58,7 +58,7 @@ class MainController
     public static function setLoggedInUser( $user, $password=null){
         static::$loggedInUser = $user;
 
-
+        
         setcookie("user[login]", $user?$user->getLogin():null, 2147483647, '/');
         setcookie("user[password]", $password, 2147483647, '/');
     }

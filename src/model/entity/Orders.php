@@ -6,20 +6,6 @@ class Orders extends BaseEntity{
     private $dateCreation;
     private $idUsers;
 
-    public function getStatus(){
-        switch( $this->getFlag()){
-            case "a":
-                $status = "Payée";
-                break;
-            case "w":
-                $status = "En attente";
-                break;
-            default:
-                $status = "Annulée";
-            break;
-        }
-        return $status;
-    }
     public function getOrderLines($options=[]): array{
         return $this->getRelatedEntities("OrderLine", $options);
     }

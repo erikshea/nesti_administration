@@ -3,11 +3,11 @@ class Moderator extends Users{
     private $idModerator;
 
 
-    public function getApprovedComment(): array{
-        return $this->getRelatedEntities("Comment");
+    public function getModeratedComments($options=[]): array{
+        return $this->getRelatedEntities("Comment",$options);
     }
 
-    public function setApprovedComment(Comment $c){
+    public function setModeratedComments(Comment $c){
         $this->setRelatedEntity($c);
     }
 

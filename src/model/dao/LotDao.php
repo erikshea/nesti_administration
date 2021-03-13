@@ -1,5 +1,5 @@
 <?php
 
 class LotDao extends BaseDao{
-    protected static $pkColumns = [ "idArticle", "idSupplierOrder"];
+    protected static $pkColumns = [ "idArticle", "orderNumber"];
 }

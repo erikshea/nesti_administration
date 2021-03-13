@@ -18,7 +18,7 @@
 
     <div class="row">
         <div class="col-7">
-            <table class="table listing">
+            <table class="table listing orders__table">
                 <thead>
                         <tr>
                         <th scope="col">ID</th>
@@ -33,18 +33,16 @@
                     <tr>
                         <td><?= $order->getId() ?></td>
                         <td><?= $order->getUser()->getFullName() ?></td>
-                        <td><?= $order->getTotal() ?></td>
-                        <td><?= FormatUtil::frenchTime($order->getDateCreation()) ?></td>
-                        <td><?= $order->getStatus() ?></td>
+                        <td><?= TranslateUtil::translateNumber($order->getTotal())?>€</td>
+                        <td><?= TranslateUtil::translateDate($order->getDateCreation()) ?></td>
+                        <td><?= TranslateUtil::translate($order->getFlag(),"Orders") ?></td>
                     </tr>
 <?php endforeach ?>
                 </tbody>
             </table>
         </div>
         <div class="col-5">
-            <h2>Détail</h2>
-            <div id="order-items" class="h-100">
-            </div>
+            <div id="order-items" class="h-100"/>
         </div>
     </div>
 </div>

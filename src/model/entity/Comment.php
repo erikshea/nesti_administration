@@ -1,7 +1,6 @@
 <?php
 
 class Comment extends BaseEntity{
-    private $idComment;
     private $commentTitle;
     private $commentContent;
     private $dateCreation;
@@ -62,25 +61,6 @@ class Comment extends BaseEntity{
         return $this;
     }
 
-    /**
-     * Get the value of idComment
-     */
-    public function getIdComment()
-    {
-        return $this->idComment;
-    }
-
-    /**
-     * Set the value of idComment
-     *
-     * @return  self
-     */
-    public function setIdComment($idComment)
-    {
-        $this->idComment = $idComment;
-
-        return $this;
-    }
 
     /**
      * Get the value of commentTitle

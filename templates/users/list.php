@@ -39,9 +39,9 @@
                     <tr>
                         <th scope="row"><?= $user->getId() ?></th>
                         <td><?= $user->getFullName() ?></td>
-                        <td><?= implode(' , ',  FormatUtil::translateRoles($user->getRoles()) ) ?></td>
-                        <td><?= FormatUtil::frenchTime($user->getLatestConnectionDate()) ?></td>
-                        <td><?= FormatUtil::translateFlag($user->getFlag()) ?></td>
+                        <td><?= implode(' , ',  TranslateUtil::translateArray($user->getRoles(), "Users") ) ?></td>
+                        <td><?= TranslateUtil::translateDate($user->getLatestConnectionDate()) ?></td>
+                        <td><?= TranslateUtil::translate($user->getFlag(), "Users") ?></td>
                         <td>
                             <div class="listing__actions">
                                 <a href="<?= $vars['baseUrl'] . "user/edit/" . $user->getId() ?>">Modifier</a>

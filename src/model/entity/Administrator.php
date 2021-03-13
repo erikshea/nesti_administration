@@ -4,8 +4,8 @@ class Administrator extends Users{
     private $idAdministrator;
 
 
-    public function getImportations(): array{
-        return $this->getRelatedEntities("Importation"); 
+    public function getImportations($options=[]): array{
+        return $this->getRelatedEntities("Importation",$options); 
     }
 
     public function getLots(): array{
@@ -30,5 +30,9 @@ class Administrator extends Users{
         $this->idAdministrator = $idAdministrator;
 
         return $this;
+    }
+
+    public function getLatestImportation(){
+        return $this->getImportations(["ORDER"=>"dateImportation DESC"])[0] ?? null;
     }
 }

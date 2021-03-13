@@ -56,7 +56,7 @@
         "controller"    : "StatisticsController",
         "defaultAction" : "show",
         "name": "statistiques",
-        "allowed": ["administrator"],
+        "allowed": ["all"],
         "actions": {
             "show": {
                 "title": "Statistiques"

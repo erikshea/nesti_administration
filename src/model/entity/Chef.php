@@ -2,7 +2,7 @@
 class Chef extends Users{
     private $idChef;
 
-    public function getRecipes($options="a"): array{
+    public function getRecipes($options=["a"]): array{
         return $this->getRelatedEntities("Recipe", $options);
     }
 
@@ -24,5 +24,9 @@ class Chef extends Users{
         $this->idChef = $idChef;
 
         return $this;
+    }
+
+    public function getLatestRecipe(){
+        return $this->getRecipes(["ORDER"=>"dateCreation DESC","flag"=>"a"])[0] ?? null;
     }
 }

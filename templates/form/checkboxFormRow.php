@@ -9,18 +9,18 @@
                         <input
                             id="<?= $vars['fieldName'] ?>__choice-<?= $i ?>"
                             class="form-check-input <?= empty($vars['errorMessages'])?'invalid':'is-invalid' ?>"
-                            name="<?= "{$vars['formName']}[{$vars['fieldName']}][]" ?>"
-                            type="checkbox"
+                            name="<?= "{$vars['formName']}[{$vars['fieldName']}]" . (is_array($vars['checked'])?"[]":"") ?>"
+                            type="<?= $vars['type'] ?>"
                             value="<?= $choice ?>"
                             <?= ($vars['readOnly'] ?? false )?"readonly":""?>
-                            <?= in_array( $choice, $vars['checked'])?"checked":""?>
+                            <?= is_array($vars['checked'])? (in_array( $choice, $vars['checked'])?"checked":""):($choice==$vars['checked']?"checked":"") ?>
     <?php if ($vars['required'] && $i == 0): ?>
                             required="required"
                             oninvalid="this.setCustomValidity('Ce champ doit être renseigné')"
                             oninput="this.setCustomValidity('')"
     <?php endif ?>
                         >
-                        <label class="form-check-label" for="<?= $vars['fieldName'] ?>__choice-<?= $i ?>"><?= FormatUtil::translate($choice) ?></label>
+                        <label class="form-check-label" for="<?= $vars['fieldName'] ?>__choice-<?= $i ?>"><?= TranslateUtil::translate($choice,$vars['formName'] ) ?></label>
                     </div>
 <?php endforeach ?>
                 </div>

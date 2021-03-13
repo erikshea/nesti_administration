@@ -179,7 +179,7 @@ class BaseDao
             }
 
             $sql .= $optionParameters['condition'];
-            if ( $optionParameters['value'] != static::IGNORE_VALUE )
+            if ( !is_float($optionParameters['value']) || $optionParameters['value'] != static::IGNORE_VALUE )
             {
                 $values[] = $optionParameters['value'];
             }
@@ -668,7 +668,11 @@ class BaseDao
                     if (isset($options["INDEXBY"])) {
                         // if options specify a getter to index by
                         $key = EntityUtil::get($entity, $options["INDEXBY"]);
-                        $result[$key] = $entity;
+                        if ( !isset($result[$key]) ) {
+                            $result[$key] = [];
+                        }
+
+                        $result[$key][] = $entity;
                     } else {
                         $result[] = $entity;
                     }

@@ -1,11 +1,16 @@
 <?php
 
 class Lot extends BaseEntity{
-    private $idSupplierOrder;
+    private $orderNumber;
     private $unitCost;
     private $dateReception;
     private $quantity;
     private $idArticle;
+
+
+    public function getSubTotal(){
+        return $this->getUnitCost() * $this->getQuantity();
+    }
 
     public function getArticle(): ?Article{
         return $this->getRelatedEntity("Article");
@@ -16,8 +21,8 @@ class Lot extends BaseEntity{
     }
 
 
-    public function getImportations(): array{
-        return $this->getRelatedEntities("Importation");
+    public function getImportations($options=[]): array{
+        return $this->getRelatedEntities("Importation",$options);
     }
 
     public function getAdmins($options=['a']): array{
@@ -46,21 +51,21 @@ class Lot extends BaseEntity{
     }
 
     /**
-     * Get the value of idSupplierOrder
+     * Get the value of orderNumber
      */
-    public function getIdSupplierOrder()
+    public function getOrderNumber()
     {
-        return $this->idSupplierOrder;
+        return $this->orderNumber;
     }
 
     /**
-     * Set the value of idSupplierOrder
+     * Set the value of orderNumber
      *
      * @return  self
      */
-    public function setIdSupplierOrder($idSupplierOrder)
+    public function setOrderNumber($orderNumber)
     {
-        $this->idSupplierOrder = $idSupplierOrder;
+        $this->orderNumber = $orderNumber;
 
         return $this;
     }

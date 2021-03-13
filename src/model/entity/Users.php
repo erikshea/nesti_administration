@@ -24,8 +24,8 @@ class Users extends BaseEntity{
     }
 
 
-    public function getOrders(): array{
-        return $this->getRelatedEntities("Orders");
+    public function getOrders($options=[]): array{
+        return $this->getRelatedEntities("Orders",$options);
     }
 
     public function getConnectionLogs($options=[]): array{
@@ -46,6 +46,18 @@ class Users extends BaseEntity{
         return $log == null? null : $log->getDateConnection();
     }
 
+    public function getLatestOrder(){
+        return $this->getOrders(["ORDER"=>"dateCreation DESC"])[0] ?? null;
+    }
+
+    
+
+    public function setPasswordHashFromPlaintext($plaintextPassword){
+        $this->setPasswordHash(password_hash($plaintextPassword, PASSWORD_DEFAULT));
+    }
+    public function isPassword($plaintextPassword){
+        return password_verify ( $plaintextPassword, $this->getPasswordHash() );
+    }
     /**
      * Get the value of dateCreation
      */
@@ -206,13 +218,6 @@ class Users extends BaseEntity{
         $this->login = $login;
 
         return $this;
-    }
-
-    public function setPasswordHashFromPlaintext($plaintextPassword){
-        $this->setPasswordHash(password_hash($plaintextPassword, PASSWORD_DEFAULT));
-    }
-    public function isPassword($plaintextPassword){
-        return password_verify ( $plaintextPassword, $this->getPasswordHash() );
     }
 
     /**

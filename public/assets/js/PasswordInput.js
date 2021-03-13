@@ -1,7 +1,7 @@
 
 const calculatePasswordStrength = (password) => {
     let possibleChars = 1; // set of potentially different characters in password
-    ["09", "az", "AZ", " /"].forEach( range => {
+    ["09", "az", "AZ"].forEach( range => {
         let re = new RegExp(`^.*[${range[0]}-${range[1]}].*$`);
         if ( re.test(password) ) {
             possibleChars += range.codePointAt(1) - range.codePointAt(0);
@@ -63,6 +63,7 @@ const IndicatedPasswordField = (props) => {
                         </div>
                         <input
                             type='password'
+                            name={props.name}
                             className={'password-input form-control ' + ( failedValidators.length == 0 ? "is-valid":"is-invalid") } 
                             onChange={(e)=>setPassword(e.target.value)}
                         />

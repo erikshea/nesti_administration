@@ -39,7 +39,7 @@ class UsersController extends EntityController
     public function actionAdd()
     {
         $formBuilder = new EntityFormBuilder($this->getEntity());
-        $entity = $this->getEntity();
+        $user = $this->getEntity();
 
         $this->addVars([
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
@@ -51,12 +51,16 @@ class UsersController extends EntityController
             if ( !isset($_POST["Users"]["roles"]) ){
                 $_POST["Users"]["roles"] = [];
             }
-            
+
             $formBuilder->setFormData($_POST[$this->getEntityClass()]);
             if ($formBuilder->isValid()) {
-                $formBuilder->applyDataTo($entity);
-                $this->getDaoClass()::saveOrUpdate($entity);
-                $formBuilder->applyDataElementTo($entity,"roles");
+                $formBuilder->applyDataTo($user);
+
+                $password = $formBuilder->getFormData()["password"];
+                $user->setPasswordHashFromPlaintext($password);
+
+                $this->getDaoClass()::saveOrUpdate($user);
+                $formBuilder->applyDataElementTo($user,"roles");
 
                 MainController::redirect("user/edit/".$this->getEntity()->getId());
             } else {
@@ -64,6 +68,53 @@ class UsersController extends EntityController
             }
         }
     }
+
+
+    /**
+     * edit
+     * edit an existing recipe, or a newly-created one
+     * @return void
+     */
+    public function actionEdit()
+    {
+        $formBuilder = new EntityFormBuilder($this->getEntity());
+
+        $this->addVars([
+            "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
+            "formBuilder" => $formBuilder
+        ]);
+
+        if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
+            
+            if ( !isset($_POST["Users"]["roles"]) ){
+                $_POST["Users"]["roles"] = [];
+            }
+
+            $formBuilder->setFormData($_POST[$this->getEntityClass()]);
+            if ($formBuilder->isValid()) {
+                $formBuilder->applyDataTo($user);
+
+                $this->getDaoClass()::saveOrUpdate($user);
+                $formBuilder->applyDataElementTo($user,"roles");
+
+                MainController::redirect("user/edit/".$this->getEntity()->getId());
+            } else {
+                $this->addVars(["errors" => $formBuilder->getAllErrors()]);
+            }
+        }
+
+           
+        
+        $this->templateVars['assets']['js'][] = [
+            'src' => 'ModerateComment.js'
+        ];
+        
+        $this->templateVars['assets']['js'][] = [
+            'src' => 'OrderItems.js',
+            "type" => "text/babel"
+        ];
+    }
+
 
 
     public function actionList()
@@ -101,4 +152,15 @@ class UsersController extends EntityController
             'src' => 'babel.min.js'
         ];
     }
+
+
+
+    public function actionModerateCommentAjax(){
+        $comment = CommentDao::findOne(["idRecipe" => $_POST["idRecipe"], "idUsers" => $_POST["idUsers"]]);
+        $t = ["idRecipe" => $_POST["idRecipe"], "idUsers" => $_POST["idUsers"]];
+        $comment->setFlag( $_POST["blocks"] == "true" ? 'b':'a' );
+        CommentDao::saveOrUpdate($comment);
+        echo $comment->getFlag();
+    }
+
 }

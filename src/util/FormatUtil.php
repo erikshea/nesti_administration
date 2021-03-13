@@ -76,59 +76,10 @@ class FormatUtil {
         return $result;
     }
 
-    public static function frenchTime($date){
-        if ($date ==null){
-            $formattedDate = "-";
-        } else {
-            setlocale(LC_TIME, "fr_FR.utf8", "French");
-            $formattedDate = utf8_encode(strftime("%d %B %G, %Hh%M", strtotime($date)));
-        }
-
-        return $formattedDate;
-    }
 
     public static function currentSqlDate(){
         $dt = new DateTime();
         return $dt->format('Y-m-d H:i:s');
-    }
-
-    public static function translateFlag($flag){
-        switch ($flag) {
-            case 'a' : 
-                $translated = "Actif";
-                break;
-            case 'w' :
-                $translated = "En attente";
-                break;
-            default :
-                $translated = "Bloqué";
-        }
-
-        return $translated;
-    }
-
-
-    public static function translateRoles( $roles ){
-        $translatedRoles = [];
-        foreach( $roles as $role) {
-            $translatedRoles[] = static::translate($role);
-        }
-        return $translatedRoles;
-    }
-
-    public static function translate( $english ){
-
-        switch ($english) {
-            case 'administrator' : 
-                $french = "Admin";
-                break;
-            case 'moderator' :
-                $french = "Modérateur";
-                break;
-            case 'chef' :
-                $french = "Chef";
-        }
-        return $french;
     }
 }
 

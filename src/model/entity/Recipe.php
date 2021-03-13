@@ -11,6 +11,23 @@ class Recipe extends BaseEntity{
     private $idChef;
     private $idImage;
 
+
+    public function getAverageGrade(){
+        $grade =null;
+
+        $i = 0;
+        $total = 0;
+        foreach($this->getGrades() as $grade){
+            $i++;
+            $total += $grade->getRating();
+        }
+        return $i == 0? null:$total/$i;
+    }
+
+    public function getGrades($options=[]): array{
+        return $this->getRelatedEntities("Grades",$options);
+    }
+
     public function getComments(): array{
         return $this->getRelatedEntities("Comment");
     }

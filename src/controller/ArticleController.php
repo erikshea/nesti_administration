@@ -18,7 +18,7 @@ class ArticleController extends EntityController
             ];
         }, $order->getOrderLines());
 
-        echo json_encode(['orderItems' => $orderItems]);
+        echo json_encode(['id'=>$_POST["idOrders"], 'orderItems' => $orderItems]);
     }
 
     public function actionEdit()
@@ -91,6 +91,12 @@ class ArticleController extends EntityController
             $orders=[];
         }
         $this->addVars(['orders' => $orders]);
+
+        
+        $this->templateVars['assets']['js'][] = [
+            'src' => 'OrderItems.js',
+            "type" => "text/babel"
+        ];
     }
 
 

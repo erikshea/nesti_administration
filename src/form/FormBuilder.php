@@ -110,8 +110,6 @@ class FormBuilder{
             $vars["type"] = "file";
             $vars["template"] = "imageUpload";
             $vars["initialBackground"] = $vars["initialBackground"] ?? $vars["placeHolder"];
-        } elseif ( $vars['type'] == "checkbox"){
-            $vars['template'] = "checkboxFormRow";
         }
         
         require SiteUtil::toAbsolute("templates/form/{$vars["template"]}.php");
