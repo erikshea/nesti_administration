@@ -16,6 +16,10 @@
             },
             "list": {
                 "title": "Utilisateurs"
+            },
+            "login": {
+                "title": "Connexion",
+                "allowed": [ "guest" ]
             }
         }
     },
@@ -76,5 +80,9 @@
                 "title": "Cette page n'existe pas"
             }
         }
+    },
+    "api": {
+        "controller"    : "ApiController",
+        "allowed": ["all"]
     }
 }

@@ -22,7 +22,7 @@ class BaseController
         $actionMethod = static::translateToActionMethod($actionSlug); 
         $this->$actionMethod();
 
-        if  ( !FormatUtil::endsWith($actionMethod, "Ajax") ){
+        if  ( !FormatUtil::endsWith($actionMethod, "Ajax") && !FormatUtil::endsWith($actionMethod, "Api")){
             $this->render();
         }
     }

@@ -29,20 +29,26 @@ class FormBuilder{
      * ['notEmpty'],   // error found: empty value
      */
     public function getPropertyErrors(string $propertyName){
-        $validatorClass = 'FormBuilderValidator';
+     //   $validatorClass = 'FormBuilderValidator';
 
         $propertyErrors = [];
 
         if ( isset($this->propertyParameters[$propertyName]['validators']) ) {
             // Loop through each validator for that field
             foreach($this->propertyParameters[$propertyName]['validators'] as $validatorName){
-                // store error states (negated validator) with the validator name as key
+                $errored = false;
                 
-                if ( method_exists('FormBuilderValidator', $validatorName) && isset($this->formData[$propertyName])){
-                    $errored = !FormBuilderValidator::$validatorName($this->formData[$propertyName]);
-                    if ( $errored ) {
-                        $propertyErrors[] = $validatorName;
+                if (preg_match('/(.*)\((.*)\)/', $validatorName, $matches)){
+                    $validatorName = $matches[1];
+                    $fieldNameParameter = $matches[2];
+                    if ( method_exists('FormBuilderValidator', $validatorName) && isset($this->formData[$propertyName])){
+                        $errored = !FormBuilderValidator::$validatorName($this->formData[$propertyName], $this->formData[$fieldNameParameter]);
                     }
+                } elseif ( method_exists('FormBuilderValidator', $validatorName) && isset($this->formData[$propertyName])){
+                    $errored = !FormBuilderValidator::$validatorName($this->formData[$propertyName]);
+                }
+                if ( $errored ) {
+                    $propertyErrors[] = $validatorName;
                 }
             }
         }

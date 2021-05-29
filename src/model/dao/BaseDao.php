@@ -4,6 +4,7 @@ class BaseDao
     protected const  IGNORE_VALUE = 7894123532137898798797467644653978789798;
     protected static $cachedData = ['columnNames' => [], 'columnDefaults'=>[], 'primaryKeyColumns'=>[]];
     protected static $pkColumns = null;
+    protected static $tablePrefix = "nesti_a_";
 
     public const FLAGS = [
         'active'  => 'a',
@@ -18,7 +19,7 @@ class BaseDao
      */
     public static function getTableName(): String
     {
-        return strtolower(static::getEntityClass());
+        return static::$tablePrefix . strtolower(static::getEntityClass());
     }
 
     /**

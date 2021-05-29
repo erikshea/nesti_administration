@@ -65,6 +65,14 @@
             },
             "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
         },
+        "passwordConfirm": {
+            "options": {
+                "label": "Confirmation du mot de passe",
+                "type": "password",
+                "value": ""
+            },
+            "validators": ["matchesField(password)"]
+        },
         "roles": {
             "options": {
                 "label": "Rôle",

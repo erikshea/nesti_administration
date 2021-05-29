@@ -3,12 +3,12 @@
         <div class="col-9  col-md-8 col-lg-7  ">
 
             <div class="login-form">
-<?php if (@$vars['message'] == "invalid"): ?>
+<?php if ($vars['message'] ?? "" == "invalid"): ?>
                 <div class="alert alert-danger text-center p-3" role="alert">
                     Vos identifiants sont incorrects.
                 </div>
 <?php endif ?>
-<?php if (@$vars['message'] == "disconnect"): ?>
+<?php if ($vars['message'] ?? "" == "disconnect"): ?>
                 <div class="alert alert-success text-center p-3" role="alert">
                     Déconnexion réussie.
                 </div>

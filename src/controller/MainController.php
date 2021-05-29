@@ -48,7 +48,8 @@ class MainController
     public static function getLoggedInUser(): ?Users{
         if (static::$loggedInUser == null && isset($_COOKIE['user']['login'])) {
             $candidate =  UsersDao::findOneBy('login',$_COOKIE['user']['login']);
-            if ($candidate != null && $candidate->isPassword($_COOKIE['user']['password'])){
+            if ($candidate != null  && $candidate->isPassword($_COOKIE['user']['password']))
+            {
                 static::$loggedInUser = $candidate;
             }
         }
@@ -89,7 +90,6 @@ class MainController
         
         foreach ( static::getRouteParameters() as $slug => $parameters){
             if ( 
-                
                 count(
                     array_intersect(static::getLoggedInUser()->getRoles(),
                     $parameters['isDefault'] ?? [] )
@@ -150,10 +150,16 @@ class MainController
 
     public static function loggedInUserHasRights($controllerOnly=false ){
         $user = static::getLoggedInUser();
+        $routeParameters  = static::getRouteParameters();
 
-        if (    $user == null 
-        &&  static::getCurrentRoute()['controller'] == "user"
-        &&  static::getCurrentRoute()['action'] == "login" ){
+        $currentAction  = $controllerOnly ? null : static::getCurrentRoute()['action'];
+        $currentController  = static::getCurrentRoute()['controller'];
+        $allowedForRoute =  $routeParameters[$currentController]['actions'][$currentAction]['allowed']
+                        ??  $routeParameters[$currentController]['allowed'];
+
+
+        if ( in_array("guest", $allowedForRoute) )
+        {
             $isAllowed = true;
         } else {
             $currentAction  = $controllerOnly ? null : static::getCurrentRoute()['action'];
@@ -161,8 +167,7 @@ class MainController
 
             $routeParameters  = static::getRouteParameters();
 
-            $allowedForRoute =  $routeParameters[$currentController]['actions'][$currentAction]['allowed']
-                            ??  $routeParameters[$currentController]['allowed']
+            $allowedForRoute =  $allowedForRoute
                             ??  ['all'];
             
             $isAllowed = false;    

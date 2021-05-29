@@ -9,8 +9,9 @@ class UsersController extends EntityController
         if (isset($_POST['Users'])) {
             $candidate = UsersDao::findOneBy('login', $_POST['Users']['login']);
 
-            if ($candidate != null && $candidate->isPassword($_POST['Users']['password'])) {
-                MainController::setLoggedInUser($candidate, $_POST['Users']['password']);
+            if ($candidate != null && $candidate->isPassword($_POST['Users']['password']))
+            {
+                MainController::setLoggedInUser($candidate, $_POST['Users']['password'] ?? "");
                 MainController::redirect();
             } else {
                 $this->addVars(['message' => 'invalid']);
@@ -28,8 +29,6 @@ class UsersController extends EntityController
 
         $this->forward("login");
     }
-
-
 
     /**
      * Add
@@ -64,6 +63,7 @@ class UsersController extends EntityController
 
                 MainController::redirect("user/edit/".$this->getEntity()->getId());
             } else {
+                $this->addVars(['message' => 'invalid']);
                 $this->addVars(["errors" => $formBuilder->getAllErrors()]);
             }
         }
@@ -72,13 +72,14 @@ class UsersController extends EntityController
 
     /**
      * edit
-     * edit an existing recipe, or a newly-created one
+     * edit an existing user, or a newly-created one
      * @return void
      */
     public function actionEdit()
     {
         $formBuilder = new EntityFormBuilder($this->getEntity());
-
+        $user = $this->getEntity();
+        
         $this->addVars([
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
             "formBuilder" => $formBuilder
@@ -94,11 +95,16 @@ class UsersController extends EntityController
             if ($formBuilder->isValid()) {
                 $formBuilder->applyDataTo($user);
 
+                if ( !empty($formBuilder->getFormData()["password"]) ){
+                    $user->setPasswordHashFromPlaintext($formBuilder->getFormData()["password"]);
+                }
+
                 $this->getDaoClass()::saveOrUpdate($user);
                 $formBuilder->applyDataElementTo($user,"roles");
 
-                MainController::redirect("user/edit/".$this->getEntity()->getId());
+                $this->addVars(['message' => 'edited']);
             } else {
+                $this->addVars(['message' => 'invalid']);
                 $this->addVars(["errors" => $formBuilder->getAllErrors()]);
             }
         }

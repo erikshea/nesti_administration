@@ -134,6 +134,19 @@ class FormBuilderValidator{
             $testSting
         ); 
     }
+     /**
+     * url
+     * validates if property value contains at least one number.
+     * @param  string $testSting
+     * @return bool true if validates
+     */
+    public static function matchesField(?string $testString, string $comparisonString): bool{
+        return $testString == $comparisonString; 
+    }
+
+
+
+
 
      /**
      * url

@@ -6,12 +6,18 @@
                 Vos modifications ont été enregistrées.
             </div>
 <?php endif ?>
+
+<?php if (($vars['message'] ?? null) == "invalid"): ?>
+            <div class="alert alert-danger text-center p-3" role="alert">
+                Veuillez vérifier vos informations.
+            </div>
+<?php endif ?>
         </div>
     </div>
 </div>
 <form
     class="container <?= $vars["isSubmitted"] ? "" : "no-validate" ?>"
-    action="<?= $vars["baseUrl"] ?>user/add"
+    action="<?= $vars["baseUrl"] ?>user/edit/<?= $vars["entity"]->getId() ?>"
     method="post">
 
     <div class="row justify-content-between">
@@ -21,6 +27,12 @@
                 ->add("lastName")
                 ->add("roles")
                 ->add("flag")?>
+<?php if ($vars["entity"]->getId() == MainController::getLoggedInUser()->getId()): ?>
+    <?php $vars["formBuilder"]
+                ->add("password")
+                ->add("passwordConfirm")?>
+<?php endif ?>
+
             <div class="form-group ">
                 <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
                 <a class="btn px-4 mr-2" href="<?= $vars["baseUrl"] ?>recipe">Annuler</a>
@@ -139,7 +151,7 @@
             </table>
         </div>
         <div class="col-5">
-            <div id="order-items" class="h-100"/>
+            <div id="order-items" class="h-100"></div>
         </div>
     </div>
 </div>

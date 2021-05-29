@@ -10,6 +10,7 @@ class Recipe extends BaseEntity{
     private $preparationTime;
     private $idChef;
     private $idImage;
+    private $idTag;
 
 
     public function getAverageGrade(){
@@ -233,6 +234,19 @@ class Recipe extends BaseEntity{
     public function setIdChef($idChef)
     {
         $this->idChef = $idChef;
+
+        return $this;
+    }
+
+    public function getIdTag()
+    {
+        return $this->idTag;
+    }
+
+
+    public function setIdTag($idTag)
+    {
+        $this->idTag = $idTag;
 
         return $this;
     }

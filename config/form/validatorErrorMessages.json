@@ -10,5 +10,6 @@
     "oneNumber" : "Le mot de passe doit contenir au moins un chiffre.",
     "betweenZeroAndFive" : "La valeur doit être comprise entre 0 et 5.",
     "isRole" : "L'utilisateur doit avoir au moins un rôle.",
-    "isFlag" : "L'état doit être valide."
+    "isFlag" : "L'état doit être valide.",
+    "matchesField" : "Ne correspond pas."
 }
