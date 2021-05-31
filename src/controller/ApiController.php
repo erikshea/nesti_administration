@@ -33,6 +33,20 @@ class ApiController extends BaseController
         echo json_encode($this->recipesToArray($recipes));
     }
 
+    public function actionIngredientRecipes()
+    {
+        $ingredientRecipes = (new IngredientRecipeDao)::findAll(["idRecipe" => SiteUtil::getUrlParameters()[2]] );
+        echo json_encode($this->ingredientRecipesToArray($ingredientRecipes));
+    }
+
+    public function actionParagraphs()
+    {
+        $paragraphs = (new ParagraphDao)::findAll([
+            "idRecipe" => SiteUtil::getUrlParameters()[2],
+            "ORDER" => "paragraphPosition ASC"
+        ] );
+        echo json_encode(EntityUtil::toArray($paragraphs));
+    }
 
     private function recipesToArray($recipes){
         $recipesArray =  EntityUtil::toArray($recipes);
@@ -40,5 +54,14 @@ class ApiController extends BaseController
             $recipeArray["image"] = SiteUtil::fullUrl($recipes[$i]->getImage()?->getUrl() ?? "");
         }
         return $recipesArray;
+    }
+
+    private function ingredientRecipesToArray($ingredientRecipes){
+        $ingredientRecipesArray =  EntityUtil::toArray($ingredientRecipes);
+        foreach ($ingredientRecipesArray as $i=>&$ingredientRecipeArray) {
+            $ingredientRecipeArray["name"] = $ingredientRecipes[$i]->getIngredient()->getName();
+            $ingredientRecipeArray["unitName"] = $ingredientRecipes[$i]->getUnit()->getName();
+        }
+        return $ingredientRecipesArray;
     }
 }
