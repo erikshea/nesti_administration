@@ -53,6 +53,12 @@ class SiteUtil
         return $baseUrl . "/" . $relativeUrl;
     }
 
+    public static function fullUrl(string $absoluteUrl){
+        return empty($absoluteUrl)?
+            ""
+            :(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$absoluteUrl";
+    }
+
     /**
      * getUrlParameters
      * extracts an URL of the form /my/pretty/url from $_SERVER, and returns an array of slugs

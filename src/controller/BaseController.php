@@ -6,6 +6,7 @@ class BaseController
     protected $actionSlug;
     protected $templateVars = [ 'assets' => ["js" => [], "css" => []]];
     protected $templateNames = ['base'=>'common/base'];
+    protected $hasView = true;
 
     public function dispatch($actionSlug, $options= [])
     {
@@ -22,7 +23,7 @@ class BaseController
         $actionMethod = static::translateToActionMethod($actionSlug); 
         $this->$actionMethod();
 
-        if  ( !FormatUtil::endsWith($actionMethod, "Ajax") && !FormatUtil::endsWith($actionMethod, "Api")){
+        if  ( $this->hasView && !FormatUtil::endsWith($actionMethod, "Ajax")){
             $this->render();
         }
     }

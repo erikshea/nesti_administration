@@ -15,7 +15,7 @@ class MainController
 
         $routeConfig = static::getRouteParameters();
 
-        if ( static::getLoggedInUser() == null ){
+        if ( static::getLoggedInUser() == null && !static::loggedInUserHasRightsForController()){
             static::forwardLogin();
         } else {
             if ( empty( static::$currentRoute['controller'] ) ){

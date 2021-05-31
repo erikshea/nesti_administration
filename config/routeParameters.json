@@ -83,6 +83,6 @@
     },
     "api": {
         "controller"    : "ApiController",
-        "allowed": ["all"]
+        "allowed": ["guest"]
     }
 }
