@@ -51,6 +51,7 @@ class ApiController extends BaseController
     private function recipesToArray($recipes){
         $recipesArray =  EntityUtil::toArray($recipes);
         foreach ($recipesArray as $i=>&$recipeArray) {
+            $recipeArray["author"] = $recipes[$i]->getChef()?->getFullName() ?? "";
             $recipeArray["image"] = SiteUtil::fullUrl($recipes[$i]->getImage()?->getUrl() ?? "");
         }
         return $recipesArray;
