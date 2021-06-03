@@ -4,14 +4,16 @@ class UsersController extends EntityController
     public function actionLogin()
     {
         $this->setTemplateName('common/baseBarebones', 'base');
-
+        header("HTTP/1.1 401 Unauthorized");
         $this->addVars(["formBuilder" => new EntityFormBuilder($this->getEntity())]);
         if (isset($_POST['Users'])) {
-            $candidate = UsersDao::findOneBy('login', $_POST['Users']['login']);
+            $candidate = UsersDao::findOne(['login' => $_POST['Users']['login']]);
 
             if ($candidate != null && $candidate->isPassword($_POST['Users']['password']))
             {
-                MainController::setLoggedInUser($candidate, $_POST['Users']['password'] ?? "");
+                $candidate->initializeAuthentificationToken();
+                UsersDao::saveOrUpdate($candidate);
+                setcookie("user_authentification_token", $candidate->getAuthentificationToken(), 2147483647, '/');
                 MainController::redirect();
             } else {
                 $this->addVars(['message' => 'invalid']);
@@ -21,7 +23,11 @@ class UsersController extends EntityController
 
     public function actionLogout()
     {
-        MainController::setLoggedInUser(null);
+        $user = MainController::getLoggedInUser();
+        $user?->setAuthentificationToken(null);
+        UsersDao::saveOrUpdate($user);
+
+        $_COOKIE['user_authentification_token'] = null;
 
         $this->addVars([
             'message' => 'disconnect',
@@ -158,15 +164,4 @@ class UsersController extends EntityController
             'src' => 'babel.min.js'
         ];
     }
-
-
-
-    public function actionModerateCommentAjax(){
-        $comment = CommentDao::findOne(["idRecipe" => $_POST["idRecipe"], "idUsers" => $_POST["idUsers"]]);
-        $t = ["idRecipe" => $_POST["idRecipe"], "idUsers" => $_POST["idUsers"]];
-        $comment->setFlag( $_POST["blocks"] == "true" ? 'b':'a' );
-        CommentDao::saveOrUpdate($comment);
-        echo $comment->getFlag();
-    }
-
 }

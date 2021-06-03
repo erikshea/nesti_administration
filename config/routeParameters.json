@@ -83,6 +83,18 @@
     },
     "api": {
         "controller"    : "ApiController",
-        "allowed": ["guest"]
+        "allowed": ["%hasApiToken%"],
+        "defaultAction" : "obtain",
+        "name": "API",
+        "actions": {
+            "obtain": {
+                "title": "Demande d'un nouveau jeton.",
+                "allowed": [ "guest" ]
+            }
+        }
+    },
+    "ajax": {
+        "controller"    : "AjaxController",
+        "allowed": ["%hasCsrfToken%"]
     }
 }

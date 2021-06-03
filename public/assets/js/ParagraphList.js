@@ -15,11 +15,15 @@ class ParagraphList extends React.Component {
     }
 
     componentDidMount() {
-        $.post(vars['baseUrl'] + 'recipe/getParagraphsAjax/' + vars['entity']['idRecipe'], {}, (response) => {
-            let responseParagraphs = JSON.parse(response);
-            this.setState({ paragraphs: responseParagraphs });
+        $.post(vars['baseUrl'] + 'ajax/getParagraphs',
+            {
+                idRecipe : vars.entity.idRecipe,
+                csrf_token : vars.csrf_token
+            },
+            (response) => {
+            this.setState({ paragraphs: response });
             // initialize input values from source content
-            this.inputValues = responseParagraphs.map( (paragraph) => { return paragraph.content } );
+            this.inputValues = response.map( (paragraph) => { return paragraph.content } );
         });
     }
 
@@ -57,13 +61,19 @@ class ParagraphList extends React.Component {
 
     synchronizeSource(newParagraphs) {
         // send new paragraph data to source
-        $.post(vars['baseUrl'] + 'recipe/updateParagraphsAjax/' + vars['entity']['idRecipe'], { "paragraphs": newParagraphs }, (response) => {
-            let responseParagraphs = JSON.parse(response); // receive updated paragraph data.
-            this.setState({ paragraphs: responseParagraphs }); // component state is now synchronized with source
-            this.inputValues = responseParagraphs.map( (paragraph) => { return paragraph.content } ); // as are sanitized input values
-        });
+        $.post(
+            vars['baseUrl'] + 'ajax/updateParagraphs',
+            {
+                "paragraphs": newParagraphs,
+                idRecipe : vars.entity.idRecipe,
+                csrf_token : vars.csrf_token
+            },
+            (response) => {
+                this.setState({ paragraphs: response }); // component state is now synchronized with source
+                this.inputValues = response.map( (paragraph) => { return paragraph.content } ); // as are sanitized input values
+            }
+        );
     }
-
 
     render() {
         const paragraphs = this.state.paragraphs.map((paragraph, index) => {

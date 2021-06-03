@@ -5,7 +5,7 @@
  * EntityValidator
  * static methods to validate Entity properties
  */
-class EntityPropertyValidator{
+class EntityFormBuilderValidator{
        
      /**
      * unique

@@ -162,5 +162,23 @@
             }
         }
 
+    },
+    "ApiElement": {
+        "name": {
+            "options": {
+                "label": "Nom de votre application"
+            },
+            "validators": ["unique"]
+        }
+    },
+    "*": {
+        "csrf": {
+            "options": {
+                "type": "%csrf%",
+                "template": "inputOnly",
+                "inputName": "csrf_token"
+            },
+            "validators": ["isCsrf"]
+        }
     }
 }

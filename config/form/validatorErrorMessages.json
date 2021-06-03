@@ -4,7 +4,7 @@
     "telephone" : "Le téléphone doit être composé de chiffres, avec un préfixe optionnel",
     "url" : "Le lien doit être valide",
     "letters" : "Ce champ doit être composé de lettres, espaces, et du signe moins.",
-    "unique" : "Il ne doit pas y avoir d'utilisateur existant ayant ce paramètre.",
+    "unique" : "Existe déja.",
     "strong" : "Le mot de passe doit être suffisamment fort.",
     "oneLetter" : "Le mot de passe doit contenir au moins une lettre.",
     "oneNumber" : "Le mot de passe doit contenir au moins un chiffre.",

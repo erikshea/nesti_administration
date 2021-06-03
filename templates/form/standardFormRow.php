@@ -13,7 +13,7 @@
                 <input
                     id="<?= $vars['fieldName'] ?>"
                     class="form-control <?= empty($vars['errorMessages'])?'is-valid':'is-invalid' ?>"
-                    name="<?= "{$vars['formName']}[{$vars['fieldName']}]" ?>"
+                    name="<?= $vars['inputName'] ?? "{$vars['formName']}[{$vars['fieldName']}]" ?>"
                     type="<?= $vars['type'] ?>"
                     value="<?= $vars['value'] ?>"
                     <?= ($vars['readOnly'] ?? false )?"readonly":""?>

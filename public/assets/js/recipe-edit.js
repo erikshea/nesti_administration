@@ -10,9 +10,12 @@ class IngredientList extends React.Component {
 
     componentDidMount() {
         $.post(
-            vars.baseUrl + 'recipe/getIngredientRecipesAjax/' + vars.entity.idRecipe,
-            {},
-            (response) => { this.setState(JSON.parse(response)); }
+            vars.baseUrl + 'ajax/getIngredientRecipes',
+            {
+                idRecipe : vars.entity.idRecipe,
+                csrf_token : vars.csrf_token
+            },
+            (response) => { this.setState(response); }
         );
     }
     
@@ -34,9 +37,13 @@ class IngredientList extends React.Component {
     
     updateSource(newIrs) {
         $.post(
-            vars.baseUrl + 'recipe/updateIngredientRecipesAjax/' + vars.entity.idRecipe,
-            { "ingredientRecipes": newIrs },
-            (response) => { this.setState(JSON.parse(response)); }
+            vars.baseUrl + 'ajax/updateIngredientRecipes',
+            {
+                idRecipe : vars.entity.idRecipe,
+                csrf_token : vars.csrf_token,
+                ingredientRecipes: newIrs
+            },
+            (response) => { this.setState(response); }
         );
     }
 

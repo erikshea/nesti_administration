@@ -6,4 +6,5 @@ if ( ApplicationSettings::get("environment") == "dev"){
     error_reporting(E_ALL);
 }
 
+SiteUtil::openSession();
 (new MainController)->dispatch();

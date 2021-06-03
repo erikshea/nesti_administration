@@ -384,11 +384,13 @@ class BaseDao
      */
     public static function saveOrUpdate(&$entity, $skipNullIfDefaultValue = true)
     {
-        $pdo = DatabaseUtil::getConnection();
-        if ($entity->existsInDataSource()) {
-            static::update($entity, $skipNullIfDefaultValue);
-        } else {
-            static::save($entity, $skipNullIfDefaultValue);
+        if ($entity != null ){
+            $pdo = DatabaseUtil::getConnection();
+            if ($entity->existsInDataSource()) {
+                static::update($entity, $skipNullIfDefaultValue);
+            } else {
+                static::save($entity, $skipNullIfDefaultValue);
+            }
         }
     }
 

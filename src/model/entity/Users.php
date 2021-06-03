@@ -14,6 +14,7 @@ class Users extends BaseEntity{
     private $zipCode;
     private $idCity;
     private $roles;
+    private $authentificationToken;
 
     public function getCity(): ?City{
         return $this->getRelatedEntity("City");
@@ -375,4 +376,28 @@ class Users extends BaseEntity{
         }
     }
     
+
+    /**
+     * Get the value of authentificationToken
+     */ 
+    public function getAuthentificationToken()
+    {
+        return $this->authentificationToken;
+    }
+
+    /**
+     * Set the value of authentificationToken
+     *
+     * @return  self
+     */ 
+    public function setAuthentificationToken($authentificationToken)
+    {
+        $this->authentificationToken = $authentificationToken;
+
+        return $this;
+    }
+
+    public function initializeAuthentificationToken(){
+        $this->setAuthentificationToken(bin2hex(random_bytes(32)));
+    }
 }

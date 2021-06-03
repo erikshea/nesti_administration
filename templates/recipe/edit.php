@@ -12,6 +12,11 @@
                 Votre recette a été créée.
             </div>
 <?php endif ?>
+<?php if (($vars['message'] ?? null) == "error"): ?>
+            <div class="alert alert-danger text-center p-3" role="alert">
+                Veuillez vérifier vos informations.
+            </div>
+<?php endif ?>
         </div>
     </div>
     </div>
@@ -24,7 +29,9 @@
     <div class="row justify-content-between">
         <div class="col-6">
 
-            <?php $vars["formBuilder"]->add("name")
+            <?php $vars["formBuilder"]
+                ->add("csrf")
+                ->add("name")
                 ->add("difficulty", ['class' => 'form-row--horizontal'])
                 ->add("portions", ['class' => 'form-row--horizontal'])
                 ->add("preparationTime", ['class' => 'form-row--horizontal']); ?>

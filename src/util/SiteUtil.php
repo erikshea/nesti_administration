@@ -54,9 +54,13 @@ class SiteUtil
     }
 
     public static function fullUrl(string $absoluteUrl){
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
+        "https" :
+        "http");
+
         return empty($absoluteUrl)?
-            ""
-            :(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$absoluteUrl";
+            "" :
+            "$protocol://$_SERVER[HTTP_HOST]$absoluteUrl";
     }
 
     /**
@@ -67,13 +71,7 @@ class SiteUtil
      */
     public static function getUrlParameters(): array
     {
-        $parameterString =  isset($_SERVER['PATH_INFO']) ?
-            // If not using an apache server (ie. VSCode PHP Server), need to use PATH_INFO and remove leading slash
-            ltrim($_SERVER['PATH_INFO'], '/') :
-            // Otherwise, use a QUERY_STRING passed on by an .htaccess rewrite rule
-            $_SERVER['QUERY_STRING'];
-
-        return explode('/', self::sanitize($parameterString));
+        return explode('/', $_GET['route']);
     }
 
 
@@ -147,6 +145,16 @@ class SiteUtil
         }
         return $dirty;
     }
+
+
+    public static function openSession(){
+        session_start();
+        if ( !isset($_SESSION['csrf_token']) ){
+            $_SESSION['csrf_token'] = SecurityUtil::createToken();
+        }
+    }
 }
+
+
 
 SiteUtil::autoloadRegister();

@@ -3,7 +3,7 @@
 class FormBuilder{
     protected $formData;
     protected $validatorErrorMessages = [];
-    protected $propertyParameters = [];
+    protected $propertyParameters;
     protected $errors = [];
     protected $formName = "form";
 
@@ -33,19 +33,23 @@ class FormBuilder{
 
         $propertyErrors = [];
 
-        if ( isset($this->propertyParameters[$propertyName]['validators']) ) {
+        if ( isset($this->getPropertyParameters()[$propertyName]['validators']) ) {
             // Loop through each validator for that field
-            foreach($this->propertyParameters[$propertyName]['validators'] as $validatorName){
+            foreach($this->getPropertyParameters()[$propertyName]['validators'] as $validatorName){
                 $errored = false;
-                
+
+                $fieldValue = isset($this->getPropertyParameters()[$propertyName]['options']['inputName']) ?
+                    ( $_POST[$this->getPropertyParameters()[$propertyName]['options']['inputName']] ?? false ):
+                    ( $this->formData[$propertyName] ?? false );
+
                 if (preg_match('/(.*)\((.*)\)/', $validatorName, $matches)){
                     $validatorName = $matches[1];
                     $fieldNameParameter = $matches[2];
-                    if ( method_exists('FormBuilderValidator', $validatorName) && isset($this->formData[$propertyName])){
-                        $errored = !FormBuilderValidator::$validatorName($this->formData[$propertyName], $this->formData[$fieldNameParameter]);
+                    if ( method_exists('FormBuilderValidator', $validatorName) && $fieldValue !== false ){
+                        $errored = !FormBuilderValidator::$validatorName($fieldValue, $this->formData[$fieldNameParameter]);
                     }
-                } elseif ( method_exists('FormBuilderValidator', $validatorName) && isset($this->formData[$propertyName])){
-                    $errored = !FormBuilderValidator::$validatorName($this->formData[$propertyName]);
+                } elseif ( method_exists('FormBuilderValidator', $validatorName) && $fieldValue !== false ){
+                    $errored = !FormBuilderValidator::$validatorName($fieldValue);
                 }
                 if ( $errored ) {
                     $propertyErrors[] = $validatorName;
@@ -69,7 +73,7 @@ class FormBuilder{
      * ]
      */
     public function getAllErrors(): ?array{
-        foreach ($this->propertyParameters as $propertyName=>$p) {
+        foreach ($this->getPropertyParameters() as $propertyName=>$p) {
             $this->errors[$propertyName] = $this->getPropertyErrors($propertyName);
              // unset empty array if no error found,
             if (empty($this->errors[$propertyName])){ 
@@ -81,7 +85,7 @@ class FormBuilder{
     }
 
     public function add($propertyName, $options=[]){
-        $validators = $this->propertyParameters[$propertyName]['validators'] ?? [];
+        $validators = $this->getPropertyParameters()[$propertyName]['validators'] ?? [];
 
         $defaultOptions = [
             'fieldName'=>$propertyName,
@@ -99,7 +103,7 @@ class FormBuilder{
 
         $vars = array_merge(
             $defaultOptions, 
-            $this->propertyParameters[$propertyName]['options'],
+            $this->getPropertyParameters()[$propertyName]['options'],
             $options // method parameter options will overwrite the previous two for identical keys
         );
 
@@ -107,17 +111,23 @@ class FormBuilder{
 
         if ( !isset($vars['validation']) || $vars['validation'] == true ) {
             foreach ( $this->getPropertyErrors($propertyName) as $validatorName) {
-                $vars['errorMessages'][] = $this->getValidatorErrorMessages()[$validatorName];
+                $vars['errorMessages'][] = $this->getValidatorErrorMessages()[$validatorName] ?? "";
             }
         }
 
-        if ( $vars['type'] == '%image%' ){
-            $vars["placeHolder"] = SiteUtil::url("public/assets/") . $vars["placeHolder"];
-            $vars["type"] = "file";
-            $vars["template"] = "imageUpload";
-            $vars["initialBackground"] = $vars["initialBackground"] ?? $vars["placeHolder"];
+        switch($vars['type']) {
+            case '%image%':
+                $vars["placeHolder"] = SiteUtil::url("public/assets/") . $vars["placeHolder"];
+                $vars["type"] = "file";
+                $vars["template"] = "imageUpload";
+                $vars["initialBackground"] = $vars["initialBackground"] ?? $vars["placeHolder"];
+                break;
+            case '%csrf%':
+                $vars["type"] = "hidden";
+                $vars["value"] = SecurityUtil::getCsrfToken();
+                break;
         }
-        
+
         require SiteUtil::toAbsolute("templates/form/{$vars["template"]}.php");
 
         return $this;
@@ -153,7 +163,11 @@ class FormBuilder{
      */ 
     public function getPropertyParameters()
     {
-        return $this->propertyParameters;
+        if ( $this->propertyParameters == null ){
+            $this->setPropertyParametersFromConfig();
+        }
+
+        return $this->propertyParameters ?? [];
     }
 
     /**
@@ -167,15 +181,21 @@ class FormBuilder{
 
         return $this;
     }
-
-
+    /**
+     * initializes the current form's field parameters from a JSON config file
+     *
+     * @return  self
+     */ 
     public function setPropertyParametersFromConfig($key=null){
         $jsonString = file_get_contents(
             SiteUtil::toAbsolute("config/form/formParameters.json")
         );
         $allParameters = json_decode($jsonString,true);
         
-        $this->propertyParameters = $allParameters[$key ?? $this->getFormName()];
+        $this->propertyParameters = array_merge(
+            $allParameters["*"] ?? [], // global parameters
+            $allParameters[$key ?? $this->getFormName()]  ?? []
+        );
 
         return $this;
     }

@@ -1,19 +1,13 @@
 <?php
 class ApiController extends BaseController
 {
-    protected $hasView = false;
-
     public function dispatch($actionSlug, $options= [])
     {
-        header('Content-Type: application/json');
+        if ($actionSlug != "obtain"){
+            header('Content-Type: application/json');
+            $this->hasView = false;
+        }
         parent::dispatch($actionSlug, $options);
-    }
-
-    protected function forward($actionSlug){
-        $this->actionSlug = $actionSlug;
-
-        $actionMethod = static::translateToActionMethod($actionSlug); 
-        $this->$actionMethod();
     }
 
     public function actionTags()
@@ -24,20 +18,63 @@ class ApiController extends BaseController
 
     public function actionRecipesForTag()
     {
-        $recipes = (new RecipeDao)::findAll(["idTag" => SiteUtil::getUrlParameters()[2]]);
+        $recipes = RecipeDao::findAll(["idTag" => SiteUtil::getUrlParameters()[2]]);
         echo json_encode($this->recipesToArray($recipes));
     }
     public function actionRecipesForPartialName()
     {
-        $recipes = (new RecipeDao)::findAll(["name LIKE" => "%" . SiteUtil::getUrlParameters()[2]. "%"] );
+        $recipes = RecipeDao::findAll(["name LIKE" => "%" . SiteUtil::getUrlParameters()[2]. "%"] );
         echo json_encode($this->recipesToArray($recipes));
     }
 
     public function actionIngredientRecipes()
     {
-        $ingredientRecipes = (new IngredientRecipeDao)::findAll(["idRecipe" => SiteUtil::getUrlParameters()[2]] );
+        $ingredientRecipes = IngredientRecipeDao::findAll(["idRecipe" => SiteUtil::getUrlParameters()[2]] );
         echo json_encode($this->ingredientRecipesToArray($ingredientRecipes));
     }
+
+ 
+
+    public function actionObtain()
+    {
+        $this->setTemplateName('common/baseBarebones', 'base');
+        $this->setTemplateName('api/obtain', 'action');
+
+        $apiElement = new ApiElement;
+        $formBuilder = new EntityFormBuilder($apiElement);
+
+        if ( !empty($_POST["ApiElement"]) ) { // if we arrived here by way of the submit button
+            $formBuilder->setFormData($_POST["ApiElement"]);
+
+            if ($formBuilder->isValid()) {
+                $formBuilder->applyDataTo($apiElement);
+                $apiElement->initializeToken();
+                ApiElementDao::saveOrUpdate($apiElement);
+
+                $this->addVars([
+                    "message" => "success",
+                    "token" => $apiElement->getToken()
+                ]);
+            } else {
+                $this->addVars([
+                    'message' => 'invalid',
+                    "errors" => $formBuilder->getAllErrors(),
+                    "formBuilder" => $formBuilder
+                ]);
+                $this->addVars(["errors" => $formBuilder->getAllErrors()]);
+            }
+        } else {
+            $this->addVars([
+                "formBuilder" => $formBuilder
+            ]);
+        }
+
+        $this->addVars([
+            "isSubmitted" => !empty($_POST["ApiElement"])
+        ]);
+        $this->render();
+    }
+
 
     public function actionParagraphs()
     {
@@ -65,4 +102,6 @@ class ApiController extends BaseController
         }
         return $ingredientRecipesArray;
     }
+
+    
 }

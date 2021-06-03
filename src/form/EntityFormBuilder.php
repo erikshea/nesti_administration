@@ -15,7 +15,7 @@ class EntityFormBuilder extends FormBuilder{
         // $options = array_merge([
         //     'value'=> EntityUtil::get( $this->getEntity(), $propertyName ) ?? ""
         // ], $options);
-        $type = $this->propertyParameters[$propertyName]['options']['type'] ?? "";
+        $type = $this->getPropertyParameters()[$propertyName]['options']['type'] ?? "";
         if ( $type == "checkbox" || $type == "radio"){
             $options["checked"] = EntityUtil::get($this->getEntity(), $propertyName);
         }
@@ -36,12 +36,12 @@ class EntityFormBuilder extends FormBuilder{
     public function getPropertyErrors(string $propertyName,string $validatorClass = 'FormBuilderValidator'){
         $propertyErrors = parent::getPropertyErrors($propertyName);
         
-        if ( isset($this->propertyParameters[$propertyName]['validators']) ) {
+        if ( isset($this->getPropertyParameters()[$propertyName]['validators']) ) {
             // Loop through each validator for that field
-            foreach($this->propertyParameters[$propertyName]['validators'] as $validatorName){
-                if ( method_exists('EntityPropertyValidator', $validatorName) && isset($this->formData[$propertyName])){
+            foreach($this->getPropertyParameters()[$propertyName]['validators'] as $validatorName){
+                if ( method_exists('EntityFormBuilderValidator', $validatorName) && isset($this->formData[$propertyName])){
                     // store error states (negated validator) with the validator name as key
-                    $errored = !EntityPropertyValidator::$validatorName(
+                    $errored = !EntityFormBuilderValidator::$validatorName(
                         $this->formData[$propertyName],
                         $this->entity,
                         $propertyName
@@ -60,7 +60,7 @@ class EntityFormBuilder extends FormBuilder{
         $this->formData = EntityUtil::toArray($entity);
         $this->entity = $entity;
         $this->setFormName(get_class($entity));
-        $this->setPropertyParametersFromConfig();
+        //$this->setPropertyParametersFromConfig();
     }
 
     public function getEntity(){

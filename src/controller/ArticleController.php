@@ -6,20 +6,6 @@ class ArticleController extends EntityController
         $this->forward('edit');
     }
 
-    public function actionGetOrderItemsAjax(){
-        $order = OrdersDao::findById($_POST["idOrders"]);
-
-        $orderItems = array_map( function($ol) {
-            return [
-                'idArticle' => $ol->getArticle()->getId(),
-                'quantity' => $ol->getQuantity(),
-                'unitName' => $ol->getArticle()->getUnit()->getName(),
-                'articleName' => $ol->getArticle()->getProduct()->getName()
-            ];
-        }, $order->getOrderLines());
-
-        echo json_encode(['id'=>$_POST["idOrders"], 'orderItems' => $orderItems]);
-    }
 
     public function actionEdit()
     {

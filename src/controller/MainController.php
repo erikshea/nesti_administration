@@ -46,25 +46,15 @@ class MainController
     }
 
     public static function getLoggedInUser(): ?Users{
-        if (static::$loggedInUser == null && isset($_COOKIE['user']['login'])) {
-            $candidate =  UsersDao::findOneBy('login',$_COOKIE['user']['login']);
-            if ($candidate != null  && $candidate->isPassword($_COOKIE['user']['password']))
-            {
-                static::$loggedInUser = $candidate;
-            }
+        $sessionToken = $_COOKIE['user_authentification_token'] ?? null;
+
+        if ($sessionToken != null) {
+            // null si token invalide
+            static::$loggedInUser = UsersDao::findOne(['authentificationToken' => $sessionToken ]);
         }
+
         return static::$loggedInUser;
     }
-
-    public static function setLoggedInUser( $user, $password=null){
-        static::$loggedInUser = $user;
-
-        
-        setcookie("user[login]", $user?$user->getLogin():null, 2147483647, '/');
-        setcookie("user[password]", $password, 2147483647, '/');
-    }
-
-
 
     public static function getRouteParameters(){
         if ( static::$routeConfig == null ){
@@ -141,8 +131,6 @@ class MainController
         }
     }
 
-
-
     
     public static function loggedInUserHasRightsForController(){
         return static::loggedInUserHasRights(true);
@@ -154,13 +142,15 @@ class MainController
 
         $currentAction  = $controllerOnly ? null : static::getCurrentRoute()['action'];
         $currentController  = static::getCurrentRoute()['controller'];
-        $allowedForRoute =  $routeParameters[$currentController]['actions'][$currentAction]['allowed']
-                        ??  $routeParameters[$currentController]['allowed'];
-
+        $allowedForRoute = $routeParameters[$currentController]['actions'][$currentAction]['allowed']
+                        ?? $routeParameters[$currentController]['allowed']
+                        ?? [];
 
         if ( in_array("guest", $allowedForRoute) )
         {
             $isAllowed = true;
+        } else if ($user==null) {
+            $isAllowed = static::loggedInUserHasRightsForRoutingFunctions($allowedForRoute);
         } else {
             $currentAction  = $controllerOnly ? null : static::getCurrentRoute()['action'];
             $currentController  = static::getCurrentRoute()['controller'];
@@ -173,25 +163,43 @@ class MainController
             $isAllowed = false;    
 
             if (    in_array("all", $allowedForRoute)
-                ||  count(array_intersect($user->getRoles(),$allowedForRoute)) > 0 ) {
+                ||  count(array_intersect($user->getRoles(),$allowedForRoute)) > 0
+                ||  static::loggedInUserHasRightsForRoutingFunctions($allowedForRoute, $user)) {
                 $isAllowed = true;
-            } else{
-                foreach ( $allowedForRoute as $allowedItem ){
-                    if( preg_match(
-                        "/^%(.*)%$/", // if function in the form %FUNCTION%
-                        $allowedItem, 
-                        $matches
-                    )) {
-                        switch ( $matches[1] ){
-                            case "recipeCreator": 
-                                $recipe = static::getCurrentController()->getEntity();
-                                $isAllowed = $user->equals( $recipe->getChef() );
-                            break;
-                        }
-                    }
-                }
-            }    
+            }
         }
         return $isAllowed;
+    }
+
+    private static function loggedInUserHasRightsForRoutingFunctions($allowedForRoute, $user=null){
+
+        foreach ( $allowedForRoute as $allowedItem ){
+            if( preg_match(
+                "/^%(.*)%$/", // if function in the form %FUNCTION%
+                $allowedItem, 
+                $matches
+            )) {
+                $isAllowed = false;
+                switch ( $matches[1] ){
+                    case "hasApiToken": 
+                        $apiElement = ApiElementDao::findOne(["token" => $_GET["token"] ?? null]);
+                        $isAllowed = $apiElement != null;
+                    break;
+                    case "hasCsrfToken": 
+                        $isAllowed = SecurityUtil::getCsrfToken() == ($_POST["csrf_token"] ?? null);
+                    break;
+                    case "recipeCreator": 
+                        if ( $user != null ){
+                            $recipe = static::getCurrentController()?->getEntity();
+                            $isAllowed = $user->equals( $recipe->getChef() );
+                        }
+                    break;
+                }
+                if ($isAllowed){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

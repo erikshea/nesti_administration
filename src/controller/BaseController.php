@@ -23,7 +23,7 @@ class BaseController
         $actionMethod = static::translateToActionMethod($actionSlug); 
         $this->$actionMethod();
 
-        if  ( $this->hasView && !FormatUtil::endsWith($actionMethod, "Ajax")){
+        if  ( $this->hasView ){
             $this->render();
         }
     }
@@ -57,7 +57,10 @@ class BaseController
             'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
             'currentUser' => MainController::getLoggedInUser(),
             'javascriptVariables' => array_merge(
-                [ 'baseUrl'=>SiteUtil::url() ],
+                [
+                    'baseUrl'=>SiteUtil::url(),
+                    'csrf_token'=>SecurityUtil::getCsrfToken()
+                ],
                 $this->templateVars['javascriptVariables'] ?? [] )
         ]);
     }

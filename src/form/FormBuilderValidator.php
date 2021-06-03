@@ -14,7 +14,7 @@ class FormBuilderValidator{
      * @return bool true if validates
      */
     public static function notEmpty($test): bool{
-        return !empty($test);
+        return is_numeric($test) || !empty($test);
     }
         
     /**
@@ -134,9 +134,10 @@ class FormBuilderValidator{
             $testSting
         ); 
     }
+
      /**
      * url
-     * validates if property value contains at least one number.
+     * validates if property value is the same as another field's value
      * @param  string $testSting
      * @return bool true if validates
      */
@@ -145,21 +146,25 @@ class FormBuilderValidator{
     }
 
 
-
+     /**
+     * url
+     * validates if property value is the same as the current session' csrf token
+     * @param  string $testSting
+     * @return bool true if validates
+     */
+    public static function isCsrf(?string $testString): bool{
+        return $testString == SecurityUtil::getCsrfToken(); 
+    }
 
 
      /**
      * url
-     * validates if property value contains at least one number.
+     * validates if property consists of a number between 0 and 5.
      * @param  string $value
      * @return bool true if validates
      */
     public static function betweenZeroAndFive($value): bool{
-        if ( is_string($value) ){
-            $value = (float) $value;
-        }
-
-        return 0 <= $value && $value <= 5;
+        return is_numeric($value) && 0 <= ((float) $value) && ((float) $value) <= 5;
     }
 
     private static function calculatePasswordStrength($password){
