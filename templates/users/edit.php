@@ -23,14 +23,15 @@
     <div class="row justify-content-between">
         <div class="col-6">
             <?php $vars["formBuilder"]
+                ->add("csrf")
                 ->add("firstName")
                 ->add("lastName")
                 ->add("roles")
                 ->add("flag")?>
 <?php if ($vars["entity"]->getId() == MainController::getLoggedInUser()->getId()): ?>
     <?php $vars["formBuilder"]
-                ->add("password")
-                ->add("passwordConfirm")?>
+                ->add("newPassword")
+                ->add("newPasswordConfirm")?>
 <?php endif ?>
 
             <div class="form-group ">

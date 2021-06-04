@@ -49,18 +49,6 @@ class BaseDao
                 $pkCol = $pkCol[0];
             }
         }
-        // if ( !isset(self::$cachedData['primaryKeyColumns'][static::getTableName()]) )
-        // {
-        //     self::$cachedData['primaryKeyColumns'][static::getTableName()] = [];
-        //     $sql = "SHOW INDEX FROM IngredientRecipe WHERE Key_name = 'PRIMARY'";
-        //     $pdo = DatabaseUtil::getConnection();
-        //     $request = $pdo->prepare($sql);
-        //     $request->execute();
-        //     $info = $request->fetchAll(PDO::FETCH_ASSOC);
-        //     foreach ( $info as $infoRow ){
-        //         self::$cachedData['primaryKeyColumns'][static::getTableName()][]= $infoRow['Column_name'];
-        //     }
-        // }
         
         return $pkCol;
     }

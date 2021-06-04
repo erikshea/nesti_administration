@@ -27,10 +27,9 @@ const DeleteModal = (props) => {
                     <div className="modal-body d-flex flex-column align-items-center justify-content-around">
                         <h5 className="modal-title">
                             <i className="fas fa-exclamation-triangle color-danger"></i>
-                            Voulez-vous vraiment supprimer l'élément:
+                            Voulez-vous vraiment supprimer :
                         </h5>
                         <strong className="element-name">{props.elementName}</strong>
-                        <p className="mt-4">Cette action est irréversible.</p>
                     </div>
                     <div className="modal-footer">
                         <a type="button" onClick={clickFunction} className="confirm-button btn btn-success">Confirmer</a>

@@ -13,6 +13,11 @@ class UsersController extends EntityController
             {
                 $candidate->initializeAuthentificationToken();
                 UsersDao::saveOrUpdate($candidate);
+                
+                $connectionLog = new ConnectionLog();
+                $connectionLog->setUser($candidate);
+                ConnectionLogDao::saveOrUpdate($connectionLog);
+                
                 setcookie("user_authentification_token", $candidate->getAuthentificationToken(), 2147483647, '/');
                 MainController::redirect();
             } else {
@@ -53,8 +58,8 @@ class UsersController extends EntityController
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             
-            if ( !isset($_POST["Users"]["roles"]) ){
-                $_POST["Users"]["roles"] = [];
+            if ( !isset($_POST[$this->getEntityClass()]["roles"]) ){
+                $_POST[$this->getEntityClass()]["roles"] = [];
             }
 
             $formBuilder->setFormData($_POST[$this->getEntityClass()]);
@@ -93,16 +98,16 @@ class UsersController extends EntityController
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             
-            if ( !isset($_POST["Users"]["roles"]) ){
-                $_POST["Users"]["roles"] = [];
+            if ( !isset($_POST[$this->getEntityClass()]["roles"]) ){
+                $_POST[$this->getEntityClass()]["roles"] = [];
             }
 
             $formBuilder->setFormData($_POST[$this->getEntityClass()]);
             if ($formBuilder->isValid()) {
                 $formBuilder->applyDataTo($user);
 
-                if ( !empty($formBuilder->getFormData()["password"]) ){
-                    $user->setPasswordHashFromPlaintext($formBuilder->getFormData()["password"]);
+                if ( !empty($formBuilder->getFormData()["newPassword"]) ){
+                    $user->setPasswordHashFromPlaintext($formBuilder->getFormData()["newPassword"]);
                 }
 
                 $this->getDaoClass()::saveOrUpdate($user);
@@ -115,8 +120,6 @@ class UsersController extends EntityController
             }
         }
 
-           
-        
         $this->templateVars['assets']['js'][] = [
             'src' => 'ModerateComment.js'
         ];
@@ -150,6 +153,21 @@ class UsersController extends EntityController
     }
 
 
+    /**
+     * delete
+     * shows a delete confirmation form, which if submitted deletes user
+     * @return void
+     */
+    public function actionDelete()
+    {
+        $this->getEntity()->delete();
+
+        $this->addVars(['message' => "deleted"]);
+        $this->forward("list");
+    }
+
+
+
     public function preRender()
     {
         parent::preRender();
@@ -164,4 +182,6 @@ class UsersController extends EntityController
             'src' => 'babel.min.js'
         ];
     }
+
+
 }

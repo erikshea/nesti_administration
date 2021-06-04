@@ -1,6 +1,8 @@
 <?php
 class ErrorController extends BaseController
 {
+    protected $templateNames = ['base'=>'common/baseBarebones'];
+
     public function action404()
     {
         header("HTTP/1.0 404 Not Found");
@@ -18,9 +20,4 @@ class ErrorController extends BaseController
         parent::preRender();
     }
 
-    public function dispatch($actionSlug,$options= [])
-    {
-        $this->setTemplateName('common/baseNoCrumbs', 'base');
-        parent::dispatch($actionSlug);
-    }
 }

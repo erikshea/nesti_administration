@@ -1,5 +1,5 @@
 <?php
 
 class ImportationDao extends BaseDao{
-    protected static $pkColumns = [ "idAdministrator", "idArticle", 'idSupplierOrder'];
+    protected static $pkColumns = [ "idAdministrator", "idArticle", 'orderNumberSupplier'];
 }

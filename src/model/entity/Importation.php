@@ -3,7 +3,7 @@
 class Importation extends BaseEntity{
     private $idAdministrator;
     private $idArticle;
-    private $idSupplierOrder;
+    private $orderNumberSupplier;
     private $dateImportation;
 
     
@@ -34,9 +34,9 @@ class Importation extends BaseEntity{
     /**
      * Get the value of idSupplierOrder
      */
-    public function getIdSupplierOrder()
+    public function getOrderNumberSupplier()
     {
-        return $this->idSupplierOrder;
+        return $this->orderNumberSupplier;
     }
 
     /**
@@ -44,9 +44,9 @@ class Importation extends BaseEntity{
      *
      * @return  self
      */
-    public function setIdSupplierOrder($idSupplierOrder)
+    public function setOrderNumberSupplier($orderNumberSupplier)
     {
-        $this->idSupplierOrder = $idSupplierOrder;
+        $this->orderNumberSupplier = $orderNumberSupplier;
 
         return $this;
     }

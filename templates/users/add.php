@@ -17,6 +17,7 @@
     <div class="row justify-content-between">
         <div class="col-6">
             <?php $vars["formBuilder"]
+                ->add("csrf")
                 ->add("firstName")
                 ->add("lastName")
                 ->add("roles")?>

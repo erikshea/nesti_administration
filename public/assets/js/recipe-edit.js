@@ -15,7 +15,7 @@ class IngredientList extends React.Component {
                 idRecipe : vars.entity.idRecipe,
                 csrf_token : vars.csrf_token
             },
-            (response) => { this.setState(response); }
+            response => this.setState(response)
         );
     }
     
@@ -43,7 +43,7 @@ class IngredientList extends React.Component {
                 csrf_token : vars.csrf_token,
                 ingredientRecipes: newIrs
             },
-            (response) => { this.setState(response); }
+            response => this.setState(response)
         );
     }
 

@@ -8,6 +8,11 @@ class EntityController extends BaseController
         return $this->getEntityClass()::getDaoClass();
     }
 
+    
+    /**
+     * preRender
+     * called before rendering the view
+     */
     public function preRender()
     {
         if ( !isset($this->templateNames['action']) ){

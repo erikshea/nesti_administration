@@ -4,13 +4,13 @@
             "options": {
                 "label": "Prénom"
             },
-            "validators": ["notEmpty", "letters"]
+            "validators": ["notEmpty", "name"]
         },
         "lastName": {
             "options": {
                 "label": "Nom"
             },
-            "validators": ["notEmpty", "letters"]
+            "validators": ["notEmpty", "name"]
         },
         "tel": {
             "options": {
@@ -50,28 +50,38 @@
             },
             "validators": ["email", "unique"]
         },
-        "ville": {
+        "city_name": {
             "options": {
-                "label": "Ville",
-                "type": ":entityList:City"
+                "label": "Ville"
             },
-            "validators": ["exists"]
+            "validators": ["name"]
         },
         "password": {
             "options": {
+                "icon": "fas fa-lock",
                 "label": "Mot de passe",
                 "type": "password",
                 "template": "indicatedPasswordFormRow"
             },
             "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
         },
-        "passwordConfirm": {
+        "newPassword": {
+            "options": {
+                "icon": "fas fa-lock",
+                "label": "Mot de passe",
+                "type": "password",
+                "mode": "optional",
+                "template": "indicatedPasswordFormRow"
+            },
+            "validators": ["strong", "oneLetter", "oneNumber", "notEmpty"]
+        },
+        "newPasswordConfirm": {
             "options": {
                 "label": "Confirmation du mot de passe",
                 "type": "password",
                 "value": ""
             },
-            "validators": ["matchesField(password)"]
+            "validators": ["matchesField(newPassword)"]
         },
         "roles": {
             "options": {
@@ -161,14 +171,13 @@
                 "placeHolder": "images/content/__placeHolder.jpg"
             }
         }
-
     },
     "ApiElement": {
         "name": {
             "options": {
                 "label": "Nom de votre application"
             },
-            "validators": ["unique"]
+            "validators": ["notEmpty", "unique"]
         }
     },
     "*": {
@@ -179,6 +188,14 @@
                 "inputName": "csrf_token"
             },
             "validators": ["isCsrf"]
+        },
+        "csvFile": {
+            "options": {
+                "type": "file",
+                "accept": ".csv",
+                "label": "Choisir un fichier CSV à importer",
+                "inputName": "import_file"
+            }
         }
     }
 }

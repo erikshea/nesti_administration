@@ -7,6 +7,5 @@
     <main>
         <?php include $vars["actionTemplate"] ?>
     </main>
-
 </body>
 </html>

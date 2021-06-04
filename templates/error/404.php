@@ -1,1 +1,11 @@
-<div>ERROR 404</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-9 col-md-8 col-lg-7">
+            <div class="base-form">
+                <div class="alert alert-danger text-center p-3 mt-5" role="alert">
+                    Cette page n'existe pas.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

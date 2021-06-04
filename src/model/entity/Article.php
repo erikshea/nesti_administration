@@ -13,8 +13,6 @@ class Article extends BaseEntity{
     private $idProduct;
     private $displayName;
 
-
-
     public function getQuantitySold(){
         $quantity = 0;
 
@@ -111,7 +109,7 @@ class Article extends BaseEntity{
             $price = $highestPricedLot->getUnitCost() * 1.2;
         }
 
-        return number_format($price, 2, ",", "") . "€";
+        return $highestPricedLot == null? null:$price;
     }
 
     public function getLastImportationDate(){

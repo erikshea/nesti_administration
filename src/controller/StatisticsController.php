@@ -30,7 +30,6 @@ class StatisticsController extends BaseController
             $day = intval($date->format('d'));
             $orders = OrdersDao::findAll(["dateCreation >" => $startDate->format('Y-m-d H:i:s'), "DAY(dateCreation)" => $day, "flag" => "a"]);
             $lots = LotDao::findAll(["dateReception >" => $startDate->format('Y-m-d H:i:s'), "DAY(dateReception)" => $day]);
-            //        $purchaseTotal = 0;
 
             $soldTotal = 0;
             foreach ($orders as $order) {

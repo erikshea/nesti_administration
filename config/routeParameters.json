@@ -7,11 +7,11 @@
         "allowed": [ "moderator", "administrator" ],
         "actions": {
             "edit": {
-                "name": "édition",
+                "name": "Edition",
                 "title": "Édition d'un utilisateur"
             },
             "add": {
-                "name": "création",
+                "name": "Création",
                 "title": "Création d'un utilisateur"
             },
             "list": {
@@ -19,6 +19,10 @@
             },
             "login": {
                 "title": "Connexion",
+                "allowed": [ "guest" ]
+            },
+            "logout": {
+                "title": "Déconnexion",
                 "allowed": [ "guest" ]
             }
         }
@@ -52,15 +56,27 @@
         "isDefault": [],
         "allowed": ["administrator"],
         "actions": {
-            "edit": { "name": "édition" },
-            "add": { "name": "création" }
+            "edit": {
+                "name": "Édition",
+                "title": "Édition d'un article"
+            },
+            "add": {
+                "name": "création",
+                "title": "Ajout d'un article"
+            },
+            "list": {
+                "title": "Articles"
+            },
+            "import": {
+                "title": "Importation d'un article"
+            }
         }
     },
     "statistics": {
         "controller"    : "StatisticsController",
         "defaultAction" : "show",
         "name": "statistiques",
-        "allowed": ["all"],
+        "allowed": ["user"],
         "actions": {
             "show": {
                 "title": "Statistiques"
@@ -71,7 +87,7 @@
         "controller"    : "ErrorController",
         "defaultAction" : "404",
         "name": "erreur",
-        "allowed": ["all"],
+        "allowed": ["guest"],
         "actions": {
             "401": {
                 "title": "Droits insuffisants."

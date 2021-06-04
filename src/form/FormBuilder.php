@@ -7,7 +7,10 @@ class FormBuilder{
     protected $errors = [];
     protected $formName = "form";
 
-    function __construct(array $formData) {
+    function __construct(array $formData = null) {
+        if ($formData == null){
+            $formData = $_POST;
+        }
         $this->formData = $formData;
       }
 
@@ -42,7 +45,9 @@ class FormBuilder{
                     ( $_POST[$this->getPropertyParameters()[$propertyName]['options']['inputName']] ?? false ):
                     ( $this->formData[$propertyName] ?? false );
 
-                if (preg_match('/(.*)\((.*)\)/', $validatorName, $matches)){
+                if ( ($this->getPropertyParameters()[$propertyName]['options']['mode'] ?? null) == "optional" && empty($fieldValue)) {
+                    $errored = false;
+                }else if (preg_match('/(.*)\((.*)\)/', $validatorName, $matches)){
                     $validatorName = $matches[1];
                     $fieldNameParameter = $matches[2];
                     if ( method_exists('FormBuilderValidator', $validatorName) && $fieldValue !== false ){

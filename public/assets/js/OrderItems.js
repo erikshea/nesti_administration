@@ -1,18 +1,15 @@
-
-
-
 class OrderItems extends React.Component {
     state = { orderItems: [], id: null};
 
     showOrder(id) {
-        $.post(vars.baseUrl + 'ajax/getOrderItems',
-        {
-            idOrders: id,
-            csrf_token : vars.csrf_token
-        },
-        (response) => {
-            this.setState(response);
-        });
+        $.post(
+            vars.baseUrl + 'ajax/getOrderItems',
+            {
+                idOrders: id,
+                csrf_token : vars.csrf_token
+            },
+            response => this.setState(response)
+        );
     }
 
 
@@ -20,7 +17,6 @@ class OrderItems extends React.Component {
         const items = this.state.orderItems.map((oi, index) => {
             return <OrderItem key={index} {...oi}/>;
         });
-
 
         return this.state.id && ( // Hide if no id set
             <div>

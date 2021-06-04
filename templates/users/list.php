@@ -1,4 +1,15 @@
 <div class="container">
+    <div class="row">
+        <div class="col">
+<?php if (($vars['message'] ?? null) == "deleted"): ?>
+            <div class="alert alert-success text-center p-3" role="alert">
+                L'utilisateur a été effacé.
+            </div>
+<?php endif ?>
+        </div>
+    </div>
+</div>
+<div class="container">
     <div class="row justify-content-between">
         <div class="col-5 col-md-4 col-lg-3">
             <form action="<?=$vars["baseUrl"]?>user/list" method="post">

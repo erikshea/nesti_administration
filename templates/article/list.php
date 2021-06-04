@@ -1,4 +1,15 @@
 <div class="container">
+    <div class="row">
+        <div class="col">
+<?php if (($vars['message'] ?? null) == "deleted"): ?>
+            <div class="alert alert-success text-center p-3" role="alert">
+                L'article a été effacé.
+            </div>
+<?php endif ?>
+        </div>
+    </div>
+</div>
+<div class="container">
     <div class="row justify-content-between">
         <div class="col-5 col-md-4 col-lg-3">
             <form action="<?=$vars["baseUrl"]?>article/list" method="post">
@@ -34,17 +45,19 @@
                     <th scope="col">Prix de vente</th>
                     <th scope="col">Dernière importation</th>
                     <th scope="col">Stock</th>
+                    <th scope="col">Statut</th>
                     <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
 <?php foreach ($vars['entities'] as $article): ?>
                     <tr>
-                        <th scope="row"><?= $article->getId() ?></th>
+                        <td><?= $article->getId() ?></th>
                         <td><?= $article->getProduct()->getName() ?></td>
-                        <td><?= $article->getSellingPrice() ?></td>
+                        <td><?= FormatUtil::getFormattedPrice($article->getSellingPrice()) ?></td>
                         <td><?= $article->getLastImportationDate() ?></td>
                         <td><?= $article->getStock() ?></td>
+                        <td><?= $article->getFlag() ?></td>
                         <td>
                             <div class="listing__actions">
                                 <a href="<?= $vars['baseUrl'] . "article/edit/" . $article->getId() ?>">Modifier</a>

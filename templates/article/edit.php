@@ -16,7 +16,7 @@
     enctype="multipart/form-data">
 
     <div class="row justify-content-between">
-        <div class="col-6">
+        <div class="col-6 ">
             <?php $vars["formBuilder"]->add("name")
                 ->add("displayName")
                 ->add("idArticle", ['class' => 'form-row--horizontal'])

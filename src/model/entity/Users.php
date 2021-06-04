@@ -312,7 +312,15 @@ class Users extends BaseEntity{
     public function makeChef(){
         return $this->makeChildEntity("Chef");
     }
-    
+
+    public function removeChef(){
+        $chef = $this->getChef();
+
+        if ( $chef != null && empty($chef?->getRecipes()) ){
+            ChefDao::delete($chef);
+        }
+    }
+
     public function isChef(){
         return $this->getChef() != null;
     }
@@ -324,7 +332,15 @@ class Users extends BaseEntity{
     public function makeAdministrator(){
         return $this->makeChildEntity("Administrator");
     }
-    
+
+    public function removeAdministrator(){
+        $administrator = $this->getAdministrator();
+
+        if ( $administrator != null ) {
+            AdministratorDao::delete($administrator);
+        }
+    }
+
     public function isAdministrator(){
         return $this->getAdministrator() != null;
     }
@@ -336,7 +352,15 @@ class Users extends BaseEntity{
     public function makeModerator(){
         return $this->makeChildEntity("Moderator");
     }
-    
+
+    public function removeModerator(){
+        $moderator = $this->getModerator();
+
+        if ( $moderator != null && empty($moderator?->getModeratedComments()) ){
+            ModeratorDao::delete($moderator);
+        }
+    }
+
     public function isModerator(){
         return $this->getModerator() != null;
     }
@@ -365,14 +389,20 @@ class Users extends BaseEntity{
     public function setRoles($roles){
         if ( in_array("chef", $roles)){
             $this->makeChef();
+        } else {
+            $this->removeChef();
         }
 
         if ( in_array("moderator", $roles)){
             $this->makeModerator();
+        } else {
+            $this->removeModerator();
         }
 
         if ( in_array("administrator", $roles)){
             $this->makeAdministrator();
+        } else {
+            $this->removeAdministrator();
         }
     }
     
@@ -399,5 +429,26 @@ class Users extends BaseEntity{
 
     public function initializeAuthentificationToken(){
         $this->setAuthentificationToken(bin2hex(random_bytes(32)));
+    }
+
+
+    public function delete(){
+
+        /*if ( 
+            empty($this->getComments())
+            && empty($this->getChef()?->getRecipes())
+            && empty($this->getModerator()?->getModeratedComments()
+            && empty($this->getOrders())
+            && empty($this->getConnectionLogs())  // IMPOSSIBLE, ne peut donc pas effacer l'utilisateur
+            )
+        ){
+            $this->removeChef();
+            $this->removeModerator();
+            $this->removeAdministrator();
+            $this->getDaoClass()::delete($this);
+        } else {*/
+        $this->setFlag("b");
+        $this->getDaoClass()::saveOrUpdate($this);
+        //}
     }
 }

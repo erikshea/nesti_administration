@@ -92,12 +92,23 @@ class FormBuilderValidator{
      */
     public static function letters(?string $testSting): bool{
         return preg_match(
-            "/^[a-zA-ZÀ-ÿ\- ]*$/", // only letters, spaces, and hyphens (including accents)
+            "/^[a-zA-ZÀ-ÿ\-'` ]*$/", // only letters, spaces, and hyphens (including accents)
             $testSting
         ); 
     }
 
-
+     /**
+     * url
+     * validates if property value is made up of letters, spaces, and hyphens
+     * @param  string $testSting
+     * @return bool true if validates
+     */
+    public static function name(?string $testSting): bool{
+        return preg_match(
+            "/^[a-zA-ZÀ-ÿ\-'` ]*$/", // only letters, spaces, and hyphens (including accents)
+            $testSting
+        ); 
+    }
     
      /**
      * url

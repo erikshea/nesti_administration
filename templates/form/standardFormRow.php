@@ -16,6 +16,7 @@
                     name="<?= $vars['inputName'] ?? "{$vars['formName']}[{$vars['fieldName']}]" ?>"
                     type="<?= $vars['type'] ?>"
                     value="<?= $vars['value'] ?>"
+                    <?= isset($vars['accept'])?"accept=\"{$vars['accept']}\"":"" ?>
                     <?= ($vars['readOnly'] ?? false )?"readonly":""?>
         <?php if ($vars['required']): ?>
                     required="required"

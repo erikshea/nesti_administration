@@ -81,6 +81,14 @@ class FormatUtil {
         $dt = new DateTime();
         return $dt->format('Y-m-d H:i:s');
     }
+
+    public static function sqlDateToPhpDate($sqlDate){
+        return date('Y-m-d H:i:s', strtotime($sqlDate));
+    }
+
+    public static function getFormattedPrice($price){
+        return $price == null? "-":number_format($price, 2, ",", "") . "€";
+    }
 }
 
 ?>

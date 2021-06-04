@@ -78,12 +78,12 @@ class BaseController
     }  
 
     public static function translateToActionMethod($actionSlug){
-        return 'action' . ucfirst($actionSlug);
+        return empty($actionSlug)?"":'action' . ucfirst($actionSlug);
     }
 
 
     public static function getBreadcrumbs(){
-        $routeParameters = MainController::getRouteParameters();
+        $routeParameters = MainController::getAllRouteParameters();
         $controllerSlug = MainController::getCurrentRoute()['controller'];
         $actionSlug = MainController::getCurrentRoute()['action'];
 

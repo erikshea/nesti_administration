@@ -1,7 +1,7 @@
 <?php
 
 class Lot extends BaseEntity{
-    private $orderNumber;
+    private $orderNumberSupplier;
     private $unitCost;
     private $dateReception;
     private $quantity;
@@ -53,9 +53,9 @@ class Lot extends BaseEntity{
     /**
      * Get the value of orderNumber
      */
-    public function getOrderNumber()
+    public function getOrderNumberSupplier()
     {
-        return $this->orderNumber;
+        return $this->orderNumberSupplier;
     }
 
     /**
@@ -63,9 +63,9 @@ class Lot extends BaseEntity{
      *
      * @return  self
      */
-    public function setOrderNumber($orderNumber)
+    public function setOrderNumberSupplier($orderNumberSupplier)
     {
-        $this->orderNumber = $orderNumber;
+        $this->orderNumberSupplier = $orderNumberSupplier;
 
         return $this;
     }
