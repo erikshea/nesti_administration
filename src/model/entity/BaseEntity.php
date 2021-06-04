@@ -156,6 +156,7 @@ class BaseEntity{
         if ( $this->getChildEntity($childEntityClass) == null ) {
             $child = new $childEntityClass;
             $child->setId($this->getId());
+            
             $childEntityClass::getDaoClass()::save($child);
         }
 

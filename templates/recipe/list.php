@@ -38,7 +38,7 @@
                 <tbody>
 <?php foreach ($vars['entities'] as $recipe): ?>
                     <tr>
-                        <th scope="row"><?= $recipe->getId() ?></th>
+                        <td><?= $recipe->getId() ?></td>
                         <td><?= $recipe->getName() ?></td>
                         <td><?= $recipe->getDifficulty() ?></td>
                         <td><?= $recipe->getPortions() ?></td>

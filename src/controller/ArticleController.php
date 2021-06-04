@@ -33,6 +33,7 @@ class ArticleController extends EntityController
                     $entity->setImage($image);
                 }
                 $formBuilder->applyDataTo($entity);
+                $entity->setDateModification(new DateTime);
 
                 $this->addVars([
                     "message" => "edited"
@@ -152,27 +153,13 @@ class ArticleController extends EntityController
     public function actionImport(){
         $formBuilder = new FormBuilder();
 
-        if ( isset( $_FILES["import_file"]["tmp_name"] )){
-
-            $columnNames = [
-                "article_idArticle",
-                "article_name",
-                "article_quantity",
-                "article_flag",
-                "ingredient_idProduct",
-                "unit_name",
-                "offers_price",
-                "offers_startDate",
-                "orders_number",
-                "ordersArticle_quantity",
-                "orders_dateDelivery"
-            ];
-
+        if ( !empty( $_FILES["import_file"]["tmp_name"])){
             $file = fopen($_FILES["import_file"]["tmp_name"], "r");
-            
-            $importedLines = [];
-            $erroredLines = [];
 
+            // the first line contains view column names, ie: "article_idArticle";"article_name";"article_quantity";...
+            $columnNames = fgetcsv($file, 0, ";");
+
+            $importedArticles = [];
             while ( ($row = fgetcsv($file, 0, ";")) !== false ){
                 $values = [];
                 foreach ( $columnNames as $i=>$name ){
@@ -180,16 +167,17 @@ class ArticleController extends EntityController
                 }
 
                 try {
-                    $this->importCsvLine($values);
-                    $importedLines[] = $values;
+                    $importedArticle = $this->importCsvLine($values);
+                    if ( $importedArticle != null ){
+                        $importedArticles[] = $importedArticle;
+                    }
                 } catch (Exception $e) {
-                    $erroredLines[] = $values;
+                    $this->addVars(["message" => "error"]);
                 }
             }
 
             $this->addVars([
-                "importedLines" => $importedLines,
-                "erroredLines" => $erroredLines
+                "importedArticles" => $importedArticles
             ]);
         }
 
@@ -203,6 +191,8 @@ class ArticleController extends EntityController
 
 
     private function importCsvLine($values){
+        $importedArticle = null;
+
         $unit = UnitDao::findOne(["name" => $values["unit_name"]]);
         if ($unit == null) {
             $unit = new Unit;
@@ -214,10 +204,10 @@ class ArticleController extends EntityController
         if ($product == null && $values["article_name"] != "null") {
             $product = new Product;
             $product->setName($values["article_name"]);
+            ProductDao::save($product);
             if ($values["ingredient_idProduct"] != "null") {
                 $product->makeIngredient();
             }
-            ProductDao::save($product);
         }
 
         $article = ArticleDao::findById($values["article_idArticle"]);
@@ -230,26 +220,52 @@ class ArticleController extends EntityController
             $article->setDisplayName($values["article_name"]);
             $article->setFlag($values["article_flag"]);
             ArticleDao::save($article);
+            $importedArticle = $article;
         }
 
-        $articlePrice = new ArticlePrice;
-        $articlePrice->setDateStart( FormatUtil::sqlDateToPhpDate($values["offers_startDate"]));
-        $articlePrice->setPrice(1.2 * (float)$values["offers_price"]);
-        $articlePrice->setArticle($article);
-        ArticlePriceDao::save($articlePrice);
 
-        $lot = new Lot();
-        $lot->setArticle($article);
-        $lot->setOrderNumberSupplier($values["orders_number"]);
-        $lot->setUnitCost($values["offers_price"]);
-        $lot->setDateReception( FormatUtil::sqlDateToPhpDate($values["orders_dateDelivery"]));
-        $lot->setQuantity($values["ordersArticle_quantity"]);
-        LotDao::saveOrUpdate($lot);
+        $arrticlePriceDate = FormatUtil::sqlDateToPhpDate($values["offers_startDate"]);
 
-        $importation = new Importation();
-        $importation->setIdArticle($article->getId());
-        $importation->setAdministrator(MainController::getLoggedInUser()->getAdministrator());
-        $importation->setOrderNumberSupplier($values["orders_number"]);
-        ImportationDao::saveOrUpdate($importation);
+        $articlePrice = LotDao::findOne([
+            "idArticle" => $article->getId(),
+            "dateStart" => $arrticlePriceDate
+        ]);
+
+        if ( $articlePrice == null ){
+            $articlePrice = new ArticlePrice;
+            $articlePrice->setDateStart( FormatUtil::sqlDateToPhpDate($values["offers_startDate"]));
+            $articlePrice->setArticle($article);
+            $articlePrice->setPrice(1.2 * (float)$values["offers_price"]);
+            ArticlePriceDao::save($articlePrice);
+        }
+
+        $lot = LotDao::findOne([
+            "idArticle" => $article->getId(),
+            "orderNumberSupplier" => $values["orders_number"]
+        ]);
+        if ( $lot == null ){
+            $lot = new Lot();
+            $lot->setArticle($article);
+            $lot->setOrderNumberSupplier($values["orders_number"]);
+            $lot->setUnitCost($values["offers_price"]);
+            $lot->setDateReception( FormatUtil::sqlDateToPhpDate($values["orders_dateDelivery"]));
+            $lot->setQuantity($values["ordersArticle_quantity"]);
+            LotDao::saveOrUpdate($lot);
+        }
+
+        $importation = ImportationDao::findOne([
+            "idArticle" => $article->getId(),
+            "orderNumberSupplier" => $values["orders_number"]
+        ]);
+
+        if ( $importation == null ){
+            $importation = new Importation;
+            $importation->setArticle($article);
+            $importation->setAdministrator(MainController::getLoggedInUser()->getAdministrator());
+            $importation->setOrderNumberSupplier($values["orders_number"]);
+            ImportationDao::saveOrUpdate($importation);
+        }
+
+        return $importedArticle;
     }
 }

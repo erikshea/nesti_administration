@@ -93,8 +93,8 @@ const dataArticleBarChart = {
 const optionsArticleBarChart = {
     chart: {
         title: 'Article',
-        width: 900,
-        height: 400
+        width: 500,
+        height: 300
     }
 };
 

@@ -1,9 +1,9 @@
 <div class="container">
     <div class="row">
         <div class="col">
-<?php if (($vars['message'] ?? null) == "edited"): ?>
+<?php if (($vars['message'] ?? null) == "error"): ?>
             <div class="alert alert-success text-center p-3" role="alert">
-                Vos modifications ont été enregistrées.
+                Une erreur est survenue.
             </div>
 <?php endif ?>
         </div>
@@ -30,57 +30,28 @@
 <div class="container">
     <div class="row">
         <div class="col">
-<?php if (!empty($vars["importedLines"])): ?>
+<?php if (!empty($vars["importedArticles"])): ?>
             <h2 class="text-center">Importations réussies</h3>  
             <table class="table listing">
                 <thead>
                     <tr>
-                    <th scope="col">ID Article</th>
-                    <th scope="col">Nom Article</th>
-                    <th scope="col">Nom Unité</th>
-                    <th scope="col">Prix Article</th>
-                    <th scope="col">Numéro de Commande</th>
-                    <th scope="col">Actions</th>
+                        <th scope="col">ID Article</th>
+                        <th scope="col">Nom Article</th>
+                        <th scope="col">Prix Article</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-<?php foreach ($vars['importedLines'] as $line): ?>
+<?php foreach ($vars['importedArticles'] as $article): ?>
                     <tr>
-                        <td scope="row"><?= $line["article_idArticle"] ?></td>
-                        <td><?= $line["article_name"] ?></td>
-                        <td><?= $line["unit_name"] ?></td>
-                        <td><?= $line["offers_price"] ?></td>
-                        <td><?= $line["orders_number"] ?></td>
+                        <td scope="row"><?= $article->getId() ?></td>
+                        <td><?= $article->getProduct()->getName() ?></td>
+                        <td><?= FormatUtil::getFormattedPrice($article->getSellingPrice()) ?></td>
                         <td>
                             <div class="listing__actions">
-                                <a href="<?= $vars['baseUrl'] . "article/edit/" . $line["article_idArticle"] ?>">Modifier</a>
+                                <a href="<?= $vars['baseUrl'] . "article/edit/" . $article->getId() ?>">Modifier</a>
                             </div>
                         </td>
-                    </tr>
-<?php endforeach ?>
-                </tbody>
-            </table>
-<?php endif ?>
-<?php if (!empty($vars["erroredLines"])): ?>
-            <h2 class="text-center">Importations erronées</h3>  
-            <table class="table listing">
-                <thead>
-                    <tr>
-                    <th scope="col">ID Article</th>
-                    <th scope="col">Nom Article</th>
-                    <th scope="col">Nom Unité</th>
-                    <th scope="col">Prix Article</th>
-                    <th scope="col">Numéro de Commande</th>
-                    </tr>
-                </thead>
-                <tbody>
-<?php foreach ($vars['erroredLines'] as $line): ?>
-                    <tr>
-                        <td scope="row"><?= $line["article_idArticle"] ?></td>
-                        <td><?= $line["article_name"] ?></td>
-                        <td><?= $line["unit_name"] ?></td>
-                        <td><?= $line["offers_price"] ?></td>
-                        <td><?= $line["orders_number"] ?></td>
                     </tr>
 <?php endforeach ?>
                 </tbody>

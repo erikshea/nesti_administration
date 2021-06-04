@@ -48,7 +48,7 @@
                 <tbody>
 <?php foreach ($vars['entities'] as $user): ?>
                     <tr>
-                        <th scope="row"><?= $user->getId() ?></th>
+                        <td><?= $user->getId() ?></td>
                         <td><?= $user->getFullName() ?></td>
                         <td><?= implode(' , ',  TranslateUtil::translateArray($user->getRoles(), "Users") ) ?></td>
                         <td><?= TranslateUtil::translateDate($user->getLatestConnectionDate()) ?></td>
