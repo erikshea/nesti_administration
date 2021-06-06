@@ -4,7 +4,6 @@ class UsersController extends EntityController
     public function actionLogin()
     {
         $this->setTemplateName('common/baseBarebones', 'base');
-        header("HTTP/1.1 401 Unauthorized");
         $this->addVars(["formBuilder" => new EntityFormBuilder($this->getEntity())]);
         if (isset($_POST['Users'])) {
             $candidate = UsersDao::findOne(['login' => $_POST['Users']['login']]);
@@ -88,12 +87,15 @@ class UsersController extends EntityController
      */
     public function actionEdit()
     {
-        $formBuilder = new EntityFormBuilder($this->getEntity());
         $user = $this->getEntity();
+        $formBuilder = new EntityFormBuilder($user);
+        $city = $user?->getCity() ?? new City;
+        $cityFormBuilder = new EntityFormBuilder($user?->getCity() ?? new City);
         
         $this->addVars([
             "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
-            "formBuilder" => $formBuilder
+            "formBuilder" => $formBuilder,
+            "cityFormBuilder" => $cityFormBuilder
         ]);
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
@@ -101,10 +103,26 @@ class UsersController extends EntityController
             if ( !isset($_POST[$this->getEntityClass()]["roles"]) ){
                 $_POST[$this->getEntityClass()]["roles"] = [];
             }
-
             $formBuilder->setFormData($_POST[$this->getEntityClass()]);
-            if ($formBuilder->isValid()) {
+            $cityFormBuilder->setFormData($_POST["City"]);
+
+            if ($formBuilder->isValid() && $cityFormBuilder->isValid()) {
                 $formBuilder->applyDataTo($user);
+                $cityFormBuilder->applyDataTo($city);
+
+                $existingCity = CityDao::findOne([
+                    "name" => $city->getName(),
+                    "zipCode" => $city->getZipCode(),
+                ]);
+                
+                if ( $existingCity == null ){
+                    $city->setId(null);
+                    CityDao::save($city);
+                } else {
+                    $city = $existingCity;
+                }
+
+                $user->setCity($city);
 
                 if ( !empty($formBuilder->getFormData()["newPassword"]) ){
                     $user->setPasswordHashFromPlaintext($formBuilder->getFormData()["newPassword"]);

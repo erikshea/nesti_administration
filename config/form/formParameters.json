@@ -30,31 +30,19 @@
                 "icon": "far fa-user",
                 "label": "Identifiant"
             },
-            "validators": ["unique", "notEmpty"]
+            "validators": ["unique", "notEmpty", "lettersAndHyphen"]
         },
         "address1": {
             "options": {
                 "label": "Addresse (ligne 1)"
             },
-            "validators": ["email", "unique"]
+            "validators": ["address"]
         },
         "address2": {
             "options": {
                 "label": "Addresse (ligne 2)"
             },
-            "validators": ["email", "unique"]
-        },
-        "zipcode": {
-            "options": {
-                "label": "Code postal"
-            },
-            "validators": ["email", "unique"]
-        },
-        "city_name": {
-            "options": {
-                "label": "Ville"
-            },
-            "validators": ["name"]
+            "validators": ["address"]
         },
         "password": {
             "options": {
@@ -77,6 +65,7 @@
         },
         "newPasswordConfirm": {
             "options": {
+                "icon": "fas fa-lock",
                 "label": "Confirmation du mot de passe",
                 "type": "password",
                 "value": ""
@@ -100,6 +89,20 @@
                 "choices": ["a", "w", "b"]
             },
             "validators": ["isFlag"]
+        }
+    },
+    "City": {
+        "zipCode": {
+            "options": {
+                "label": "Code postal"
+            },
+            "validators": ["isFrenchZipcode"]
+        },
+        "name": {
+            "options": {
+                "label": "Ville"
+            },
+            "validators": ["name"]
         }
     },
     "Recipe": {
@@ -141,7 +144,7 @@
             },
             "validators": ["notEmpty"]
         },
-        "name": {
+        "factoryName": {
             "options": {
                 "label": "Nom d'usine de l'article",
                 "readOnly": true

@@ -662,7 +662,6 @@ class BaseDao
                         if ( !isset($result[$key]) ) {
                             $result[$key] = [];
                         }
-
                         $result[$key][] = $entity;
                     } else {
                         $result[] = $entity;

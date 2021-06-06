@@ -192,8 +192,6 @@ class BaseEntity{
 
 
     public function hasSamePrimaryKey($other){
-        $otherDao = get_class($other)::getDaoClass();
-
         if ( $this->hasCompositeKey() ){
             $samePk = true;
 

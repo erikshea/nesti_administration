@@ -33,7 +33,7 @@ class ArticleController extends EntityController
                     $entity->setImage($image);
                 }
                 $formBuilder->applyDataTo($entity);
-                $entity->setDateModification(new DateTime);
+                $entity->setDateModification(FormatUtil::currentSqlDate());
 
                 $this->addVars([
                     "message" => "edited"
@@ -159,6 +159,8 @@ class ArticleController extends EntityController
             // the first line contains view column names, ie: "article_idArticle";"article_name";"article_quantity";...
             $columnNames = fgetcsv($file, 0, ";");
 
+
+
             $importedArticles = [];
             while ( ($row = fgetcsv($file, 0, ";")) !== false ){
                 $values = [];
@@ -189,8 +191,7 @@ class ArticleController extends EntityController
     }
 
 
-
-    private function importCsvLine($values){
+    private function importCsvLine($values):mixed{
         $importedArticle = null;
 
         $unit = UnitDao::findOne(["name" => $values["unit_name"]]);
@@ -200,10 +201,10 @@ class ArticleController extends EntityController
             UnitDao::save($unit);
         }
         
-        $product = ProductDao::findOne(["name" => $values["article_name"]]);
-        if ($product == null && $values["article_name"] != "null") {
+        $product = ProductDao::findOne(["name" => $values["product_name"]]);
+        if ($product == null && $values["product_name"] != "null") {
             $product = new Product;
-            $product->setName($values["article_name"]);
+            $product->setName($values["product_name"]);
             ProductDao::save($product);
             if ($values["ingredient_idProduct"] != "null") {
                 $product->makeIngredient();
@@ -218,17 +219,15 @@ class ArticleController extends EntityController
             $article->setUnit($unit);
             $article->setUnitQuantity($values["article_quantity"]);
             $article->setDisplayName($values["article_name"]);
+            $article->setFactoryName($values["article_name"]);
             $article->setFlag($values["article_flag"]);
             ArticleDao::save($article);
             $importedArticle = $article;
         }
 
-
-        $arrticlePriceDate = FormatUtil::sqlDateToPhpDate($values["offers_startDate"]);
-
         $articlePrice = LotDao::findOne([
             "idArticle" => $article->getId(),
-            "dateStart" => $arrticlePriceDate
+            "dateStart" => FormatUtil::sqlDateToPhpDate($values["offers_startDate"])
         ]);
 
         if ( $articlePrice == null ){

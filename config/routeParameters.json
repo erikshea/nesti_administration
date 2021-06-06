@@ -69,6 +69,9 @@
             },
             "import": {
                 "title": "Importation d'un article"
+            },
+            "orders": {
+                "title": "Commandes"
             }
         }
     },
@@ -100,6 +103,7 @@
     "api": {
         "controller"    : "ApiController",
         "allowed": ["%hasApiToken%"],
+        "forwardGuestsToLogin" : false,
         "defaultAction" : "obtain",
         "name": "API",
         "actions": {
@@ -111,6 +115,7 @@
     },
     "ajax": {
         "controller"    : "AjaxController",
-        "allowed": ["%hasCsrfToken%"]
+        "allowed": ["%hasCsrfToken%"],
+        "forwardGuestsToLogin" : false
     }
 }

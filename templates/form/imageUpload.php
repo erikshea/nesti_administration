@@ -11,7 +11,7 @@
             <label for="image-upload__add" class="btn btn-sm btn-success"><i class="fas fa-retweet"></i>Changer</label>
         </div>
         <input type="hidden" id="image-upload__status" name="<?= "{$vars['formName']}[imageStatus]" ?>" value="unchanged">
-        <a href="#" id="image-upload__delete" class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i></a>
+        <a href="#" id="image-upload__delete" aria-label="Effacer" class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i></a>
     </div>
     <div class="image-upload__content">
         <div id="image-upload__preview" style="background-image: <?= $options["initialBackground"] ? "url({$options['initialBackground']})":"none" ?>">

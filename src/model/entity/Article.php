@@ -12,6 +12,7 @@ class Article extends BaseEntity{
     private $idUnit;
     private $idProduct;
     private $displayName;
+    private $factoryName;
 
     public function getQuantitySold(){
         $quantity = 0;
@@ -308,6 +309,26 @@ class Article extends BaseEntity{
     public function setDisplayName($displayName)
     {
         $this->displayName = $displayName;
+
+        return $this;
+    }
+
+        /**
+     * Get the value of displayName
+     */ 
+    public function getFactoryName()
+    {
+        return $this->factoryName;
+    }
+
+    /**
+     * Set the value of displayName
+     *
+     * @return  self
+     */ 
+    public function setFactoryName($factoryName)
+    {
+        $this->factoryName = $factoryName;
 
         return $this;
     }

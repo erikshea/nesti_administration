@@ -27,7 +27,7 @@ class DatabaseUtil
 
             try {
                 self::$conn = new PDO(
-                    "mysql:host={$parameters['host']};dbname={$parameters['db_name']}",
+                    "mysql:host={$parameters['host']};dbname={$parameters['db_name']};charset=utf8mb4",
                     $parameters['user'],
                     $parameters['password']
                 );

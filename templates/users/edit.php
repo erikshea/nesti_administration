@@ -22,13 +22,23 @@
 
     <div class="row justify-content-between">
         <div class="col-6">
-            <?php $vars["formBuilder"]
-                ->add("csrf")
-                ->add("firstName")
-                ->add("lastName")
-                ->add("roles")
-                ->add("flag")?>
+            <?php
+                $vars["formBuilder"]
+                    ->add("csrf")
+                    ->add("login", ["readOnly" => true])
+                    ->add("firstName")
+                    ->add("lastName")
+                    ->add("roles")
+                    ->add("flag");
+                $vars["cityFormBuilder"]
+                    ->add("name")
+                    ->add("zipCode");
+                $vars["formBuilder"]
+                    ->add("address1")
+                    ->add("address2");
+                ?>
 <?php if ($vars["entity"]->getId() == MainController::getLoggedInUser()->getId()): ?>
+                <hr/>
     <?php $vars["formBuilder"]
                 ->add("newPassword")
                 ->add("newPasswordConfirm")?>

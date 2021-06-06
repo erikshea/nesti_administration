@@ -2,6 +2,7 @@
 class City extends BaseEntity{
     private $idCity;
     private $name;
+    private $zipCode;
 
     public function getUsers($options=['a']): array{
         return $this->getRelatedEntities("Users", $options);
@@ -48,4 +49,25 @@ class City extends BaseEntity{
 
         return $this;
     }
+
+    /**
+     * Get the value of name
+     */ 
+    public function getZipCode()
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * Set the value of name
+     *
+     * @return  self
+     */ 
+    public function setZipCode($zipCode)
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
 }

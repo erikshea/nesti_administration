@@ -45,11 +45,9 @@ class StatisticsController extends BaseController
             $purchasedTotalByDay[] = $purchasedTotal;
         }
 
-
-
         $articleSales = [];
         $articlePurchases = [];
-        foreach (ArticleDao::findAll(["a"]) as $article) {
+        foreach (ArticleDao::findAll(["flag"=>"a"]) as $article) {
             $articleSales[] = $article->getTotalSales();
             $articlePurchases[] = $article->getTotalPurchases();
         }

@@ -9,9 +9,8 @@ class MainController
     protected static ?Users $loggedInUser = null; // currently connected user
     protected static $routeConfig; // all route configurations
     protected static $currentRoute = []; // current calculated route, in the form ["controller" => CONTROLLER, "action => ACTION]
-    protected static $currentController; // instance to current (calculated) controller class
 
-        
+    
     /**
      * dispatch
      * determines the controller class and action method to call according to URL and user's rights
@@ -40,15 +39,15 @@ class MainController
         }
  
         // find controller class for route as well as action method (if they exist)
-        $controllerClass = $routeConfig[static::$currentRoute['controller']]['controller'] ?? "";
         $actionMethod = BaseController::translateToActionMethod(static::$currentRoute['action']);
 
-        if ( !method_exists($controllerClass, $actionMethod) ) { 
+        if ( !method_exists(static::getControllerClassName() ?? "", $actionMethod) ) { 
             // if no action corresponds to calculated route
             static::redirect404();
         } else{
-            static::$currentController = new $controllerClass;
-            if ( static::getLoggedInUser() == null && !static::userHasRights()){
+            if ( static::getLoggedInUser() == null
+                && !static::userHasRights()
+                && ($routeConfig[static::$currentRoute['controller']]["forwardGuestsToLogin"] ?? true)){ // ie ApiController doesn't forward guests to login if token is invalid
                 // if valid route, and guest doesn't have access to that route (via "guest" or routing functions in "allowed" routing parameters)
                 static::forwardLogin(); 
             } else if ( !static::userHasRights() ){
@@ -61,7 +60,15 @@ class MainController
         }
     }
 
-        
+    /**
+     * getCurrentController
+     * get class name of the current calculated controller
+     * @return mixed
+     */
+    public static function getControllerClassName(){
+        return static::getAllRouteParameters()[static::$currentRoute['controller']]['controller'] ?? null;
+    }
+
     /**
      * getLoggedInUser
      * get currenty logged in user
@@ -142,16 +149,6 @@ class MainController
         return static::getAllRouteParameters()[static::$currentRoute["controller"]]["actions"][static::$currentRoute["action"]] ?? null;
     }
 
-        
-    /**
-     * getCurrentController
-     * get instance of current calculated controller class
-     * @return mixed
-     */
-    public static function getCurrentController(){
-        return static::$currentController;
-    }
-
 
         
     /**
@@ -194,7 +191,6 @@ class MainController
         static::$currentRoute = ['controller' => 'user', 'action' => 'login'];
         static::callControllerDispatch();
     }
-
         
     /**
      * callControllerDispatch
@@ -203,9 +199,11 @@ class MainController
      * @return void
      */
     public static function callControllerDispatch($options=[]){
-        static::$currentController->dispatch(static::$currentRoute['action'],$options);
-    }
+        $controllerClass = static::getControllerClassName();
 
+        $controllerInstance = new $controllerClass;
+        $controllerInstance->dispatch(static::$currentRoute['action'],$options);
+    }
         
     /**
      * userHasRights
@@ -238,7 +236,7 @@ class MainController
      * do the routing functions specified in route config validate for the current user (or guest)?
      * @return bool
      */
-    private static function userHasRightsForRoutingFunctions($allowedForRoute, $user=null){
+    private static function userHasRightsForRoutingFunctions($allowedForRoute){
         $isAllowed = false;
 
         foreach ( $allowedForRoute as $allowedItem ){
@@ -247,20 +245,9 @@ class MainController
                 $allowedItem, 
                 $matches
             )) {
-                switch ( $matches[1] ){
-                    case "hasApiToken": 
-                        $apiElement = ApiElementDao::findOne(["token" => $_GET["token"] ?? null]);
-                        $isAllowed |= $apiElement != null;
-                    break;
-                    case "hasCsrfToken": 
-                        $isAllowed |= SecurityUtil::getCsrfToken() == ($_POST["csrf_token"] ?? null);
-                    break;
-                    case "recipeCreator": 
-                        if ( $user != null ){
-                            $recipe = static::getCurrentController()?->getEntity();
-                            $isAllowed |= $user->equals( $recipe->getChef() );
-                        }
-                    break;
+                $routingFunctionName = $matches[1];
+                if (method_exists("RouteValidators", $routingFunctionName)){
+                    $isAllowed |= RouteValidators::$routingFunctionName();
                 }
             }
         }

@@ -53,7 +53,7 @@ const IndicatedPasswordField = (props) => {
     return (
         <div className="col form-group">
             <div className="form-group__content ">
-                <label htmlFor="">{props.label}</label>
+                <label htmlFor={props.name}>{props.label}</label>
                 <div className='d-flex flex-column'>
                     <div className="input-group">
                         <div className="input-group-prepend">
@@ -62,6 +62,7 @@ const IndicatedPasswordField = (props) => {
                             </span>
                         </div>
                         <input
+                            id={props.name}
                             type='password'
                             name={props.name}
                             className={'password-input form-control ' + ( failedValidators.length == 0 ? "is-valid":"is-invalid") } 

@@ -18,7 +18,6 @@
     <script src='<?= "{$vars['assetsUrl']}/js/jquery-3.5.1.min.js" ?>'></script>
     <script src='<?= "{$vars['assetsUrl']}/js/bootstrap.min.js" ?>'></script>
     <script src='<?= "{$vars['assetsUrl']}/js/main.js?version={$vars['version']}" ?>'></script>
-    <script src='<?= "{$vars['assetsUrl']}/js/PasswordInput.js?version={$vars['version']}" ?>' type='text/babel'></script>
 <?php foreach ($vars['assets']['js']  as $scriptParameters): ?>
     <script <?php foreach ($scriptParameters  as $key=>$scriptParameter): ?> 
             <?php if ( is_string($key)): ?>

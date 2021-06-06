@@ -90,9 +90,9 @@ class FormBuilderValidator{
      * @param  string $testSting
      * @return bool true if validates
      */
-    public static function letters(?string $testSting): bool{
+    public static function lettersAndHyphen(?string $testSting): bool{
         return preg_match(
-            "/^[a-zA-ZÀ-ÿ\-'` ]*$/", // only letters, spaces, and hyphens (including accents)
+            "/^[a-zA-ZÀ-ÿ\-]*$/", // only letters, spaces, and hyphens (including accents)
             $testSting
         ); 
     }
@@ -105,11 +105,25 @@ class FormBuilderValidator{
      */
     public static function name(?string $testSting): bool{
         return preg_match(
-            "/^[a-zA-ZÀ-ÿ\-'` ]*$/", // only letters, spaces, and hyphens (including accents)
+            "/^[a-zA-ZÀ-ÿ\-'`. ]*$/", // only letters, spaces, and hyphens (including accents)
             $testSting
         ); 
     }
     
+
+     /**
+     * url
+     * validates if property value is made up of letters, spaces, and hyphens
+     * @param  string $testSting
+     * @return bool true if validates
+     */
+    public static function address(?string $testSting): bool{
+        return preg_match(
+            "/^[0-9a-zA-ZÀ-ÿ\-'`. ,]*$/", // only letters, spaces, and hyphens (including accents)
+            $testSting
+        ); 
+    }
+
      /**
      * url
      * validates if property value is a strong password.
@@ -167,6 +181,19 @@ class FormBuilderValidator{
         return $testString == SecurityUtil::getCsrfToken(); 
     }
 
+    /**
+     * url
+     * validates if property value is a valid french zipcode
+     * @param  string $testSting
+     * @return bool true if validates
+     */
+    public static function isFrenchZipcode(?string $testString): bool{
+         // Source: https://forum.alsacreations.com/topic-5-46479-1-Code-postal-FR-controle-par-les-expressions-regulieres.html
+        return empty($testString) || preg_match(
+            "/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/",
+            $testString
+        ); 
+    }
 
      /**
      * url

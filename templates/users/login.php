@@ -19,9 +19,10 @@
                             ->add('login',    ['validation' => false]) 
                             ->add('password', ['validation' => false, 'template' => 'standardFormRow']) ?>
                     <div class="row justify-content-end">
-                    <div class="form-group ">
-                        <button type="submit" class="btn px-4 mr-2">Valider</button>
-                    </div>  
+                        <div class="form-group ">
+                            <button type="submit" class="btn px-4 mr-2">Valider</button>
+                        </div>  
+                    </div>
                 </form>
             </div>
         </div>

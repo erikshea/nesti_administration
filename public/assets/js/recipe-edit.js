@@ -54,11 +54,11 @@ class IngredientList extends React.Component {
         });
 
         const ingredients = this.state.ingredients.map((ingredient, index) => {
-            return (<option key={index} value={ingredient.name} />);
+            return (<option key={index} value={htmlDecode(ingredient.name)} />);
         });
 
         const units = this.state.units.map((unit, index) => {
-            return (<option key={index} value={unit.name} />);
+            return (<option key={index} value={htmlDecode(unit.name)} />);
         });
 
         return (
@@ -107,8 +107,8 @@ const IngredientRecipe = (props)=>{
     return (
         <div className='ingredient-list__ingredient d-flex justify-content-between'>
             <div className="ingredient-list__description">
-                <span>{props.quantity} {props.unitName} : </span>
-                <strong>{props.ingredientName}</strong>
+                <span>{htmlDecode(props.quantity)} {htmlDecode(props.unitName)} : </span>
+                <strong>{htmlDecode(props.ingredientName)}</strong>
             </div>
             <a href="#recipe-ingredients"
                 onClick={ ()=>ReactDOM.render(

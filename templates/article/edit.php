@@ -17,7 +17,7 @@
 
     <div class="row justify-content-between">
         <div class="col-6 ">
-            <?php $vars["formBuilder"]->add("name")
+            <?php $vars["formBuilder"]->add("factoryName")
                 ->add("displayName")
                 ->add("idArticle", ['class' => 'form-row--horizontal'])
                 ->add("sellingPrice", ['class' => 'form-row--horizontal'])

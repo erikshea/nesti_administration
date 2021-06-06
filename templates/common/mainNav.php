@@ -1,6 +1,6 @@
 <nav id="main-menu" class="d-flex justify-content-between ">
     <div id="main-menu__pages" class="navbar navbar-expand-sm ">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsable-buttons" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsable-buttons" aria-controls="collapsable-buttons" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
         <div id="collapsable-buttons" class="collapse navbar-collapse">
@@ -37,11 +37,14 @@
     </div>
 
     <div id="main-menu__user" class="navbar">
-        <a class="nav-item nav-link" href="<?= $vars['baseUrl'] ?>user/edit/<?= $vars['currentUser']->getId() ?>">
+        <a class="nav-item nav-link"
+            aria-label="Profil"
+            href="<?= $vars['baseUrl'] ?>user/edit/<?= $vars['currentUser']->getId() ?>">
             <i class="fas fa-user"></i>
             <span><?= $vars['currentUser']->getFullName() ?></span>
         </a>
-        <a class="nav-item nav-link" href="<?= $vars['baseUrl'] ?>user/logout">
+        <a class="nav-item nav-link" href="<?= $vars['baseUrl'] ?>user/logout"
+            aria-label="Déconnexion">
             <i class="fas fa-sign-out-alt"></i>
             <span>Déconnexion</span>
         </a>

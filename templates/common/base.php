@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <?php include SiteUtil::toAbsolute("templates/common/head.php") ?>
 

@@ -59,7 +59,7 @@
                             <?php foreach ($vars["recipesByGrade"] as $recipe): ?>
                             <div class="d-flex justify-content-between">
                                 <a class="seeBtn" href="<?= $vars['baseUrl'] ?>recipe/edit/<?= $recipe->getId() ?>"><?= $recipe->getName() ?></a>
-                                <p> par <?= $recipe->getChef()->getLastName() . $recipe->getChef()->getFirstName() ?></span>
+                                <span> par <?= $recipe->getChef()->getLastName() . $recipe->getChef()->getFirstName() ?></span>
                             </div>
                             <?php endforeach ?>
                         </div>
@@ -72,7 +72,7 @@
             <h2>Articles</h2>
             <div id="chartArticle"></div>
 
-            <h4 class="mt-3">En rupture de stock</h2>      
+            <h4 class="mt-3">En rupture de stock</h4>      
             <table class="table listing">
                     <thead>
                         <tr>

@@ -36,8 +36,8 @@ const OrderItem = (props)=>{
     return (
         <div className="d-flex justify-content-between">
             <div>
-                <span>{props.quantity} {props.unitName} : </span>
-                <strong>{props.articleName}</strong>
+                <span>{props.quantity} {htmlDecode(props.unitName)} : </span>
+                <strong>{htmlDecode(props.articleName)}</strong>
             </div>
             <a href={vars.baseUrl + "article/edit/" + props.idArticle}>Voir</a>
         </div>

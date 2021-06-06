@@ -96,7 +96,7 @@ class ParagraphList extends React.Component {
                     <div className={paragraphs.length ? "invisible" : ""}>Aucun paragraphe.</div>
                     {paragraphs}
                 </div>
-                <a id="paragraph-list__add-button" onClick={this.add}><i className="far fa-plus-square"></i></a>
+                <a id="paragraph-list__add-button" aria-label="Ajouter" onClick={this.add}><i className="far fa-plus-square"></i></a>
                 <div id="paragraph-list__delete-modal"></div>
             </div>
         );
@@ -110,11 +110,13 @@ const Paragraph = (props) => {
         <div className="d-flex paragraph-list__paragraph align-items-center">
             <div className="paragraph-list__buttons d-flex flex-column">
                 {!isFirst && <a
+                    aria-label="Remonter"
                     className='move'
                     onClick={() => props.move(props.index, -1)}>
                         <i className="fas fa-arrow-alt-circle-up"></i>
                 </a>}
                 <a  className='remove'
+                    aria-label="Effacer"
                     onClick={ ()=>ReactDOM.render(
                         <DeleteModal
                             elementName={`Paragraphe ${props.index + 1}`}
@@ -123,6 +125,7 @@ const Paragraph = (props) => {
                     <i className="far fa-trash-alt"></i>
                 </a>
                 {!props.isLast && <a
+                    aria-label="Descendre"
                     className='move'
                     onClick={() => props.move(props.index, 1)}>
                         <i className="fas fa-arrow-alt-circle-down"></i>
@@ -130,9 +133,11 @@ const Paragraph = (props) => {
             </div>
 
             <div className="move paragraph-list__content">
-                <textarea className='content primary-border'
+                <textarea
+                    className='content primary-border'
+                    aria-label="Paragraphe"
                     onChange={ (e)=>{props.updateInputValue(props.index,e.target.value)}}
-                    defaultValue={props.content  || ""}
+                    defaultValue={htmlDecode(props.content)  || ""}
                     onBlur ={ ()=> props.move(props.index, 0)} // on unfocus, move 0 distance to save content to source
                 ></textarea>
             </div>

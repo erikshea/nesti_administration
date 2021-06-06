@@ -16,10 +16,10 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <button type="submit" class="btn btn-info"><i class="fas fa-search"></i></button>
+                            <button type="submit" aria-label="Valider" class="btn btn-info"><i class="fas fa-search"></i></button>
                         </div>
                         <input value="<?= $_POST['search']['name'] ?? "" ?>"
-                            type="text" name="search[name]" class="form-control" id="searchInput" >
+                            type="text" name="search[name]" class="form-control" id="searchInput"  aria-label="Rechercher">
                     </div>
                 </div>
             </form>
@@ -53,7 +53,7 @@
 <?php foreach ($vars['entities'] as $article): ?>
                     <tr>
                         <td><?= $article->getId() ?></th>
-                        <td><?= $article->getProduct()->getName() ?></td>
+                        <td><?= $article->getDisplayName() ?></td>
                         <td><?= FormatUtil::getFormattedPrice($article->getSellingPrice()) ?></td>
                         <td><?= $article->getLastImportationDate() ?></td>
                         <td><?= $article->getStock() ?></td>
