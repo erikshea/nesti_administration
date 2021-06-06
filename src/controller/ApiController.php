@@ -12,7 +12,7 @@ class ApiController extends BaseController
 
     public function actionTags()
     {
-        $tags = EntityUtil::toArray(TagDao::findAll());
+        $tags = EntityUtil::toArray(TagDao::findAll(), true);
         echo json_encode($tags);
     }
 
@@ -82,23 +82,23 @@ class ApiController extends BaseController
             "idRecipe" => SiteUtil::getUrlParameters()[2],
             "ORDER" => "paragraphPosition ASC"
         ] );
-        echo json_encode(EntityUtil::toArray($paragraphs));
+        echo json_encode(EntityUtil::toArray($paragraphs, true));
     }
 
     private function recipesToArray($recipes){
-        $recipesArray =  EntityUtil::toArray($recipes);
+        $recipesArray =  EntityUtil::toArray($recipes, true);
         foreach ($recipesArray as $i=>&$recipeArray) {
-            $recipeArray["author"] = $recipes[$i]->getChef()?->getFullName() ?? "";
+            $recipeArray["author"] = FormatUtil::decode($recipes[$i]->getChef()?->getFullName() ?? "");
             $recipeArray["image"] = SiteUtil::fullUrl($recipes[$i]->getImage()?->getUrl() ?? "");
         }
         return $recipesArray;
     }
 
     private function ingredientRecipesToArray($ingredientRecipes){
-        $ingredientRecipesArray =  EntityUtil::toArray($ingredientRecipes);
+        $ingredientRecipesArray =  EntityUtil::toArray($ingredientRecipes, true);
         foreach ($ingredientRecipesArray as $i=>&$ingredientRecipeArray) {
-            $ingredientRecipeArray["name"] = $ingredientRecipes[$i]->getIngredient()->getName();
-            $ingredientRecipeArray["unitName"] = $ingredientRecipes[$i]->getUnit()->getName();
+            $ingredientRecipeArray["name"] = FormatUtil::decode($ingredientRecipes[$i]->getIngredient()->getName());
+            $ingredientRecipeArray["unitName"] = FormatUtil::decode($ingredientRecipes[$i]->getUnit()->getName());
         }
         return $ingredientRecipesArray;
     }

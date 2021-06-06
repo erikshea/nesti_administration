@@ -56,7 +56,6 @@ class UsersController extends EntityController
         ]);
 
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
-            
             if ( !isset($_POST[$this->getEntityClass()]["roles"]) ){
                 $_POST[$this->getEntityClass()]["roles"] = [];
             }

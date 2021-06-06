@@ -7,6 +7,7 @@ class BaseController
     protected $templateVars = [ 'assets' => ["js" => [], "css" => []]];
     protected $templateNames = ['base'=>'common/base'];
     protected $hasView = true;
+    protected $viewHeader = 'Content-Type: text/html; charset=utf-8';
 
     public function dispatch($actionSlug, $options= [])
     {
@@ -41,6 +42,7 @@ class BaseController
             $this->translateAssetOptions();
 
             $vars = $this->templateVars; // templates only use $vars
+            header($this->viewHeader);
             include_once SiteUtil::toAbsolute("templates/{$this->templateNames['base']}.php");
         }
     }

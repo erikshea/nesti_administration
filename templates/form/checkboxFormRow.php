@@ -13,7 +13,10 @@
                             type="<?= $vars['type'] ?>"
                             value="<?= $choice ?>"
                             <?= ($vars['readOnly'] ?? false )?"readonly":""?>
-                            <?= is_array($vars['checked'])? (in_array( $choice, $vars['checked'])?"checked":""):($choice==$vars['checked']?"checked":"") ?>
+                            <?= is_array($vars['checked'])?
+                                (in_array( $choice, $vars['checked'])?"checked":""): // If $vars['checked'] is array (for example roles), see if current checkbox value is in it
+                                ($choice==$vars['checked']?"checked":"") // Otherwise if value (for example flag), see if value is same as checked 
+                            ?>
     <?php if ($vars['required'] && $i == 0): ?>
                             required="required"
                             oninvalid="this.setCustomValidity('Ce champ doit être renseigné')"

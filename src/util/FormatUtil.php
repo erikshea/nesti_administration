@@ -89,6 +89,10 @@ class FormatUtil {
     public static function getFormattedPrice($price){
         return $price == null? "-":number_format($price, 2, ",", "") . "€";
     }
+
+    public static function decode($value){
+        return html_entity_decode($value, ENT_QUOTES | ENT_XML1, 'UTF-8');
+    }
 }
 
 ?>

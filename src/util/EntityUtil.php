@@ -28,17 +28,20 @@ class EntityUtil
         }
     }
 
-    public static function toArray($entity)
+    public static function toArray($entity, $decodeHtml = false)
     {
         $result = [];
         if (is_array($entity)) {
             foreach ($entity as $e) {
-                $result[] = static::toArray($e);
+                $result[] = static::toArray($e, $decodeHtml);
             }
         } else {
             $propertyNames = get_class($entity)::getDaoClass()::getColumnNames();
             foreach ($propertyNames as $propertyName) {
                 $result[$propertyName] = static::get($entity, $propertyName);
+                if ( $decodeHtml ){
+                    $result[$propertyName] = FormatUtil::decode($result[$propertyName]);
+                }
             }
         }
         return $result;

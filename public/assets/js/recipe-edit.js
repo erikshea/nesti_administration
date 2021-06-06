@@ -70,7 +70,7 @@ class IngredientList extends React.Component {
                 <form className="ingredient-list__add d-flex flex-column">
                     <h3>Ajouter un ingrédient</h3>
                     <input required
-                        onChange={(e)=>{this.addFields.ingredientName = e.target.value}}
+                        onChange={(e)=>{this.addFields.ingredientName = e.target.value.toLowerCase()}}
                         className="w-100 mr-3 mb-3 ingredient-list__ingredient-name"
                         list="ingredient-suggestions"
                         placeholder="Ingrédient"/>
@@ -83,7 +83,7 @@ class IngredientList extends React.Component {
                             className="w-50 mr-3 ingredient-list__quantity"
                             placeholder="Quantité"/>
                         <input required
-                            onChange={(e)=>{this.addFields.unitName = e.target.value}}
+                            onChange={(e)=>{this.addFields.unitName = e.target.value.toLowerCase()}}
                             className="w-25 mr-3 ingredient-list__unit"
                             list="unit-suggestions"
                             placeholder="Unité"/>

@@ -12,13 +12,16 @@ class EntityFormBuilder extends FormBuilder{
     }
 
     public function add($propertyName, $options=[]){
-        // $options = array_merge([
-        //     'value'=> EntityUtil::get( $this->getEntity(), $propertyName ) ?? ""
-        // ], $options);
+
         $type = $this->getPropertyParameters()[$propertyName]['options']['type'] ?? "";
-        if ( $type == "checkbox" || $type == "radio"){
-            $options["checked"] = EntityUtil::get($this->getEntity(), $propertyName);
+
+        // If checkbox or radio matches entity property, get property value to determine checked buttons
+        if ($type == "checkbox" || $type == "radio" && !isset($options["checked"])){
+            $options["checked"] = $this->isSubmitted() ?
+                $this->formData[$propertyName]
+                : EntityUtil::get($this->getEntity(), $propertyName);
         }
+
         return parent::add($propertyName, $options);
     }
 
@@ -60,7 +63,6 @@ class EntityFormBuilder extends FormBuilder{
         $this->formData = EntityUtil::toArray($entity);
         $this->entity = $entity;
         $this->setFormName(get_class($entity));
-        //$this->setPropertyParametersFromConfig();
     }
 
     public function getEntity(){

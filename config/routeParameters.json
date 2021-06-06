@@ -1,10 +1,10 @@
 {
     "user": {
-        "controller"    : "UsersController",
-        "defaultAction" : "list",
+        "controller": "UsersController",
+        "defaultAction": "list",
         "name": "utilisateurs",
         "isDefault": ["moderator"],
-        "allowed": [ "moderator", "administrator" ],
+        "allowed": ["moderator", "administrator"],
         "actions": {
             "edit": {
                 "name": "Edition",
@@ -19,30 +19,29 @@
             },
             "login": {
                 "title": "Connexion",
-                "allowed": [ "guest" ]
+                "allowed": ["guest"]
             },
             "logout": {
                 "title": "Déconnexion",
-                "allowed": [ "guest" ]
+                "allowed": ["guest"]
             }
         }
     },
     "recipe": {
-        "controller"    : "RecipeController",
-        "defaultAction" : "list",
+        "controller": "RecipeController",
+        "defaultAction": "list",
         "name": "recettes",
-        "isDefault": ["chef", "administrator"],
-        "allowed": [ "chef", "administrator" ],
+        "allowed": ["chef", "administrator"],
         "actions": {
             "edit": {
                 "name": "édition",
                 "title": "Édition d'une recette",
-                "allowed": [ "%recipeCreator%", "administrator" ]
+                "allowed": ["%recipeCreator%", "administrator"]
             },
             "add": {
                 "name": "création",
                 "title": "Création d'une recette",
-                "allowed": [ "chef" ]
+                "allowed": ["chef"]
             },
             "list": {
                 "title": "Recettes"
@@ -50,8 +49,8 @@
         }
     },
     "article": {
-        "controller"    : "ArticleController",
-        "defaultAction" : "list",
+        "controller": "ArticleController",
+        "defaultAction": "list",
         "name": "articles",
         "isDefault": [],
         "allowed": ["administrator"],
@@ -76,8 +75,8 @@
         }
     },
     "statistics": {
-        "controller"    : "StatisticsController",
-        "defaultAction" : "show",
+        "controller": "StatisticsController",
+        "defaultAction": "show",
         "name": "statistiques",
         "allowed": ["user"],
         "actions": {
@@ -87,8 +86,8 @@
         }
     },
     "error": {
-        "controller"    : "ErrorController",
-        "defaultAction" : "404",
+        "controller": "ErrorController",
+        "defaultAction": "404",
         "name": "erreur",
         "allowed": ["guest"],
         "actions": {
@@ -101,21 +100,21 @@
         }
     },
     "api": {
-        "controller"    : "ApiController",
+        "controller": "ApiController",
         "allowed": ["%hasApiToken%"],
-        "forwardGuestsToLogin" : false,
-        "defaultAction" : "obtain",
+        "forwardGuestsToLogin": false,
+        "defaultAction": "obtain",
         "name": "API",
         "actions": {
             "obtain": {
                 "title": "Demande d'un nouveau jeton.",
-                "allowed": [ "guest" ]
+                "allowed": ["guest"]
             }
         }
     },
     "ajax": {
-        "controller"    : "AjaxController",
+        "controller": "AjaxController",
         "allowed": ["%hasCsrfToken%"],
-        "forwardGuestsToLogin" : false
+        "forwardGuestsToLogin": false
     }
 }

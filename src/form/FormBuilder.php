@@ -138,6 +138,9 @@ class FormBuilder{
         return $this;
     }
 
+    public function isSubmitted(){
+        return isset($_POST[$this->getFormName()]);
+    }
 
     public function getValidatorErrorMessages()
     {

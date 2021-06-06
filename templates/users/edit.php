@@ -28,7 +28,7 @@
                     ->add("login", ["readOnly" => true])
                     ->add("firstName")
                     ->add("lastName")
-                    ->add("roles")
+                    ->add("roles")//, ["checked" => $vars["isSubmitted"]?$_POST["Users"]["roles"]:null])
                     ->add("flag");
                 $vars["cityFormBuilder"]
                     ->add("name")
@@ -45,8 +45,8 @@
 <?php endif ?>
 
             <div class="form-group ">
-                <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
                 <a class="btn px-4 mr-2" href="<?= $vars["baseUrl"] ?>recipe">Annuler</a>
+                <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
             </div>
         </div>
 

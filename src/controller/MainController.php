@@ -75,7 +75,7 @@ class MainController
      * @return Users user, or null if guest
      */
     public static function getLoggedInUser(): ?Users{
-        if (static::$loggedInUser == null && $_COOKIE['user_authentification_token'] != null) {
+        if (static::$loggedInUser == null && ($_COOKIE['user_authentification_token'] ?? null) != null) {
             static::$loggedInUser = UsersDao::findOne(['authentificationToken' => $_COOKIE['user_authentification_token'] ]);
         }
 

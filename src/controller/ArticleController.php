@@ -158,9 +158,7 @@ class ArticleController extends EntityController
 
             // the first line contains view column names, ie: "article_idArticle";"article_name";"article_quantity";...
             $columnNames = fgetcsv($file, 0, ";");
-
-
-
+            
             $importedArticles = [];
             while ( ($row = fgetcsv($file, 0, ";")) !== false ){
                 $values = [];
@@ -194,13 +192,15 @@ class ArticleController extends EntityController
     private function importCsvLine($values):mixed{
         $importedArticle = null;
 
+        $values["unit_name"] = strtolower($values["unit_name"]);
         $unit = UnitDao::findOne(["name" => $values["unit_name"]]);
         if ($unit == null) {
             $unit = new Unit;
             $unit->setName($values["unit_name"]);
             UnitDao::save($unit);
         }
-        
+
+        $values["product_name"] = strtolower($values["product_name"]);
         $product = ProductDao::findOne(["name" => $values["product_name"]]);
         if ($product == null && $values["product_name"] != "null") {
             $product = new Product;

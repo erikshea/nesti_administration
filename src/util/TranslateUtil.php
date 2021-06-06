@@ -43,12 +43,12 @@ class TranslateUtil {
         if ($date ==null){
             $formattedDate = "-";
         } else {
-
-            /*            setlocale(LC_TIME, "fr_FR.UTF-8", "French");
+            setlocale(LC_TIME, "fr_FR.UTF-8", "French");
             $formattedDate = strftime("%d %B %G, %Hh%M", strtotime($date));
-            $formattedDate = mb_convert_encoding($formattedDate, 'UTF-8', "ASCII");*/
-            setlocale(LC_TIME, "fr_FR.utf8", "French");
-            $formattedDate = utf8_encode(strftime("%d %B %G, %Hh%M", strtotime($date)));
+
+            if(ApplicationSettings::get("environment") == "dev"){ // avoid double encoding on local server (chrome issue with dates)
+                $formattedDate = utf8_encode($formattedDate);
+            }
         }
 
         return $formattedDate;

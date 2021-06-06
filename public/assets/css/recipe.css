@@ -87,3 +87,10 @@ body {
 .ingredient-list__items {
     height: 25rem;
 }
+/*
+.ingredient-list__description strong {
+    display:inline-block
+}
+.ingredient-list__description strong:first-letter {
+    text-transform: uppercase;
+}*/
