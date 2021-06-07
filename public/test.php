@@ -17,6 +17,19 @@ $t3 = html_entity_decode($string, ENT_QUOTES | ENT_XML1, 'UTF-8');
 echo $t ;
 
 
+$pdo = DatabaseUtil::getConnection();
+$sql = "SHOW KEYS FROM nesti_a_ingredientrecipe WHERE Key_name = 'PRIMARY'";
+$q = $pdo->prepare($sql);
+$q->execute();
+$ttt = $q->fetchAll(PDO::FETCH_ASSOC);
+
+$pdo = DatabaseUtil::getConnection();
+$sql = "SHOW KEYS FROM nesti_a_ingredient WHERE Key_name = 'PRIMARY'";
+$q = $pdo->prepare($sql);
+$q->execute();
+$ttt2 = $q->fetchAll(PDO::FETCH_ASSOC);
+
+$ttt4 = array_map( function($keyInfo) {return $keyInfo["Column_name"];}, $ttt);
 $articlesOutOfStock =  array_filter(ArticleDao::findAll(), function($a){ return $a->getStock() == 0; });
 FormatUtil::dump($articlesOutOfStock);
 

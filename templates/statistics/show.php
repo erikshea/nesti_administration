@@ -47,7 +47,7 @@
                         <div class="primary-border">
                             <?php foreach ($vars["chefsByRecipe"] as $chef): ?>
                             <div class="d-flex justify-content-between">
-                                <span><?= $chef->getLastName() . " " . $chef->getFirstName() ?></span>
+                                <span><?= $chef->getFullName() ?></span>
                                 <a class="seeBtn" href="<?= $vars['baseUrl'] ?>user/edit/<?= $chef->getId() ?>">Voir</a>
                             </div>
                             <?php endforeach ?>
@@ -59,7 +59,7 @@
                             <?php foreach ($vars["recipesByGrade"] as $recipe): ?>
                             <div class="d-flex justify-content-between">
                                 <a class="seeBtn" href="<?= $vars['baseUrl'] ?>recipe/edit/<?= $recipe->getId() ?>"><?= $recipe->getName() ?></a>
-                                <span> par <?= $recipe->getChef()->getLastName() . $recipe->getChef()->getFirstName() ?></span>
+                                <span> par <?= $recipe->getChef()->getFullName() ?></span>
                             </div>
                             <?php endforeach ?>
                         </div>
