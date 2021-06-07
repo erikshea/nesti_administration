@@ -40,19 +40,27 @@ class BaseDao
      */
     public static function getPkColumnName()
     {
-        if (static::$pkColumns == null) {
-            $pkCol = 'id' . static::getEntityClass();
-        } else {
-            $pkCol = static::$pkColumns;
-
-            if (count($pkCol) == 1) {
-                $pkCol = $pkCol[0];
-            }
+        if ( !isset(static::$cachedData["primaryKeyColumns"][static::getTableName()]) ){
+            $pdo = DatabaseUtil::getConnection();
+            $sql = "SHOW KEYS FROM " . static::getTableName() . " WHERE Key_name = 'PRIMARY'";
+            $q = $pdo->prepare($sql);
+            $q->execute();
+            $request = $q->fetchAll(PDO::FETCH_ASSOC);
+            static::$cachedData["primaryKeyColumns"][static::getTableName()] =
+                array_map( function($keyInfo) {return $keyInfo["Column_name"];}, $request);
         }
-        
-        return $pkCol;
+
+        $pkCols = static::$pkColumns ?? static::$cachedData["primaryKeyColumns"][static::getTableName()];
+
+        return count($pkCols) == 1?$pkCols[0]:$pkCols;
     }
 
+
+
+
+
+
+    
     /**
      * initializeQueryOptions
      *
