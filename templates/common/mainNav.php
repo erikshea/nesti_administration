@@ -37,6 +37,7 @@
     </div>
 
     <div id="main-menu__user" class="navbar">
+        <?php if (isset($vars['currentUser'])): ?>
         <a class="nav-item nav-link"
             aria-label="Profil"
             href="<?= $vars['baseUrl'] ?>user/edit/<?= $vars['currentUser']->getId() ?>">
@@ -48,5 +49,6 @@
             <i class="fas fa-sign-out-alt"></i>
             <span>Déconnexion</span>
         </a>
+        <?php endif ?>
     </div>
 </nav>

@@ -21,14 +21,14 @@
     method="post">
 
     <div class="row justify-content-between">
-        <div class="col-6">
+        <div class="col-12 col-lg-6">
             <?php
                 $vars["formBuilder"]
                     ->add("csrf")
                     ->add("login", ["readOnly" => true])
                     ->add("firstName")
                     ->add("lastName")
-                    ->add("roles")//, ["checked" => $vars["isSubmitted"]?$_POST["Users"]["roles"]:null])
+                    ->add("roles")
                     ->add("flag");
                 $vars["cityFormBuilder"]
                     ->add("name")
@@ -44,13 +44,13 @@
                 ->add("newPasswordConfirm")?>
 <?php endif ?>
 
-            <div class="form-group ">
-                <a class="btn px-4 mr-2" href="<?= $vars["baseUrl"] ?>recipe">Annuler</a>
-                <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
+            <div class="form-group mt-2">
+                        <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
+                        <a class="btn px-4 mr-2" href="<?= $vars["baseUrl"] ?>recipe">Annuler</a>
             </div>
         </div>
 
-        <div class="col-6 d-flex flex-column image-group">
+        <div class="col-12 col-lg-6 d-flex flex-column image-group">
             <h2>Informations</h2>
             <ul class="list-group list-group-flush primary-border">
                 <li class="list-group-item">

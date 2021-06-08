@@ -48,13 +48,27 @@ $( ()=>{
     let orderItemsDiv = document.getElementById('order-items');
     if ( orderItemsDiv ){
         let orderItems = ReactDOM.render(<OrderItems />, orderItemsDiv);
-        
-        $(".orders__table tbody tr").click( (e) => {
-            let row = e.target.parentNode;
+
+        const activateRow = (row) => {
             $(".orders__table tbody tr").removeClass("bg-color-secondary");
             row.className += "bg-color-secondary";
             let id = row.querySelector("td:first-child").innerText;
             orderItems.showOrder(id);
+        }
+
+        let currentRow = document.querySelector(`.orders__table [data-id='${vars.orderId}']`);
+        if (currentRow)
+        {
+            activateRow(currentRow);
+        } 
+
+        $(".orders__table tbody tr").click( (e) => {
+            activateRow(e.target.parentNode);
         })
+
+        
     }
+
+
 })
+

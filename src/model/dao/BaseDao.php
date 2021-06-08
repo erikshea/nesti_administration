@@ -45,9 +45,9 @@ class BaseDao
             $sql = "SHOW KEYS FROM " . static::getTableName() . " WHERE Key_name = 'PRIMARY'";
             $q = $pdo->prepare($sql);
             $q->execute();
-            $request = $q->fetchAll(PDO::FETCH_ASSOC);
+            $keyInfos = $q->fetchAll(PDO::FETCH_ASSOC);
             static::$cachedData["primaryKeyColumns"][static::getTableName()] =
-                array_map( function($keyInfo) {return $keyInfo["Column_name"];}, $request);
+                array_map( function($keyInfo) {return $keyInfo["Column_name"];}, $keyInfos);
         }
 
         $pkCols = static::$pkColumns ?? static::$cachedData["primaryKeyColumns"][static::getTableName()];
@@ -680,4 +680,16 @@ class BaseDao
         }
         return $result;
     }
+
+
+    
+    /**
+     * getForeignKeyName
+     * get the name of the foreign key column
+     * @return mixed
+     */
+    public static function getForeignKeyName(){
+        return "id" . static::getEntityClass();
+    }
+
 }

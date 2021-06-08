@@ -1,21 +1,27 @@
 <?php
 
 class RecipeController extends EntityController
-{
+{    
+    /**
+     * actionAdd
+     * Edit recipe action
+     * @return void
+     */
     public function actionAdd(){
         $this->forward('edit');
     }
-
-
+    
+    /**
+     * actionEdit
+     * Edit recipe action
+     * @return void
+     */
     public function actionEdit()
     {
         $entity = $this->getEntity();
 
-
         $formBuilder = new EntityFormBuilder($entity);
         
-
-
         if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
             $formBuilder->setFormData($_POST[$this->getEntityClass()]);
 
@@ -40,7 +46,7 @@ class RecipeController extends EntityController
                 $this->addVars([
                     "errors" => $formBuilder->getAllErrors(),
                     "message" => "error"
-                    ]);
+                ]);
             }
         }
 

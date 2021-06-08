@@ -1,14 +1,11 @@
 <?php
 class Chef extends Users{
-    private $idChef;
-
     public function getRecipes($options=["a"]): array{
         return $this->getRelatedEntities("Recipe", $options);
     }
 
-    /**
-     * Get the value of idChef
-     */ 
+
+    private $idChef;
     public function getIdChef()
     {
         return $this->idChef;
@@ -28,5 +25,9 @@ class Chef extends Users{
 
     public function getLatestRecipe(){
         return $this->getRecipes(["ORDER"=>"dateCreation DESC","flag"=>"a"])[0] ?? null;
+    }
+    
+    public function getUser(): ?Users{
+        return $this->getRelatedEntity("Users");
     }
 }

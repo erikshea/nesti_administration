@@ -15,23 +15,27 @@
     method="post">
 
     <div class="row justify-content-between">
-        <div class="col-6">
+        <div class="col-12 col-lg-6">
             <?php $vars["formBuilder"]
                 ->add("csrf")
                 ->add("firstName")
                 ->add("lastName")
                 ->add("roles")?>
-            <div class="form-group ">
-                <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
-                <a class="btn px-4 mr-2" href="<?= $vars["baseUrl"] ?>recipe">Annuler</a>
-            </div>
         </div>
 
-        <div class="col-6 d-flex justify-content-center flex-column image-group">
+        <div class="col-12 col-lg-6 d-flex justify-content-center flex-column image-group">
             <?php $vars["formBuilder"]
                 ->add("email")
                 ->add("login")
                 ->add("password")?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group ">
+                        <button type="submit" class="btn btn-success px-4 mr-2">Valider</button>
+                        <a class="btn px-4 mr-2" href="<?= $vars["baseUrl"] ?>recipe">Annuler</a>
             </div>
+        </div>
     </div>
 </form>

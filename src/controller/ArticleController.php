@@ -58,6 +58,8 @@ class ArticleController extends EntityController
 
     public function actionOrders()
     {
+
+
         $queryOptions = [];
         $this->setTemplateName('common/baseNoCrumbs', 'base');
 
@@ -77,9 +79,12 @@ class ArticleController extends EntityController
         } else {
             $orders=[];
         }
-        $this->addVars(['orders' => $orders]);
+        $this->addVars([
+            'orders' => $orders
+        ]);
 
-        
+        $this->templateVars['javascriptVariables']['orderId'] = empty(SiteUtil::getUrlParameters()[2]) ? ($orders[0]?->getId() ?? 0) : SiteUtil::getUrlParameters()[2];
+
         $this->templateVars['assets']['js'][] = [
             'src' => 'OrderItems.js',
             "type" => "text/babel"

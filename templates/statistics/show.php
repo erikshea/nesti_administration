@@ -14,7 +14,7 @@
             <div class="primary-border">
     <?php foreach ($vars['usersWithMostConnections'] as $user): ?>
                 <div class="d-flex justify-content-between">
-                    <span><?= $user->getFirstName() . " " . $user->getLastName()  ?></span>
+                    <span><?= $user->getFullName()  ?></span>
                     <a class="seeBtn" href="<?= $vars['baseUrl'] ?>users/edit/<?= $user->getId() ?>">Voir</a>
                 </div>
     <?php endforeach ?>
@@ -27,7 +27,7 @@
                 <?php foreach ($vars['ordersByTotal'] as $order): ?>
                 <div class="d-flex justify-content-between">
                     <span>Commande n° <?= $order->getId() ?></span>
-                    <a class="seeBtn" href="<?= $vars['baseUrl'] ?>article/order/<?= $order->getId() ?>">Voir</a>
+                    <a class="seeBtn" href="<?= $vars['baseUrl'] ?>article/orders/<?= $order->getId() ?>">Voir</a>
                 </div>
                 <?php endforeach ?>
             </div>

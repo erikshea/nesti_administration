@@ -93,7 +93,7 @@ class StatisticsController extends BaseController
 
         $recipesByGrade = array_slice($recipesByGrade, 0, 10);
 
-        $articlesOutOfStock =  array_filter(ArticleDao::findAll(), function($a){ return $a->getStock() == 0; });
+        $articlesOutOfStock =  ArticleDao::findAll(["unitQuantity" => 0]);
       
         $this->addVars([
             "usersWithMostConnections" => $usersWithMostConnections,

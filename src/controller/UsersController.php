@@ -88,6 +88,7 @@ class UsersController extends EntityController
     {
         $user = $this->getEntity();
         $formBuilder = new EntityFormBuilder($user);
+        
         $city = $user?->getCity() ?? new City;
         $cityFormBuilder = new EntityFormBuilder($user?->getCity() ?? new City);
         

@@ -78,7 +78,10 @@ class FormatUtil {
 
 
     public static function currentSqlDate(){
-        $dt = new DateTime();
+        return static::dateTimeToSqlDate(new DateTime());
+    }
+
+    public static function dateTimeToSqlDate($dt){
         return $dt->format('Y-m-d H:i:s');
     }
 

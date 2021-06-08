@@ -15,9 +15,8 @@
         </div>
 
     </div>
-
     <div class="row">
-        <div class="col-7">
+        <div class="col-12 col-lg-7">
             <table class="table listing orders__table">
                 <thead>
                         <tr>
@@ -30,7 +29,7 @@
                 </thead>
                 <tbody>
 <?php foreach ($vars['orders'] as $order): ?>
-                    <tr>
+                    <tr data-id="<?= $order->getId() ?>">
                         <td><?= $order->getId() ?></td>
                         <td><?= $order->getUser()->getFullName() ?></td>
                         <td><?= TranslateUtil::translateNumber($order->getTotal())?>€</td>
@@ -41,7 +40,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-5">
+        <div class="col-12 col-lg-5">
             <div id="order-items" class="h-100"></div>
         </div>
     </div>

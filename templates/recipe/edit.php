@@ -49,12 +49,12 @@
 <?php if ($vars['entity']->existsInDataSource()): ?>
 <div class="container">
     <div class="row">
-        <div class="col-7 d-flex flex-column">
+        <div class="col-12 col-lg-7 d-flex flex-column">
             <h2>Préparations</h2>
             <div id="recipe__paragraph-list">
             </div>
         </div>
-        <div class="col-5">
+        <div class="col-12 col-lg-5">
             <h2>Liste des ingrédients</h2>
             <div id="recipe__ingredients">
             </div>

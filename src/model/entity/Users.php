@@ -2,19 +2,65 @@
 
 class Users extends BaseEntity{
     private $idUsers;
+    /**
+     * Get the value of idUser
+     */
+    public function getIdUsers()
+    {
+        return $this->idUsers;
+    }
+
+    /**
+     * Set the value of idUser
+     *
+     * @return  self
+     */
+    public function setIdUsers($idUsers)
+    {
+        $this->idUsers = $idUsers;
+
+        return $this;
+    }
+
+    private $login;
+    /**
+     * Get the value of login
+     */ 
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+
     private $lastName;
     private $firstName;
     private $email;
     private $passwordHash;
     private $flag;
     private $dateCreation;
-    private $login;
     private $address1;
     private $address2;
     private $zipCode;
     private $idCity;
     private $roles;
     private $authentificationToken;
+
+
+
+    /**
+     * Set the value of login
+     *
+     * @return  self
+     */ 
+    public function setLogin($login)
+    {
+        $this->login = $login;
+
+        return $this;
+    }
+
+
+
 
     public function getCity(): ?City{
         return $this->getRelatedEntity("City");
@@ -24,11 +70,10 @@ class Users extends BaseEntity{
         $this->setRelatedEntity($c);
     }
 
-
     public function getOrders($options=[]): array{
         return $this->getRelatedEntities("Orders",$options);
     }
-
+    
     public function getConnectionLogs($options=[]): array{
         return $this->getRelatedEntities("ConnectionLog", $options);
     }
@@ -36,8 +81,9 @@ class Users extends BaseEntity{
     public function getComments($options=['a']): array{
         return $this->getRelatedEntities("Comment", $options);
     }
+        
 
-    public function getRecipes($options=['a']): array{
+    public function getGradedRecipes($options=['a']): array{
         return $this->getIndirectlyRelatedEntities("Recipe", "Grades", $options); 
     }
 
@@ -177,46 +223,6 @@ class Users extends BaseEntity{
     public function setLastName($lastName)
     {
         $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of idUser
-     */
-    public function getIdUsers()
-    {
-        return $this->idUsers;
-    }
-
-    /**
-     * Set the value of idUser
-     *
-     * @return  self
-     */
-    public function setIdUsers($idUsers)
-    {
-        $this->idUsers = $idUsers;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of login
-     */ 
-    public function getLogin()
-    {
-        return $this->login;
-    }
-
-    /**
-     * Set the value of login
-     *
-     * @return  self
-     */ 
-    public function setLogin($login)
-    {
-        $this->login = $login;
 
         return $this;
     }

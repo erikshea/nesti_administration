@@ -25,7 +25,7 @@ class AjaxController extends BaseController
                 'idArticle' => $ol->getArticle()->getId(),
                 'quantity' => $ol->getQuantity(),
                 'unitName' => $ol->getArticle()->getUnit()->getName(),
-                'articleName' => $ol->getArticle()->getProduct()->getName()
+                'articleName' => $ol->getArticle()->getDisplayName()
             ];
         }, $order->getOrderLines());
 

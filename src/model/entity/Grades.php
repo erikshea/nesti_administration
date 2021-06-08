@@ -4,6 +4,7 @@ class Grades extends BaseEntity{
     private $idUsers;
     private $idRecipe;
     private $rating;
+    private $dateModification;
 
 
     public function getRecipe(): ?Recipe{ 
@@ -79,6 +80,26 @@ class Grades extends BaseEntity{
     public function setIdUsers($idUsers)
     {
         $this->idUsers = $idUsers;
+
+        return $this;
+    }
+
+        /**
+     * Get the value of idUser
+     */ 
+    public function getDateModification()
+    {
+        return $this->dateModification;
+    }
+
+    /**
+     * Set the value of idUser
+     *
+     * @return  self
+     */ 
+    public function setDateModification($dateModification)
+    {
+        $this->dateModification = $dateModification;
 
         return $this;
     }

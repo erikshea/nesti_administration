@@ -77,7 +77,7 @@ class BaseEntity{
         $relatedClassDao = get_class($relatedEntity)::getDaoClass();
 
         // find column name of the joined entity's primary key
-        $relatedClassPrimaryKey = $relatedClassDao::getPkColumnName();
+        $relatedClassPrimaryKey = $relatedClassDao::getForeignKeyName();
 
 
         // If foreign key is in current instance
@@ -90,14 +90,13 @@ class BaseEntity{
         } else { // If foreign key is in related object
             EntityUtil::set(
                 $relatedEntity,
-                static::getDaoClass()::getPkColumnName(),
+                static::getDaoClass()::getForeignKeyName(),
                 $this->getId()
             );
         }
     }
 
 
-    
     /**
      * getId
      * get the primary key value for the current instance
