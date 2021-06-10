@@ -3,7 +3,7 @@
     "email": "Votre email doit être formattée correctement.",
     "telephone": "Le téléphone doit être composé de chiffres, avec un préfixe optionnel",
     "url": "Le lien doit être valide",
-    "lettersAndHyphen": "Ce champ doit être composé de lettres et du signe moins.",
+    "lettersAndNumbersAndHyphen": "Ce champ doit être composé de lettres, de chiffres, et du signe moins.",
     "name": "Ce champ doit être composé de lettres, espaces, du signe moins et d'apostrophe.",
     "address": "Ce champ doit être une ligne d'addresse valide.",
     "unique": "Existe déja.",
@@ -14,5 +14,6 @@
     "isRole": "L'utilisateur doit avoir au moins un rôle.",
     "isFlag": "L'état doit être valide.",
     "matchesField": "Ne correspond pas.",
-    "isFrenchZipcode": "Code postal invalide."
+    "isFrenchZipcode": "Code postal invalide.",
+    "largerThanZero": "Doit être un chiffre supérieur à zéro."
 }

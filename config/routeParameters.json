@@ -31,6 +31,7 @@
         "controller": "RecipeController",
         "defaultAction": "list",
         "name": "recettes",
+        "isDefault": ["chef"],
         "allowed": ["chef", "administrator"],
         "actions": {
             "edit": {

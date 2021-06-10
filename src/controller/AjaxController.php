@@ -88,7 +88,7 @@ class AjaxController extends BaseController
                     'idIngredient' => $ingredient->getId(),
                 ]);
                 
-                if ( $irArray['status'] == 'toAdd' ) {
+                if ( $irArray['status'] == 'toAdd' && is_numeric($irArray['quantity']) && floatval($irArray['quantity']) >=0 ) {
                     if ( $ir == null ){
                         $ir = new IngredientRecipe();
                         $ir->setIdRecipe($_POST["idRecipe"]);

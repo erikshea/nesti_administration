@@ -74,6 +74,11 @@
 }
 
 
+@media screen and (min-width: 992px) {
+    #main-menu__pages a.nav-link {
+        padding: 0.3rem 1.7rem;
+    }
+}
 
 @media screen and (min-width: 850px) {
     #main-menu__pages a.nav-link {
@@ -81,11 +86,6 @@
     }
 }
 
-@media screen and (min-width: 992px) {
-    #main-menu__pages a.nav-link {
-        padding: 0.3rem 1.7rem;
-    }
-}
 
 @media screen and (max-width: 850px) {
 

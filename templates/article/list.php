@@ -52,7 +52,7 @@
                 <tbody>
 <?php foreach ($vars['entities'] as $article): ?>
                     <tr>
-                        <td><?= $article->getId() ?></th>
+                        <td><?= $article->getId() ?></td>
                         <td><?= $article->getDisplayName() ?></td>
                         <td><?= FormatUtil::getFormattedPrice($article->getSellingPrice()) ?></td>
                         <td><?= $article->getLastImportationDate() ?></td>

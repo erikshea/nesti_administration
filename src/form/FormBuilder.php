@@ -154,6 +154,9 @@ class FormBuilder{
         return $this->validatorErrorMessages;
     }
 
+    public function setFormDataFromPost(){
+        $this->setFormData($_POST[$this->getFormName()]);
+    }
 
     public function setFormData($formData){
         $this->formData = $formData;

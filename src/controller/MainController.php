@@ -75,11 +75,11 @@ class MainController
      * @return Users user, or null if guest
      */
     public static function getLoggedInUser(): ?Users{
-        if (static::$loggedInUser == null && ($_COOKIE['user_authentification_token'] ?? null) != null) {
-            static::$loggedInUser = UsersDao::findOne(['authentificationToken' => $_COOKIE['user_authentification_token'] ]);
+        if (static::$loggedInUser == null && ($_SESSION["authentification_token"] ?? null) != null) {
+            static::$loggedInUser = UsersDao::findOne(['authentificationToken' => $_SESSION["authentification_token"] ]);
         }
-
-        return static::$loggedInUser;
+        $u = static::$loggedInUser;
+        return static::$loggedInUser?->getFlag() == 'a'?static::$loggedInUser:null;
     }
     
     /**
@@ -125,7 +125,7 @@ class MainController
      */
     public static function getDefaultControllerSlug(){
         $defaultSlug = 'user'; 
-        
+
         foreach ( static::getAllRouteParameters() as $slug => $parameters){
             if ( 
                 count(
@@ -133,6 +133,7 @@ class MainController
                     $parameters['isDefault'] ?? [] )
                 ) > 0 ) {
                 $defaultSlug = $slug;
+                break;
             }
         }
 

@@ -12,11 +12,8 @@ class OrderItems extends React.Component {
         );
     }
 
-
     render() {
-        const items = this.state.orderItems.map((oi, index) => {
-            return <OrderItem key={index} {...oi}/>;
-        });
+        const items = this.state.orderItems.map( (oi, index) => <OrderItem key={index} {...oi}/> );
 
         return this.state.id && ( // Hide if no id set
             <div>

@@ -90,12 +90,24 @@ class FormBuilderValidator{
      * @param  string $testSting
      * @return bool true if validates
      */
-    public static function lettersAndHyphen(?string $testSting): bool{
+    public static function lettersAndNumbersAndHyphen(?string $testSting): bool{
         return preg_match(
-            "/^[a-zA-ZÀ-ÿ\-]*$/", // only letters, spaces, and hyphens (including accents)
+            "/^[0-9a-zA-ZÀ-ÿ\-]*$/", // only letters, spaces, and hyphens (including accents)
             $testSting
         ); 
     }
+
+     /**
+     * url
+     * validates if property value is a positive number
+     * @param  string $testSting
+     * @return bool true if validates
+     */
+    public static function largerThanZero(?string $testSting): bool{
+        return is_numeric($testSting) && floatval($testSting) >=0; 
+    }
+
+    
 
      /**
      * url
@@ -166,7 +178,7 @@ class FormBuilderValidator{
      * @param  string $testSting
      * @return bool true if validates
      */
-    public static function matchesField(?string $testString, string $comparisonString): bool{
+    public static function matchesField(?string $testString, ?string $comparisonString): bool{
         return $testString == $comparisonString; 
     }
 
@@ -217,5 +229,19 @@ class FormBuilderValidator{
     	
         // Equation source: https://www.ssi.gouv.fr/administration/precautions-elementaires/calculer-la-force-dun-mot-de-passe/
         return strlen($password) *  log($possibleChars)/log(2);
+    }
+
+
+    /**
+     * url
+     * validates if password is strong and has at least one lowercase letter, one uppercase letter, one number, and 8 characters
+     * @param  string $value
+     * @return bool true if validates
+     */
+    public static function passwordIsValid($value): bool{
+        return static::strong($value) && preg_match(
+            "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/", // at least one letter  (including accented)
+            $value
+        );
     }
 }

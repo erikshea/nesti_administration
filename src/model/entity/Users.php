@@ -102,9 +102,11 @@ class Users extends BaseEntity{
     public function setPasswordHashFromPlaintext($plaintextPassword){
         $this->setPasswordHash(password_hash($plaintextPassword, PASSWORD_DEFAULT));
     }
+
     public function isPassword($plaintextPassword){
         return password_verify ( $plaintextPassword, $this->getPasswordHash() );
     }
+    
     /**
      * Get the value of dateCreation
      */
