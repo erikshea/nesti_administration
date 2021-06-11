@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Lot
+ */
 class Lot extends BaseEntity{
     private $orderNumberSupplier;
     private $unitCost;
@@ -7,24 +10,52 @@ class Lot extends BaseEntity{
     private $quantity;
     private $idArticle;
 
-
+    
+    /**
+     * getSubTotal
+     * get this lot's subtotal without shipping
+     * @return void
+     */
     public function getSubTotal(){
         return $this->getUnitCost() * $this->getQuantity();
     }
-
+    
+    /**
+     * getArticle
+     * get article associated with this lot
+     * @return Article
+     */
     public function getArticle(): ?Article{
         return $this->getRelatedEntity("Article");
     }
-
+    
+    /**
+     * setArticle
+     * set article associated with this lot
+     * @param  mixed $a
+     * @return void
+     */
     public function setArticle(Article $a){
         $this->setRelatedEntity($a);
     }
 
-
+    
+    /**
+     * getImportations
+     * get importations associated with this lot
+     * @param  mixed $options
+     * @return array
+     */
     public function getImportations($options=[]): array{
         return $this->getRelatedEntities("Importation",$options);
     }
-
+    
+    /**
+     * getAdmins
+     * get administrators associated with this lot
+     * @param  mixed $options
+     * @return array
+     */
     public function getAdmins($options=['a']): array{
         return $this->getIndirectlyRelatedEntities("Users", "Importation", $options); 
     }

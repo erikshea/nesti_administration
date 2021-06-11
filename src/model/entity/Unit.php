@@ -1,14 +1,28 @@
 <?php
 
+/**
+ * Unit
+ */
 class Unit extends BaseEntity{
     private $idUnit;
     private $name;
     
-
-    public function getArticles($options=['a']): array{
+    
+    /**
+     * getArticles
+     * get all articles with this unit
+     * @param  mixed $options
+     * @return array
+     */
+    public function getArticles($options=['flag' => 'a']): array{
         return $this->getRelatedEntities("Article", $options);
     }
-
+    
+    /**
+     * getIngredientRecipes
+     * set all IngredientRecipes with this unit
+     * @return array
+     */
     public function getIngredientRecipes(): array{
         return $this->getRelatedEntities("IngredientRecipes");
     }

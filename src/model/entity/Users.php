@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Users
+ */
 class Users extends BaseEntity{
     private $idUsers;
     /**
@@ -61,48 +64,103 @@ class Users extends BaseEntity{
 
 
 
-
+    
+    /**
+     * getCity
+     * get user's city
+     * @return City
+     */
     public function getCity(): ?City{
         return $this->getRelatedEntity("City");
     }
-
+    
+    /**
+     * setCity
+     * set user's city
+     * @param  mixed $c
+     * @return void
+     */
     public function setCity(City $c){
         $this->setRelatedEntity($c);
     }
-
+    
+    /**
+     * getOrders
+     * get user's orders
+     * @param  mixed $options
+     * @return array
+     */
     public function getOrders($options=[]): array{
         return $this->getRelatedEntities("Orders",$options);
     }
-    
+        
+    /**
+     * getConnectionLogs
+     * get user's connections
+     * @param  mixed $options
+     * @return array
+     */
     public function getConnectionLogs($options=[]): array{
         return $this->getRelatedEntities("ConnectionLog", $options);
     }
-
+    
+    /**
+     * getComments
+     * get user's comments
+     * @param  mixed $options
+     * @return array
+     */
     public function getComments($options=['a']): array{
         return $this->getRelatedEntities("Comment", $options);
     }
         
-
+    
+    /**
+     * getGradedRecipes
+     * get user's graded recipes
+     * @param  mixed $options
+     * @return array
+     */
     public function getGradedRecipes($options=['a']): array{
         return $this->getIndirectlyRelatedEntities("Recipe", "Grades", $options); 
     }
-
+    
+    /**
+     * getLatestConnectionDate
+     * get user's last connection date
+     */
     public function getLatestConnectionDate(){
         $log = $this->getConnectionLogs(["ORDER"=>"dateConnection DESC"])[0] ?? null;
 
         return $log == null? null : $log->getDateConnection();
     }
-
+    
+    /**
+     * getLatestOrder
+     * get user's latest order
+     */
     public function getLatestOrder(){
         return $this->getOrders(["ORDER"=>"dateCreation DESC"])[0] ?? null;
     }
 
     
-
+    
+    /**
+     * setPasswordHashFromPlaintext
+     *
+     * @param  mixed $plaintextPassword
+     * @return void
+     */
     public function setPasswordHashFromPlaintext($plaintextPassword){
         $this->setPasswordHash(password_hash($plaintextPassword, PASSWORD_DEFAULT));
     }
-
+    
+    /**
+     * isPassword
+     * compare a plaintext password with the user's hashed password 
+     * @param  mixed $plaintextPassword
+     * @return void
+     */
     public function isPassword($plaintextPassword){
         return password_verify ( $plaintextPassword, $this->getPasswordHash() );
     }
@@ -308,19 +366,40 @@ class Users extends BaseEntity{
 
         return $this;
     }
-
+    
+    /**
+     * getFullName
+     * Get full name, in the form "FIRSTNAME LASTNAME"
+     * @return void
+     */
     public function getFullName(){
         return $this->getFirstName() . " " . $this->getLastName();
     }
-
-    public function getChef(){
+    
+     
+    /**
+     * getChef
+     * get related Chef child entity
+     * @return Chef
+     */
+    public function getChef(): ?Chef{
         return $this->getChildEntity("Chef");
     }
-
+    
+    /**
+     * makeChef
+     * make current user a chef
+     * @return void
+     */
     public function makeChef(){
         return $this->makeChildEntity("Chef");
     }
-
+    
+    /**
+     * removeChef
+     * delete related chef child entity
+     * @return void
+     */
     public function removeChef(){
         $chef = $this->getChef();
 
@@ -328,19 +407,40 @@ class Users extends BaseEntity{
             ChefDao::delete($chef);
         }
     }
-
+    
+    /**
+     * isChef
+     * does current user have a related Chef?
+     * @return bool
+     */
     public function isChef(){
         return $this->getChef() != null;
     }
-
-    public function getAdministrator(){
+    
+    
+    /**
+     * getAdministrator
+     * get related Administrator child entity
+     * @return Administrator
+     */
+    public function getAdministrator(): ?Administrator{
         return $this->getChildEntity("Administrator");
     }
-
+    
+    /**
+     * makeAdministrator
+     * create related Administrator child entity 
+     * @return void
+     */
     public function makeAdministrator(){
         return $this->makeChildEntity("Administrator");
     }
-
+    
+    /**
+     * removeAdministrator
+     * create related Administrator child entity 
+     * @return void
+     */
     public function removeAdministrator(){
         $administrator = $this->getAdministrator();
 
@@ -348,19 +448,39 @@ class Users extends BaseEntity{
             AdministratorDao::delete($administrator);
         }
     }
-
-    public function isAdministrator(){
+    
+    /**
+     * isAdministrator
+     * does current user have a related Administrator?
+     * @return bool
+     */
+    public function isAdministrator(): bool{
         return $this->getAdministrator() != null;
     }
-
-    public function getModerator(){
+    
+    /**
+     * getModerator
+     * get related Moderator child entity
+     * @return Moderator
+     */
+    public function getModerator(): ?Moderator{
         return $this->getChildEntity("Moderator");
     }
-
+    
+    /**
+     * makeModerator
+     * create related Moderator child entity 
+     * @return void
+     */
     public function makeModerator(){
         return $this->makeChildEntity("Moderator");
     }
-
+    
+    /**
+     * removeModerator
+     * create related Moderator child entity 
+     * @return void
+     */
     public function removeModerator(){
         $moderator = $this->getModerator();
 
@@ -368,12 +488,22 @@ class Users extends BaseEntity{
             ModeratorDao::delete($moderator);
         }
     }
-
-    public function isModerator(){
+    
+    /**
+     * isModerator
+     * does current user have a related Administrator child enbtity?
+     * @return bool
+     */
+    public function isModerator(): bool{
         return $this->getModerator() != null;
     }
-
-    public function getRoles(){
+    
+    /**
+     * getRoles
+     * get an array of strings representing user's roles
+     * @return array
+     */
+    public function getRoles(): array{
         if ( $this->roles == null){
             $this->roles = [];
 
@@ -393,7 +523,13 @@ class Users extends BaseEntity{
     }
 
 
-
+    
+    /**
+     * setRoles
+     * set current user's roles from an array of strings
+     * @param  mixed $roles
+     * @return void
+     */
     public function setRoles($roles){
         if ( in_array("chef", $roles)){
             $this->makeChef();
@@ -415,10 +551,13 @@ class Users extends BaseEntity{
     }
     
 
+    
     /**
-     * Get the value of authentificationToken
-     */ 
-    public function getAuthentificationToken()
+     * getAuthentificationToken
+     *
+     * @return string
+     */
+    public function getAuthentificationToken(): ?string
     {
         return $this->authentificationToken;
     }
@@ -434,29 +573,24 @@ class Users extends BaseEntity{
 
         return $this;
     }
-
+    
+    /**
+     * initializeAuthentificationToken
+     * sets current user's authentification token to a random string
+     * @return void
+     */
     public function initializeAuthentificationToken(){
         $this->setAuthentificationToken(bin2hex(random_bytes(32)));
     }
 
-
+    
+    /**
+     * delete
+     * delete user from data source
+     * @return void
+     */
     public function delete(){
-
-        /*if ( 
-            empty($this->getComments())
-            && empty($this->getChef()?->getRecipes())
-            && empty($this->getModerator()?->getModeratedComments()
-            && empty($this->getOrders())
-            && empty($this->getConnectionLogs())  // IMPOSSIBLE, ne peut donc pas effacer l'utilisateur
-            )
-        ){
-            $this->removeChef();
-            $this->removeModerator();
-            $this->removeAdministrator();
-            $this->getDaoClass()::delete($this);
-        } else {*/
         $this->setFlag("b");
         $this->getDaoClass()::saveOrUpdate($this);
-        //}
     }
 }

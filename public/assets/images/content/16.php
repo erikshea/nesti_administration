@@ -17,7 +17,7 @@ class UsersController extends EntityController
                 $connectionLog->setUser($candidate);
                 ConnectionLogDao::saveOrUpdate($connectionLog);
                 $_SESSION["authentification_token"] = $candidate->getAuthentificationToken();
-                MainController::redirect();
+                Dispatcher::redirect();
             } else {
                 $this->addVars(['message' => 'invalid']);
             }
@@ -26,7 +26,7 @@ class UsersController extends EntityController
 
     public function actionLogout()
     {
-        $user = MainController::getLoggedInUser();
+        $user = Dispatcher::getLoggedInUser();
         $user?->setAuthentificationToken(null);
         UsersDao::saveOrUpdate($user);
 
@@ -69,7 +69,7 @@ class UsersController extends EntityController
                 $this->getDaoClass()::saveOrUpdate($user);
                 $formBuilder->applyDataElementTo($user,"roles");
 
-                MainController::redirect("user/edit/".$this->getEntity()->getId());
+                Dispatcher::redirect("user/edit/".$this->getEntity()->getId());
             } else {
                 $this->addVars(['message' => 'invalid']);
                 $this->addVars(["errors" => $formBuilder->getAllErrors()]);

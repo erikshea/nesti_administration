@@ -1,4 +1,9 @@
 <?php
+
+
+/**
+ * Image
+ */
 class Image extends BaseEntity{
     private $idImage;
     private $dateCreation;
@@ -6,25 +11,48 @@ class Image extends BaseEntity{
     private $fileExtension;
     private $dateModification;
 
-    
+        
+    /**
+     * getRecipes
+     * get recipes which use this image
+     * @return array
+     */
     public function getRecipes(): array{
         return $this->getRelatedEntities("Recipe");
     }
-
+    
+    /**
+     * getArticles
+     * get articles which use this image
+     * @return array
+     */
     public function getArticles(): array{
         return $this->getRelatedEntities("Article");
     }
-
+    
+    /**
+     * getFileName
+     * get file name without path
+     */
     public function getFileName(){
         return $this->getFileExtension() == null ?
             null : $this->getId() . "." . $this->getFileExtension();
     }
-
+    
+    /**
+     * getAbsolutePath
+     * get file system path
+     */
     public function getAbsolutePath(){
         return $this->getFileExtension() == null ?
             null : SiteUtil::toAbsolute("public/assets/images/content/" . $this->getFileName());
     }
-
+    
+    /**
+     * getUrl
+     *
+     * @return void
+     */
     public function getUrl(){
         return SiteUtil::url("public/assets/images/content/" . $this->getFileName())
             . "?dateModification=" . urlencode($this->getDateModification());
@@ -130,7 +158,13 @@ class Image extends BaseEntity{
         return $this;
     }
 
-
+    
+    /**
+     * setFromFiles
+     * set entity information from $_FILES superglobal
+     * @param  mixed $fileKey
+     * @return void
+     */
     public function setFromFiles($fileKey)
     {
         if ( file_exists($this->getAbsolutePath()) ){

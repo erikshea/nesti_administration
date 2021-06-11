@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Recipe
+ */
 class Recipe extends BaseEntity{
     private $idRecipe;
     private $dateCreation;
@@ -12,7 +15,12 @@ class Recipe extends BaseEntity{
     private $idImage;
     private $idTag;
 
-
+    
+    /**
+     * getAverageGrade
+     * get average grade of this recipe
+     * @return void
+     */
     public function getAverageGrade(){
         $grade =null;
 
@@ -24,36 +32,90 @@ class Recipe extends BaseEntity{
         }
         return $i == 0? null:$total/$i;
     }
-
+    
+    /**
+     * getGrades
+     * get all grades for this recipe
+     * @param  mixed $options
+     * @return array
+     */
     public function getGrades($options=[]): array{
         return $this->getRelatedEntities("Grades",$options);
     }
-
+    
+    /**
+     * getComments
+     * get all comments for this recipe
+     * @return array
+     */
     public function getComments(): array{
         return $this->getRelatedEntities("Comment");
     }
+    
+    /**
+     * getParagraphs
+     * get all paragraphs for this recipe
+     * @param  mixed $options
+     * @return array
+     */
     public function getParagraphs($options=null): array{
         return $this->getRelatedEntities("Paragraph", $options);
     }
+    
+    /**
+     * getIngredientRecipes
+     * get all ingredientRecipes for this recipe
+     * @param  mixed $options
+     * @return array
+     */
     public function getIngredientRecipes($options=[]): array{
         return $this->getRelatedEntities("IngredientRecipe",$options);
     }
+        
+    /**
+     * getImage
+     * get image for this recipe
+     * @return Image
+     */
     public function getImage(): ?Image{
         return $this->getRelatedEntity("Image");
     }
-
+    
+    /**
+     * setImage
+     * set image for this recipe
+     * @param  mixed $i
+     * @return void
+     */
     public function setImage(Image $i){
         $this->setRelatedEntity($i);
     }
-
+    
+    /**
+     * getChef
+     * get author of this recipe
+     * @return Chef
+     */
     public function getChef(): ?Chef{ 
         return $this->getRelatedEntity("Chef");
     }
-
+    
+    /**
+     * setChef
+     * set author of this recipe
+     * @param  mixed $c
+     * @return void
+     */
     public function setChef(Chef $c){
         return $this->setRelatedEntity($c);
     }
-
+    
+    /**
+     * getIngredients
+     *
+     * @param  mixed $options
+     * @return void
+     */
     public function getIngredients($options=[]){
         return $this->getIndirectlyRelatedEntities("Ingredient", "IngredientRecipe", $options);
     }
@@ -237,13 +299,24 @@ class Recipe extends BaseEntity{
 
         return $this;
     }
-
+    
+    /**
+     * getIdTag
+     *
+     * @return void
+     */
     public function getIdTag()
     {
         return $this->idTag;
     }
 
-
+    
+    /**
+     * setIdTag
+     *
+     * @param  mixed $idTag
+     * @return void
+     */
     public function setIdTag($idTag)
     {
         $this->idTag = $idTag;

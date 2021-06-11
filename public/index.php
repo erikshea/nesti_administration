@@ -7,4 +7,4 @@ if ( ApplicationSettings::get("environment") == "dev"){
 }
 
 SiteUtil::openSession();
-(new MainController)->dispatch();
+(new Dispatcher)->dispatch();

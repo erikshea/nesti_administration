@@ -1,6 +1,10 @@
 <?php
 SiteUtil::require('util/FormatUtil.php');
 
+/**
+ * BaseController
+ * Base class inherited by all other controllers, containing shared logic.
+ */
 class BaseController
 {
     protected $actionSlug;
@@ -8,7 +12,14 @@ class BaseController
     protected $templateNames = ['base'=>'common/base'];
     protected $hasView = true;
     protected $viewHeader = null;
-
+    
+    /**
+     * dispatch
+     * called by main dispatcher, informs controller of action to call and possible options
+     * @param  mixed $actionSlug
+     * @param  mixed $options
+     * @return void
+     */
     public function dispatch($actionSlug, $options= [])
     {
         if ( isset($options['templateVars']) ){
@@ -17,7 +28,13 @@ class BaseController
 
         $this->forward($actionSlug);
     }
-
+    
+    /**
+     * forward
+     * forward an action from inside another action
+     * @param  mixed $actionSlug
+     * @return void
+     */
     protected function forward($actionSlug){
         $this->actionSlug = $actionSlug;
 
@@ -48,18 +65,23 @@ class BaseController
             include_once SiteUtil::toAbsolute("templates/{$this->templateNames['base']}.php");
         }
     }
-
+    
+    /**
+     * preRender
+     * called before rendering function
+     * @return void
+     */
     public function preRender(){
         // Add shared parameters to the existing ones
         $this->addVars([
-            'title' => MainController::getActionParameters()["title"] ?? null,
+            'title' => Dispatcher::getActionParameters()["title"] ?? null,
             'version' => ApplicationSettings::get("version"),
             'baseUrl' => SiteUtil::url(), // absolute url of site root
             'assetsUrl' => SiteUtil::url('public/assets'), // absolute url of assets folder
-            'route' =>   MainController::getCurrentRoute(), 
+            'route' =>   Dispatcher::getCurrentRoute(), 
             'breadcrumbs' => $this->getBreadcrumbs(),
             'actionTemplate' => SiteUtil::toAbsolute("templates/" . $this->templateNames['action'] . ".php"),
-            'currentUser' => MainController::getLoggedInUser(),
+            'currentUser' => Dispatcher::getLoggedInUser(),
             'javascriptVariables' => array_merge(
                 [
                     'baseUrl'=>SiteUtil::url(),
@@ -68,28 +90,57 @@ class BaseController
                 $this->templateVars['javascriptVariables'] ?? [] )
         ]);
     }
-
+    
+    /**
+     * addVars
+     * add a set of variables accessible within the view
+     * @param  mixed $templateVars
+     * @return void
+     */
     public function addVars($templateVars){
         $this->templateVars = array_merge($this->templateVars,$templateVars);
     }
-
+    
+    /**
+     * addVar
+     * add a variable accessible within the view
+     * @param  mixed $key
+     * @param  mixed $value
+     * @return void
+     */
     public function addVar($key,$value){
         $this->templateVars[$key] = $value;
     }
-
+    
+    /**
+     * setTemplateName
+     * set name of the template
+     * @param  mixed $name name of template file, without .php
+     * @param  mixed $type either "action" or base
+     * @return void
+     */
     public function setTemplateName($name, $type='action'){
         $this->templateNames[$type] = $name;
     }  
-
+    
+    /**
+     * translateToActionMethod
+     * translate a routing slug (for example "edit") into a method name, for example "actionEdit()"
+     * @param  mixed $actionSlug
+     */
     public static function translateToActionMethod($actionSlug){
         return empty($actionSlug)?"":'action' . ucfirst($actionSlug);
     }
 
-
+    
+    /**
+     * getBreadcrumbs
+     * get an array of breadcrumbs corresponding to current route
+     */
     public static function getBreadcrumbs(){
-        $routeParameters = MainController::getAllRouteParameters();
-        $controllerSlug = MainController::getCurrentRoute()['controller'];
-        $actionSlug = MainController::getCurrentRoute()['action'];
+        $routeParameters = Dispatcher::getAllRouteParameters();
+        $controllerSlug = Dispatcher::getCurrentRoute()['controller'];
+        $actionSlug = Dispatcher::getCurrentRoute()['action'];
 
         $breadcrumbs = [$routeParameters[$controllerSlug]["name"]];
 
@@ -99,7 +150,12 @@ class BaseController
 
         return $breadcrumbs;
     }
-
+    
+    /**
+     * translateAssetOptions
+     * initializes path info for stylesheets and script files
+     * @return void
+     */
     protected function translateAssetOptions(){
         $lastAdded = ["css"=>[], "js"=>[]];
 

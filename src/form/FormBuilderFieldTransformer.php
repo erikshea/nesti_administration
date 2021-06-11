@@ -1,8 +1,8 @@
 <?php
 
 /**
- * EntityValidator
- * static methods to validate Entity properties
+ * FormBuilderFieldTransformer
+ * Currently unused
  */
 class FormBuilderFieldTransformer{
     public static function lowercase($value){

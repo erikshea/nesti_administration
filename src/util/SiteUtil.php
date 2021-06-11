@@ -2,7 +2,7 @@
 
 /**
  * SiteUtil
- * Site-related convenience methods
+ * Site-related utility functions
  */
 class SiteUtil
 {
@@ -27,7 +27,6 @@ class SiteUtil
      * toAbsolute
      * Turns a relative file path parameter into an absolute path (from project root);
      * @param  string $relativePath
-     * @return string absolute path
      */
     public static function toAbsolute(string $relativePath=""): string
     {
@@ -75,7 +74,12 @@ class SiteUtil
     }
 
 
-
+    
+    /**
+     * autoloadRegister
+     * set up class autoloader
+     * @return void
+     */
     public static function autoloadRegister()
     {
         spl_autoload_register(function ($className) {
@@ -89,7 +93,11 @@ class SiteUtil
     }
 
     private static $includeDirs;
-
+    
+    /**
+     * getIncludeDirs
+     * get all dirs from which we should try to find classes
+     */
     public static function getIncludeDirs()
     {
         if ( self::$includeDirs == null ){
@@ -146,7 +154,12 @@ class SiteUtil
         return $dirty;
     }
 
-
+    
+    /**
+     * openSession
+     * open a session
+     * @return void
+     */
     public static function openSession(){
         session_start();
         if ( !isset($_SESSION['csrf_token']) ){

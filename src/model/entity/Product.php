@@ -1,11 +1,20 @@
 <?php
 
+/**
+ * Product
+ */
 class Product extends BaseEntity{
 
     private $idProduct;
     private $name;
 
-
+    
+    /**
+     * getArticles
+     * get Articles associated with this product
+     * @param  mixed $options
+     * @return array
+     */
     public function getArticles($options=['a']): array{
         return $this->getRelatedEntities("Article", $options);
     }

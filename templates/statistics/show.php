@@ -86,7 +86,7 @@
                     <tbody>
                         <?php foreach ($vars["articlesOutOfStock"] as $article): ?>
                             <tr>
-                                <td class="align-middle"><?= $article->getProduct()->getName() ?></td>
+                                <td class="align-middle"><?= $article->getDisplayName() ?></td>
                                 <td class="align-middle"><?= $article->getQuantitySold() ?></td>
                                 <td class="align-middle"><?= $article->getTotalSales() - $article->getTotalPurchases()?></td>
                                 <td class="align-middle"><a class="seeBtn" href="<?= $vars['baseUrl'] ?>article/edit/<?= $article->getId() ?>">voir</a></td>

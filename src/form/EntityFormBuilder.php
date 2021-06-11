@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * EntityFormBuilder
+ * Build and validates a form based on an entity
+ */
 class EntityFormBuilder extends FormBuilder{
     protected $entity;
     protected $formData;
@@ -10,7 +14,14 @@ class EntityFormBuilder extends FormBuilder{
     function __construct($entity) {
         $this->setEntity($entity);
     }
-
+    
+    /**
+     * add
+     * adds a new field
+     * @param  mixed $propertyName
+     * @param  mixed $options
+     * @return void
+     */
     public function add($propertyName, $options=[]){
 
         $type = $this->getPropertyParameters()[$propertyName]['options']['type'] ?? "";
@@ -58,23 +69,46 @@ class EntityFormBuilder extends FormBuilder{
 
         return $propertyErrors;
     }
-
+    
+    /**
+     * setEntity
+     * set entity from which fields will be filled and validated
+     * @param  mixed $entity
+     * @return void
+     */
     public function setEntity($entity){
         $this->formData = EntityUtil::toArray($entity);
         $this->entity = $entity;
         $this->setFormName(get_class($entity));
     }
-
+    
+    /**
+     * getEntity
+     * get entity from which fields will be filled and validated
+     */
     public function getEntity(){
         return $this->entity;
     }
-
+    
+    /**
+     * applyDataTo
+     * apply current form's data to an entity
+     * @param  mixed $entity
+     * @return void
+     */
     public function applyDataTo(&$entity){
         foreach ( get_class($entity)::getDaoClass()::getColumnNames() as $columnName){
             $this->applyDataElementTo($entity, $columnName);
         }
     }
-
+    
+    /**
+     * applyDataElementTo
+     * apply a form field's data to an entity 
+     * @param  mixed $entity
+     * @param  mixed $name
+     * @return void
+     */
     public function applyDataElementTo(&$entity, $name){
         if ( isset($this->formData[$name])){
             EntityUtil::set($entity, $name, $this->formData[$name]);

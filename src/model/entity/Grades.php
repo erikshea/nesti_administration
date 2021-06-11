@@ -1,24 +1,50 @@
 <?php
 
+/**
+ * Grades
+ */
 class Grades extends BaseEntity{
     private $idUsers;
     private $idRecipe;
     private $rating;
     private $dateModification;
 
-
+    
+    /**
+     * getRecipe
+     * get recipe associated with grade
+     * @return Recipe
+     */
     public function getRecipe(): ?Recipe{ 
         return $this->getRelatedEntity("Recipe");
     }
-
+    
+    /**
+     * setRecipe
+     * set recipe associated with grade
+     * @param  mixed $r
+     * @return void
+     */
     public function setRecipe(Recipe $r){
         $this->setRelatedEntity($r);
     }
+    
 
+    /**
+     * getUser
+     * get user associated with grade
+     * @return Users
+     */
     public function getUser(): ?Users{ 
         return $this->getRelatedEntity("Users");
     }
-
+    
+    /**
+     * setUser
+     * set user associated with grade
+     * @param  mixed $u
+     * @return void
+     */
     public function setUser(Users $u){
         $this->setRelatedEntity($u);
     }

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * ArticlePrice
+ */
 class ArticlePrice extends BaseEntity{
     protected static $columnNames; 
     
@@ -8,16 +11,25 @@ class ArticlePrice extends BaseEntity{
     private $price;
     private $idArticle;
     
-
+    
+    /**
+     * getArticle
+     * Get related Article
+     * @return Article
+     */
     public function getArticle(): ?Article{
         return $this->getRelatedEntity("Article");
     }
-
+    
+    /**
+     * setArticle
+     * set related Article
+     * @param  mixed $a
+     * @return void
+     */
     public function setArticle(Article $a){
         $this->setRelatedEntity($a);
     }
-
-
 
     /**
      * Get the value of idArticle

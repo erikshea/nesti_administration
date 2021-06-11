@@ -37,7 +37,7 @@
                     ->add("address1")
                     ->add("address2");
                 ?>
-<?php if ($vars["entity"]->getId() == MainController::getLoggedInUser()->getId()): ?>
+<?php if ($vars["entity"]->getId() == Dispatcher::getLoggedInUser()->getId()): ?>
                 <hr/>
     <?php $vars["formBuilder"]
                 ->add("newPassword")
@@ -119,11 +119,11 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <span>Nombre de de commentaires bloqués : </span>
-                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["b"])) ?></span>
+                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["flag" => "b"])) ?></span>
                         </li>
                         <li class="list-group-item">
                             <span>Nombre de de commentaires approuvés : </span>
-                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["a"])) ?></span>
+                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["flag" => "a"])) ?></span>
                         </li>
                     </ul>
                 </li>

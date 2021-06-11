@@ -1,13 +1,29 @@
 <?php
+
+/**
+ * Moderator
+ */
 class Moderator extends Users{
     private $idModerator;
 
-
+    
+    /**
+     * getModeratedComments
+     * get all comments moderated by this moderator
+     * @param  mixed $options
+     * @return array
+     */
     public function getModeratedComments($options=[]): array{
         return $this->getRelatedEntities("Comment",$options);
     }
-
-    public function setModeratedComments(Comment $c){
+    
+    /**
+     * setModeratedComment
+     * define a comment as moderated by this moderator 
+     * @param  mixed $c
+     * @return void
+     */
+    public function setModeratedComment(Comment $c){
         $this->setRelatedEntity($c);
     }
 

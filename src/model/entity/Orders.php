@@ -1,23 +1,50 @@
 <?php
 
+/**
+ * Orders
+ */
 class Orders extends BaseEntity{
     private $idOrders;
     private $flag;
     private $dateCreation;
     private $idUsers;
 
+        
+    /**
+     * getOrderLines
+     * get all order lines for this order
+     * @param  mixed $options
+     * @return array
+     */
     public function getOrderLines($options=[]): array{
         return $this->getRelatedEntities("OrderLine", $options);
     }
-    
+        
+    /**
+     * getUser
+     * get user that made this order
+     * @param  mixed $options
+     * @return Users
+     */
     public function getUser($options=[]): ?Users{
         return $this->getRelatedEntity("Users", $options);
     }
-
+    
+    /**
+     * setUser
+     * set user that made this order
+     * @param  mixed $user
+     * @return void
+     */
     public function setUser(Users $user){
         $this->setRelatedEntity($user);
     }
-
+    
+    /**
+     * getTotal
+     * get total ammount for this order
+     * @return void
+     */
     public function getTotal(){
         $total=0;
 

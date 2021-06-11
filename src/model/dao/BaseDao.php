@@ -1,4 +1,10 @@
 <?php
+
+
+/**
+ * BaseDao
+ * Data acces layer for Administrator entities
+ */
 class BaseDao
 {
     protected const  IGNORE_VALUE = 7894123532137898798797467644653978789798;

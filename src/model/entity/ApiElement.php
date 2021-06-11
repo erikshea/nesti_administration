@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * ApiElement
+ */
 class ApiElement extends BaseEntity{
     private $idApiElement;
     private $name;

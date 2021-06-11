@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Article
+ */
 class Article extends BaseEntity{
     protected static $columnNames; 
     
@@ -14,6 +17,11 @@ class Article extends BaseEntity{
     private $displayName;
     private $factoryName;
 
+        
+    /**
+     * getQuantitySold
+     * Quantity sold of current article
+     */
     public function getQuantitySold(){
         $quantity = 0;
 
@@ -23,7 +31,12 @@ class Article extends BaseEntity{
 
         return $quantity;
     }
-
+    
+    /**
+     * getTotalSales
+     * Sum of all sales for this article
+     * @return void
+     */
     public function getTotalSales(){
         $total = 0;
 
@@ -34,16 +47,12 @@ class Article extends BaseEntity{
         return $total;
     }
 
-    public function getQuantityPurchased(){
-        $quantity = 0;
-
-        foreach ($this->getLots() as $lot){
-            $quantity += $lot->getQuantity();
-        }
-
-        return $quantity;
-    }
-
+    
+    /**
+     * getTotalPurchases
+     * Sum of all purchases for this article
+     * @return void
+     */
     public function getTotalPurchases(){
         $total = 0;
 
@@ -53,55 +62,135 @@ class Article extends BaseEntity{
 
         return $total;
     }
+    
 
+    
+    /**
+     * getQuantityPurchased
+     * get the total quantity purchased from suppliers
+     */
+    public function getQuantityPurchased(){ // TODO
+        return (float) $this->getLots(["SELECT"=>"SUM(quantity)"])[0][0] ?? 0;
+    }
+
+
+
+    /**
+     * getArticlePrices
+     * get a list of article prices for this article
+     * @param  mixed $options
+     * @return array
+     */
     public function getArticlePrices($options): array{
         return $this->getRelatedEntities("ArticlePrice",$options);
     }
 
+    /**
+     * getArticlePrices
+     * get a list of imported lots for this article
+     * @param  mixed $options
+     * @return array
+     */
     public function getLots($options=[]): array{
         return $this->getRelatedEntities("Lot", $options);
     }
-
+    
+    /**
+     * getOrderLines
+     * get order lines which contain this article
+     * @return array
+     */
     public function getOrderLines(): array{
         return $this->getRelatedEntities("OrderLine");
     }
-    
+        
+    /**
+     * getProduct
+     * get the Product entity related to this article
+     * @return Product
+     */
     public function getProduct(): ?Product{
         return $this->getRelatedEntity("Product");
     }
+
     
+    /**
+     * setProduct
+     * set the Product entity related to this article
+     * @param  mixed $p
+     * @return void
+     */
+    public function setProduct(Product $p){
+        $this->setRelatedEntity($p);
+    }
+
+    /**
+     * getUnit
+     * get this article's unit
+     * @return Unit
+     */
     public function getUnit(): ?Unit{
         return $this->getRelatedEntity("Unit");
     }
     
-
+    
+    /**
+     * setUnit
+     * set this article's unit
+     * @param  mixed $u
+     * @return void
+     */
     public function setUnit(Unit $u){
         $this->setRelatedEntity($u);
     }
 
 
-    public function setProduct(Product $p){
-        $this->setRelatedEntity($p);
-    }
-
+    
+    /**
+     * getImage
+     * get this article's image entity
+     * @return Image
+     */
     public function getImage(): ?Image{
         return $this->getRelatedEntity("Image");
     }
 
+    
+    /**
+     * setImage
+     * set this article's image entity
+     * @param  mixed $i
+     * @return void
+     */
     public function setImage(Image $i){
         $this->setRelatedEntity($i);
     }
 
+    
+    /**
+     * getArticlePriceAt
+     * Get an article's price at a given date
+     * @param  mixed $date
+     */
     public function getArticlePriceAt($date){
         return $this->getArticlePrices(["dateStart <" => $date, "ORDER" => "dateStart DESC"])[0] ?? null;
     }
-
-
-
+    
+    /**
+     * getOrders
+     * get all orders which contain this article
+     * @param  mixed $options
+     * @return array
+     */
     public function getOrders($options=[]): array{
         return $this->getIndirectlyRelatedEntities("Orders", "OrderLine", $options); 
     }
-
+    
+    /**
+     * getSellingPrice
+     * get the selling price of an article
+     * @return void
+     */
     public function getSellingPrice(){
         $highestPricedLot = $this->getLots(['ORDER' => 'unitCost DESC'])[0] ?? null;
     
@@ -112,7 +201,12 @@ class Article extends BaseEntity{
 
         return $highestPricedLot == null? null:$price;
     }
-
+    
+    /**
+     * getLastImportationDate
+     * get the lasted importation which contains this article
+     * @return void
+     */
     public function getLastImportationDate(){
         $lastImportedLot = $this->getLots(['ORDER'=>'dateReception DESC'])[0] ?? null;
 
@@ -123,10 +217,21 @@ class Article extends BaseEntity{
 
         return $date;
     }
-
+    
+    /**
+     * getStock
+     * get the total available stock of an article
+     * @return void
+     */
     public function getStock(){
-        return (float) $this->getLots(["SELECT"=>"SUM(quantity)"])[0][0] ?? 0;
+        $stock = $this->getQuantityPurchased() - $this->getQuantitySold();
+        if ($stock < 0){
+            $stock = 0;
+        }
+        return $stock;
     }
+
+
 
     /**
      * Get the value of idProduct

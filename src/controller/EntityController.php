@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * EntityController
+ * Base controller for all entity-related controllers
+ */
 class EntityController extends BaseController
 {
     protected  $entity;
@@ -89,7 +94,7 @@ class EntityController extends BaseController
 
             if ($formBuilder->isValid()) {
                 $this->getDaoClass()::saveOrUpdate($this->getEntity());
-                MainController::redirect();
+                Dispatcher::redirect();
             } else {
                 $this->addVars(["errors" => $formBuilder->getAllErrors()]);
             }
@@ -106,9 +111,14 @@ class EntityController extends BaseController
         $entity = $this->getEntity();
         $entity->setFlag("b");
         get_class($entity)::getDaoClass()::saveOrUpdate($entity);
-        MainController::redirect();
+        Dispatcher::redirect();
     }
-
+    
+    /**
+     * actionList
+     * list entities
+     * @return void
+     */
     public function actionList()
     {
         $queryOptions = ['flag'=>'a'];
@@ -132,14 +142,18 @@ class EntityController extends BaseController
 
 
     /**
-     * Get the value of entity
+     * Set the value of entity
      */
     public function setEntity($entity)
     {
         $this->entity = $entity;
     }
 
-    
+        
+    /**
+     * getEntityClass
+     * get the entity class corresponding to controller. by default, the controller name without "Controller"
+     */
     public function getEntityClass()
     {
         return substr(static::class, 0, -10);

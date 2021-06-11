@@ -1,7 +1,9 @@
 <?php
 
-use phpDocumentor\Reflection\DocBlock\Tags\Formatter;
 
+/**
+ * BaseEntity
+ */
 class BaseEntity{
     // Original ID of entity when fetched from data source.
     // Used if we need to update it after changing its id property
@@ -147,10 +149,24 @@ class BaseEntity{
     }
 
 
+        
+    /**
+     * getChildEntity
+     * Get a Entity of the subclass speficied in parameters and whose table inherits current entity's table
+     * @param  mixed $childEntityClass
+     * @return mixed
+     */
     public function getChildEntity(string $childEntityClass){
         return $childEntityClass::getDaoClass()::findById($this->getId());
     }
 
+        
+    /**
+     * makeChildEntity
+     * Creates a child entity (whose table inherits current entity's table) of the current instance
+     * @param  mixed $childEntityClass
+     * @return void
+     */
     public function makeChildEntity(string $childEntityClass){
         if ( $this->getChildEntity($childEntityClass) == null ) {
             $child = new $childEntityClass;
@@ -162,13 +178,25 @@ class BaseEntity{
         return $this;
     }
 
+        
+    /**
+     * equals
+     * Two entities are considered equal if of is a subclass of the other or the same class, and if they have the same primary keys
+     * @param  mixed $other
+     * @return void
+     */
     public function equals( $other ){
         return $other != null
             &&     is_a($this,get_class($other)) // $this must either be class/sublass of $other
                 || is_a($other,get_class($this)) // or vice-versa
             && $this->hasSamePrimaryKey($other);
     }
-
+    
+    /**
+     * hasPrimaryKey
+     * Is the current entity's primary key initialized?
+     * @return void
+     */
     public function hasPrimaryKey(){
         if ( !$this->hasCompositeKey() ){
             $keys = [$this->getId()];
@@ -184,12 +212,23 @@ class BaseEntity{
 
         return $hasPk;
     }
-
+    
+    /**
+     * hasCompositeKey
+     * Does the currrent entity have a composite primary key?
+     * @return void
+     */
     public function hasCompositeKey(){
         return is_array(static::getDaoClass()::getPkColumnName());
     }
 
-
+    
+    /**
+     * hasSamePrimaryKey
+     * Is the current entity's primary key identical to the primary key of another entity?
+     * @param  mixed $other
+     * @return void
+     */
     public function hasSamePrimaryKey($other){
         if ( $this->hasCompositeKey() ){
             $samePk = true;
@@ -209,7 +248,12 @@ class BaseEntity{
 
         return $samePk;
     }
-
+    
+    /**
+     * existsInDataSource
+     * Is there a row in the data source that corresponds to the current entity?
+     * @return void
+     */
     public function existsInDataSource(){
         if ( !$this->hasCompositeKey()){
             $exists = !empty($this->getOriginalId());
@@ -225,7 +269,12 @@ class BaseEntity{
         return $exists;
     }
 
-
+    
+    /**
+     * getOriginalId
+     * if the current entity was fetched from the data source, get the ID it had when it was instanciated
+     * @param  mixed $columnName
+     */
     public function getOriginalId($columnName = null)
     {
         if ( $columnName == null ){
@@ -241,7 +290,14 @@ class BaseEntity{
         }
         return $result;
     }
-
+    
+    /**
+     * setOriginalId
+     * set an entity's original ID propery, which represents it's ID in the data source.
+     * @param  mixed $value
+     * @param  mixed $columnName
+     * @return void
+     */
     public function setOriginalId($value, $columnName = null )
     {
         if ( $columnName == null ){

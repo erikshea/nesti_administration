@@ -1,8 +1,17 @@
 <?php
 
+/**
+ * Ingredient
+ */
 class Ingredient extends Product{
     private $idIngredient;
 
+        
+    /**
+     * getIngredientRecipes
+     * get IngredientRecipes associated with this Ingredient
+     * @return array
+     */
     public function getIngredientRecipes(): array{
         return $this->getRelatedEntities("IngredientRecipe");
     }

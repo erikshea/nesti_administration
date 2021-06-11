@@ -1,9 +1,19 @@
 <?php
+
+/**
+ * City
+ */
 class City extends BaseEntity{
     private $idCity;
     private $name;
     private $zipCode;
-
+    
+    /**
+     * getUsers
+     * get users living in this city
+     * @param  mixed $options
+     * @return array
+     */
     public function getUsers($options=['a']): array{
         return $this->getRelatedEntities("Users", $options);
     }

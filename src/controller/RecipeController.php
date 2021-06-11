@@ -36,7 +36,7 @@ class RecipeController extends EntityController
                     $entity->setImage($image);
                 }
                 $formBuilder->applyDataTo($entity);
-                $entity->setChef(MainController::getLoggedInUser()->getChef());
+                $entity->setChef(Dispatcher::getLoggedInUser()->getChef());
 
                 $this->addVars([ "message" => $entity->existsInDataSource()?"edited":"created" ]);
 
@@ -81,22 +81,6 @@ class RecipeController extends EntityController
     }
 
 
-    public function actionImport()
-    {
-        $entity = $this->getEntity();
-
-        if ( !empty($_POST[$this->getEntityClass()]) ) { // if we arrived here by way of the submit button in the edit view
- 
-
-            if ( $_FILES["image"]["error"] == 0 ) {
-
-            }
-        }
-
-        $this->addVars([
-            "isSubmitted" => !empty($_POST[$this->getEntityClass()]),
-        ]);
-    }
     
     public function preRender()
     {

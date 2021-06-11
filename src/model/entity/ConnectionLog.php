@@ -1,14 +1,28 @@
 <?php
 
+/**
+ * ConnectionLog
+ */
 class ConnectionLog extends BaseEntity{
     private $idConnectionLog;
     private $dateConnection;
     private $idUsers;
-
+    
+    /**
+     * getUser
+     * get user the connection log is about
+     * @return Users
+     */
     public function getUser(): ?Users{ 
         return $this->getRelatedEntity("Users");
     }
-
+    
+    /**
+     * setUser
+     * set user the connection log is about
+     * @param  mixed $u
+     * @return void
+     */
     public function setUser(Users $u){
         $this->setRelatedEntity($u);
     }

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * MainController
- * main controller. calls all other controllers according to requested route and current user
+ * Dispatcher
+ * Dispatches a controller according to requested route and current user
  */
-class MainController 
+class Dispatcher 
 {
     protected static ?Users $loggedInUser = null; // currently connected user
     protected static $routeConfig; // all route configurations

@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Administrator
+ */
 class Administrator extends Users{
     protected static $columnNames; 
     private $idAdministrator;
@@ -32,6 +36,12 @@ class Administrator extends Users{
         return $this;
     }
 
+        
+    /**
+     * getLatestImportation
+     * get the most recent Importation entity that corresponds to this Administrator
+     * @return void
+     */
     public function getLatestImportation(){
         return $this->getImportations(["ORDER"=>"dateImportation DESC"])[0] ?? null;
     }

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * TranslateUtil
+ * language-related utility functions
+ */
 class TranslateUtil {
     const TRANSLATIONS = [
         "default"=>[
@@ -23,12 +27,24 @@ class TranslateUtil {
             "w"=>"En attente",
         ]
     ];
-
+    
+    /**
+     * translate
+     * translate a string from TRANSLATIONS array
+     * @param  mixed $key
+     * @param  mixed $dataSet
+     */
     public static function translate( $key, $dataSet="default" ){
         return static::TRANSLATIONS[$dataSet][$key] ?? "";
     }
 
-
+    
+    /**
+     * translateArray
+     * translate an array of stringsfrom TRANSLATIONS array
+     * @param  mixed $strings
+     * @param  mixed $dataSet
+     */
     public static function translateArray( $strings, $dataSet="default" ){
         $translated=[];
 
@@ -38,7 +54,12 @@ class TranslateUtil {
         
         return $translated;
     }
-
+    
+    /**
+     * translateDate
+     * translate a date into current region
+     * @param  mixed $date
+     */
     public static function translateDate($date){
         if ($date ==null){
             $formattedDate = "-";
@@ -53,7 +74,13 @@ class TranslateUtil {
 
         return $formattedDate;
     }
-
+    
+    /**
+     * translateNumber
+     * tranlaste a number's decimal separator
+     * @param  mixed $number
+     * @return void
+     */
     public static function translateNumber($number){
         return str_replace (".",",",$number);
     }

@@ -1,6 +1,16 @@
 <?php
+
+/**
+ * StatisticsController
+ * controller for statistics section
+ */
 class StatisticsController extends BaseController
-{
+{    
+    /**
+     * actionShow
+     * show all statistics
+     * @return void
+     */
     public function actionShow()
     {
         $this->setTemplateName("statistics/show");
@@ -17,7 +27,7 @@ class StatisticsController extends BaseController
             }
         }
 
-        //to have sales and cost for order per days
+        //sales and costs per order per day
         $startDate = new DateTime;
         $startDate->add(DateInterval::createFromDateString("-10 days"));
 
@@ -52,7 +62,7 @@ class StatisticsController extends BaseController
             $articlePurchases[] = $article->getTotalPurchases();
         }
 
-        // to have the top of users' connection
+        // users with most connection
         $connectionsByIdUser = ConnectionLogDao::findAll(["INDEXBY" => "idUsers"]);
         //  sort by number of connections for each user id
         usort($connectionsByIdUser, function ($v1, $v2) {
@@ -67,7 +77,7 @@ class StatisticsController extends BaseController
         $usersWithMostConnections = array_slice($usersWithMostConnections, 0, 10);
 
 
-        // to have the top of orders by sum
+        // largest orders
         $ordersByTotal = OrdersDao::findAll();
         usort($ordersByTotal, function ($o1, $o2) {
             return $o2->getTotal() <=> $o1->getTotal();
@@ -75,7 +85,7 @@ class StatisticsController extends BaseController
         $ordersByTotal = array_slice($ordersByTotal, 0, 3);
 
 
-        // to have the top of chef by recipe
+        // chefs with most recipes
         $chefsByRecipes = ChefDao::findAll();
         usort($chefsByRecipes, function ($o1, $o2) {
             return count($o2->getRecipes()) <=> count($o1->getRecipes());
@@ -83,7 +93,7 @@ class StatisticsController extends BaseController
         $chefsByRecipes = array_slice($chefsByRecipes, 0, 10);
 
 
-        // to have the top of recipe by grade
+        // highest rated recipes
         $recipesByGrade =  RecipeDao::findAll();
 
         usort($recipesByGrade, function ($r1, $r2) {
@@ -93,7 +103,7 @@ class StatisticsController extends BaseController
 
         $recipesByGrade = array_slice($recipesByGrade, 0, 10);
 
-        $articlesOutOfStock =  ArticleDao::findAll(["unitQuantity" => 0]);
+        $articlesOutOfStock =  array_filter(ArticleDao::findAll(), function($a){ return $a->getStock() <= 0;}) ;
       
         $this->addVars([
             "usersWithMostConnections" => $usersWithMostConnections,

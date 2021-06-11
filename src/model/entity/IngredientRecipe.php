@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * IngredientRecipe
+ */
 class IngredientRecipe extends BaseEntity{
     private $idIngredient;
     private $idRecipe;
@@ -7,25 +10,62 @@ class IngredientRecipe extends BaseEntity{
     private $recipePosition;
     private $idUnit;
     
+        
+    /**
+     * getIngredient
+     * get ingredient associated with this entity
+     * @return Ingredient
+     */
     public function getIngredient(): Ingredient{
         return $this->getRelatedEntity("Ingredient");
     }
-
+    
+    /**
+     * setIngredient
+     * set ingredient associated with this entity
+     * @param  mixed $i
+     * @return void
+     */
     public function setIngredient(Ingredient $i){
         $this->setRelatedEntity($i);
     }
-
+    
+    /**
+     * getRecipe
+     * get recipe associated with this entity
+     * @return Recipe
+     */
     public function getRecipe(): Recipe{
         return $this->getRelatedEntity("Recipe");
     }
+
+        
+    /**
+     * setRecipe
+     * set recipe associated with this entity
+     * @param  mixed $r
+     * @return void
+     */
     public function setRecipe(Recipe $r){
         $this->setRelatedEntity($r);
     }
-
+    
+    /**
+     * getUnit
+     * get unit associated with this entity
+     * @return Unit
+     */
     public function getUnit(): Unit{
         return $this->getRelatedEntity("Unit");
     }
 
+        
+    /**
+     * setUnit
+     * set unit associated with this entity
+     * @param  mixed $u
+     * @return void
+     */
     public function setUnit(Unit $u){
         $this->setRelatedEntity($u);
     }
@@ -132,7 +172,12 @@ class IngredientRecipe extends BaseEntity{
         return $this;
     }
 
-
+    
+    /**
+     * getFormatted
+     * get a human-readable version of this entity
+     * @return void
+     */
     public function getFormatted(){
         return $this->getQuantity() . " " . $this->getUnit()->getName() . " : " . $this->getIngredient()->getName();
     }

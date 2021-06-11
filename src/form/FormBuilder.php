@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * FormBuilder
+ * builds and validates a form
+ */
 class FormBuilder{
     protected $formData;
     protected $validatorErrorMessages = [];
@@ -88,7 +92,14 @@ class FormBuilder{
 
         return $this->errors;
     }
-
+    
+    /**
+     * add
+     * add a form field to view
+     * @param  mixed $propertyName
+     * @param  mixed $options
+     * @return void
+     */
     public function add($propertyName, $options=[]){
         $validators = $this->getPropertyParameters()[$propertyName]['validators'] ?? [];
 
@@ -137,11 +148,20 @@ class FormBuilder{
 
         return $this;
     }
-
+    
+    /**
+     * isSubmitted
+     * was form previously submitted?
+     */
     public function isSubmitted(){
         return isset($_POST[$this->getFormName()]);
     }
-
+    
+    /**
+     * getValidatorErrorMessages
+     * get all error messages, by validator name
+     * @return void
+     */
     public function getValidatorErrorMessages()
     {
         if ( $this->validatorErrorMessages == null ){
@@ -153,21 +173,45 @@ class FormBuilder{
 
         return $this->validatorErrorMessages;
     }
-
+    
+    /**
+     * setFormDataFromPost
+     * set current form's data from $_POST superglobal
+     * @return void
+     */
     public function setFormDataFromPost(){
         $this->setFormData($_POST[$this->getFormName()]);
     }
-
+    
+    /**
+     * setFormData
+     *
+     * @param  mixed $formData
+     * @return void
+     */
     public function setFormData($formData){
         $this->formData = $formData;
     }
-    public function addFormData($formData){
-        $this->formData = array_merge($this->formData, $formData);
-    }
-    
+                
+    /**
+     * getFormData
+     *
+     * @return void
+     */
     public function getFormData(){
         return $this->formData;
     }
+    
+    /**
+     * addFormData
+     * adds data to form
+     * @param  mixed $formData
+     * @return void
+     */
+    public function addFormData($formData){
+        $this->formData = array_merge($this->formData, $formData);
+    }
+
 
     /**
      * Get the value of propertyParameters

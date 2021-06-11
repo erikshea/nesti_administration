@@ -2,8 +2,8 @@
 
 
 /**
- * EntityValidator
- * static methods to validate Entity properties
+ * FormBuilderValidator
+ * static methods to validate form field values
  */
 class FormBuilderValidator{
         

@@ -9,24 +9,46 @@ class ApiController extends BaseController
         }
         parent::dispatch($actionSlug, $options);
     }
-
+    
+    /**
+     * actionTags
+     * get a list of all tags
+     * @return void
+     */
     public function actionTags()
     {
         $tags = EntityUtil::toArray(TagDao::findAll(), true);
         echo json_encode($tags);
     }
-
+    
+    /**
+     * actionRecipesForTag
+     * get a list of recipes having a given tag 
+     * @return void
+     */
     public function actionRecipesForTag()
     {
         $recipes = RecipeDao::findAll(["idTag" => SiteUtil::getUrlParameters()[2]]);
         echo json_encode($this->recipesToArray($recipes));
     }
+
+        
+    /**
+     * actionRecipesForPartialName
+     * get a list of recipes whose name contains a string
+     * @return void
+     */
     public function actionRecipesForPartialName()
     {
         $recipes = RecipeDao::findAll(["name LIKE" => "%" . SiteUtil::getUrlParameters()[2]. "%"] );
         echo json_encode($this->recipesToArray($recipes));
     }
-
+    
+    /**
+     * actionIngredientRecipes
+     * get ingredients corresponding to recipe id
+     * @return void
+     */
     public function actionIngredientRecipes()
     {
         $ingredientRecipes = IngredientRecipeDao::findAll(["idRecipe" => SiteUtil::getUrlParameters()[2]] );
@@ -34,7 +56,12 @@ class ApiController extends BaseController
     }
 
  
-
+    
+    /**
+     * actionObtain
+     * allows a client to obtain an API token
+     * @return void
+     */
     public function actionObtain()
     {
         $this->setTemplateName('common/baseBarebones', 'base');
@@ -75,7 +102,12 @@ class ApiController extends BaseController
         $this->render();
     }
 
-
+    
+    /**
+     * actionParagraphs
+     * get all paragraphs for a given recipe ID
+     * @return void
+     */
     public function actionParagraphs()
     {
         $paragraphs = (new ParagraphDao)::findAll([
@@ -84,7 +116,13 @@ class ApiController extends BaseController
         ] );
         echo json_encode(EntityUtil::toArray($paragraphs, true));
     }
-
+    
+    /**
+     * recipesToArray
+     * get a list of recipes as a data array
+     * @param  mixed $recipes
+     * @return void
+     */
     private function recipesToArray($recipes){
         $recipesArray =  EntityUtil::toArray($recipes, true);
         foreach ($recipesArray as $i=>&$recipeArray) {
@@ -93,7 +131,13 @@ class ApiController extends BaseController
         }
         return $recipesArray;
     }
-
+    
+    /**
+     * ingredientRecipesToArray
+     * get a list of ingredients as a data array
+     * @param  mixed $ingredientRecipes
+     * @return void
+     */
     private function ingredientRecipesToArray($ingredientRecipes){
         $ingredientRecipesArray =  EntityUtil::toArray($ingredientRecipes, true);
         foreach ($ingredientRecipesArray as $i=>&$ingredientRecipeArray) {

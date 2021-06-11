@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Tag
+ */
 class Tag extends BaseEntity{
     private $idTag;
     private $name;

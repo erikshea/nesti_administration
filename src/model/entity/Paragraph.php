@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Paragraph
+ */
 class Paragraph extends BaseEntity{
     private $idParagraph;
     private $content;
@@ -7,10 +10,23 @@ class Paragraph extends BaseEntity{
     private $dateCreation;
     private $idRecipe;
 
+        
+    /**
+     * getRecipe
+     * get recipe this paragraph is about
+     * @param  mixed $options
+     * @return Recipe
+     */
     public function getRecipe($options=['a']): Recipe{
         return $this->getRelatedEntity("Recipe",$options);
     }
-
+    
+    /**
+     * setRecipe
+     * set recipe this paragraph is about
+     * @param  mixed $r
+     * @return void
+     */
     public function setRecipe(Recipe $r){
         $this->setRelatedEntity($r);
     }

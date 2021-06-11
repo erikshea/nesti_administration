@@ -1,12 +1,22 @@
 <?php
 
 class ArticleController extends EntityController
-{
+{    
+    /**
+     * actionAdd
+     * adds a new artivle
+     * @return void
+     */
     public function actionAdd(){
         $this->forward('edit');
     }
 
-
+    
+    /**
+     * actionEdit
+     * edit an existing article
+     * @return void
+     */
     public function actionEdit()
     {
         $entity = $this->getEntity();
@@ -55,7 +65,12 @@ class ArticleController extends EntityController
             "formBuilder" => $formBuilder
         ]);
     }
-
+    
+    /**
+     * actionOrders
+     * list all orders
+     * @return void
+     */
     public function actionOrders()
     {
 
@@ -91,7 +106,12 @@ class ArticleController extends EntityController
         ];
     }
 
-
+    
+    /**
+     * actionList
+     * list alla rticles
+     * @return void
+     */
     public function actionList()
     {
         $queryOptions = [];
@@ -193,7 +213,13 @@ class ArticleController extends EntityController
         ]);
     }
 
-
+    
+    /**
+     * importCsvLine
+     * logic for importing a signle line from a CSV file
+     * @param  mixed $values
+     * @return mixed
+     */
     private function importCsvLine($values):mixed{
         $importedArticle = null;
 
@@ -265,7 +291,7 @@ class ArticleController extends EntityController
         if ( $importation == null ){
             $importation = new Importation;
             $importation->setArticle($article);
-            $importation->setAdministrator(MainController::getLoggedInUser()->getAdministrator());
+            $importation->setAdministrator(Dispatcher::getLoggedInUser()->getAdministrator());
             $importation->setOrderNumberSupplier($values["orders_number"]);
             ImportationDao::saveOrUpdate($importation);
         }

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Comment
+ */
 class Comment extends BaseEntity{
     private $commentTitle;
     private $commentContent;
@@ -9,34 +12,78 @@ class Comment extends BaseEntity{
     private $idUsers;
     private $idModerator;
 
-    
+        
+    /**
+     * getModerator
+     * get Moderator that moderated this comment
+     * @return Moderator
+     */
     public function getModerator(): ?Moderator{
         return $this->getRelatedEntity("Moderator");
     }
+
+    /**
+     * getModerator
+     * set Moderator that moderated this comment
+     * @return Moderator
+     */
     public function setModerator(Moderator $m){
         $this->setRelatedEntity($m);
     }
-
+    
+    /**
+     * getUser
+     * get user parent entity
+     * @return Users
+     */
     public function getUser(): ?Users{
         return $this->getRelatedEntity("Users");
     }
-
+    
+    /**
+     * setUser
+     * set user parent entity
+     * @param  mixed $user
+     * @return void
+     */
     public function setUser(Users $user){
         $this->setRelatedEntity($user);
     }
-
+    
+    /**
+     * getRecipe
+     * get recipe associated with comment
+     * @return Recipe
+     */
     public function getRecipe(): ?Recipe{
         return $this->getRelatedEntity("Recipe");
     }
-
+    
+    /**
+     * setRecipe
+     * set recipe associated with comment
+     * @param  mixed $recipe
+     * @return void
+     */
     public function setRecipe(Recipe $recipe){
         $this->setRelatedEntity($recipe);
     }
-    
+        
+    /**
+     * getImage
+     * get image associated with comment
+     * @return Image
+     */
     public function getImage(): ?Image{
         return $this->getRelatedEntity("Image");
     }
-    
+        
+    /**
+     * setImage
+     * set image associated with comment
+     * @param  mixed $i
+     * @return void
+     */
     public function setImage(Image $i){
         $this->setRelatedEntity($i);
     }

@@ -2,7 +2,7 @@
 
 /**
  * FormatUtil
- * Format-related convenience methods.
+ * Formatting-related convenience methods.
  */
 class FormatUtil {    
 
@@ -18,6 +18,13 @@ class FormatUtil {
         echo "<pre>".htmlentities(print_r($var, true))."</pre>";
     }
 
+        
+    /**
+     * dd
+     * dumps a variable, then terminates script 
+     * @param  mixed $var
+     * @return void
+     */
     public static function dd($var){
         self::dump($var);
         die();
@@ -58,7 +65,13 @@ class FormatUtil {
     }
 
 
-
+    
+    /**
+     * formatTime
+     * format a time in minutes into human-readable form
+     * @param  mixed $minutes
+     * @return void
+     */
     public static function formatTime($minutes){
         $hours = floor($minutes/60);
         $minutes = $minutes%60;
@@ -76,23 +89,52 @@ class FormatUtil {
         return $result;
     }
 
-
+    
+    /**
+     * currentSqlDate
+     * get current date, formatted for insertion into a database
+     * @return void
+     */
     public static function currentSqlDate(){
         return static::dateTimeToSqlDate(new DateTime());
     }
-
+    
+    /**
+     * dateTimeToSqlDate
+     * transforma  DateTime object into an equivalent string insertable into a database 
+     * @param  mixed $dt
+     * @return void
+     */
     public static function dateTimeToSqlDate($dt){
         return $dt->format('Y-m-d H:i:s');
     }
-
+    
+    /**
+     * sqlDateToPhpDate
+     * transform an sql date into a PHP DateTime
+     * @param  mixed $sqlDate
+     * @return void
+     */
     public static function sqlDateToPhpDate($sqlDate){
         return date('Y-m-d H:i:s', strtotime($sqlDate));
     }
-
+    
+    /**
+     * getFormattedPrice
+     * format a price into human readable form
+     * @param  mixed $price
+     * @return void
+     */
     public static function getFormattedPrice($price){
         return $price == null? "-":number_format($price, 2, ",", "") . "€";
     }
-
+    
+    /**
+     * decode
+     * decode special characters and unicode 
+     * @param  mixed $value
+     * @return void
+     */
     public static function decode($value){
         return html_entity_decode($value, ENT_QUOTES | ENT_XML1, 'UTF-8');
     }
