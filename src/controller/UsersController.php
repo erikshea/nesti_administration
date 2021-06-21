@@ -139,9 +139,9 @@ class UsersController extends EntityController
 
                 $user->setCity($city);
 
-    if ( !empty($formBuilder->getFormData()["newPassword"]) ){
-        $user->setPasswordHashFromPlaintext($formBuilder->getFormData()["newPassword"]);
-    }
+                if ( !empty($formBuilder->getFormData()["newPassword"]) ){
+                $user->setPasswordHashFromPlaintext($formBuilder->getFormData()["newPassword"]);
+                }
 
                 $this->getDaoClass()::saveOrUpdate($user);
                 $formBuilder->applyDataElementTo($user,"roles");

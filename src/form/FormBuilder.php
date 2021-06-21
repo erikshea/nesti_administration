@@ -98,7 +98,6 @@ class FormBuilder{
      * add a form field to view
      * @param  mixed $propertyName
      * @param  mixed $options
-     * @return void
      */
     public function add($propertyName, $options=[]){
         $validators = $this->getPropertyParameters()[$propertyName]['validators'] ?? [];
@@ -160,7 +159,6 @@ class FormBuilder{
     /**
      * getValidatorErrorMessages
      * get all error messages, by validator name
-     * @return void
      */
     public function getValidatorErrorMessages()
     {

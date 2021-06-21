@@ -121,13 +121,12 @@ class ApiController extends BaseController
      * recipesToArray
      * get a list of recipes as a data array
      * @param  mixed $recipes
-     * @return void
      */
     private function recipesToArray($recipes){
         $recipesArray =  EntityUtil::toArray($recipes, true);
         foreach ($recipesArray as $i=>&$recipeArray) {
             $recipeArray["author"] = FormatUtil::decode($recipes[$i]->getChef()?->getFullName() ?? "");
-            $recipeArray["image"] = SiteUtil::fullUrl($recipes[$i]->getImage()?->getUrl() ?? "");
+            $recipeArray["imageUrl"] = SiteUtil::fullUrl($recipes[$i]->getImage()?->getUrl() ?? "");
         }
         return $recipesArray;
     }
@@ -136,7 +135,6 @@ class ApiController extends BaseController
      * ingredientRecipesToArray
      * get a list of ingredients as a data array
      * @param  mixed $ingredientRecipes
-     * @return void
      */
     private function ingredientRecipesToArray($ingredientRecipes){
         $ingredientRecipesArray =  EntityUtil::toArray($ingredientRecipes, true);
@@ -146,6 +144,4 @@ class ApiController extends BaseController
         }
         return $ingredientRecipesArray;
     }
-
-    
 }

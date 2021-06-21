@@ -4,8 +4,6 @@
  * Article
  */
 class Article extends BaseEntity{
-    protected static $columnNames; 
-    
     private $idArticle;
     private $unitQuantity;
     private $flag;

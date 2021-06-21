@@ -107,7 +107,7 @@ class Recipe extends BaseEntity{
      * @return void
      */
     public function setChef(Chef $c){
-        return $this->setRelatedEntity($c);
+        $this->setRelatedEntity($c);
     }
     
     /**

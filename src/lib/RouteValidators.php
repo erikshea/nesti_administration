@@ -11,10 +11,9 @@ class RouteValidators{
      * is the current logged in user the author of the requested recipe?
      */
     public static function recipeCreator(){
-        if ( Dispatcher::getLoggedInUser() != null ){
-            $recipe = (new RecipeController)->getEntity();
-            return Dispatcher::getLoggedInUser()->equals( $recipe->getChef() );
-        }
+        $recipe = RecipeDao::findById(SiteUtil::getUrlParameters()[2] ?? null);
+        return  Dispatcher::getLoggedInUser()
+            ?->equals( $recipe?->getChef() ) ?? false;
     }
     
     /**

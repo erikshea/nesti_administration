@@ -1,0 +1,22 @@
+[
+    {
+        index: 0,
+        idArticle: "196",
+        quantity: "7",
+        unitName: "pièce",
+        articleName: "Une boite de six oeufs"
+    },
+    
+    {
+        "idTag": "2",
+        "name": "traditional"
+    },
+    {
+        "idTag": "3",
+        "name": "season"
+    },
+    {
+        "idTag": "4",
+        "name": "gluten_free"
+    }
+]

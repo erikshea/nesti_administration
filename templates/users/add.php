@@ -20,7 +20,8 @@
                 ->add("csrf")
                 ->add("firstName")
                 ->add("lastName")
-                ->add("roles")?>
+                ->add("roles")
+                ->add("flag")?>
         </div>
 
         <div class="col-12 col-lg-6 d-flex justify-content-center flex-column image-group">

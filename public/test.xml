@@ -1,0 +1,8 @@
+<Certificates>
+    <Service>
+        <PrivateKey/>
+        <Allowed>
+            <PublicKey />
+        </Allowed>
+    </Service>
+</Certificates>

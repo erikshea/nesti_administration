@@ -183,10 +183,14 @@ class ArticleController extends EntityController
 
             // the first line contains view column names, ie: "article_idArticle";"article_name";"article_quantity";...
             $columnNames = fgetcsv($file, 0, ";");
-            
+            $columnNames[0] = str_replace('"', "", $columnNames[0]);
+            $columnNames[0] = str_replace('﻿', "", $columnNames[0]);
+
+
             $importedArticles = [];
             while ( ($row = fgetcsv($file, 0, ";")) !== false ){
                 $values = [];
+                $row = SiteUtil::sanitize($row);
                 foreach ( $columnNames as $i=>$name ){
                     $values[$name] = utf8_encode($row[(string)$i]);
                 }

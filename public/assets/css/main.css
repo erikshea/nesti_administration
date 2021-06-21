@@ -6,6 +6,7 @@
     --color-secondary: #FBC02D;
     --color-secondary-light: #FFF263;
     --color-secondary-dark: #C49000;
+    --color-secondary-darker: #634900;
 
     --color-classic-dark: #414141;
     --color-classic-medium: #606267;
@@ -80,7 +81,7 @@ body{
 }
 
 .color-secondary-dark{
-    color: var(--color-secondary-dark);
+    color: var(--color-secondary-darker);
 }
 
 
@@ -156,7 +157,7 @@ h4{
 
 
 .btn{
-    border-style: solid 1px;
+    border: 1px solid;
     border-color: var(--color-primary);
     font-family: Nunito;
     color: var(--color-classic-base);

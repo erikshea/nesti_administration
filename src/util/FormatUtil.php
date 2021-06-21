@@ -70,7 +70,6 @@ class FormatUtil {
      * formatTime
      * format a time in minutes into human-readable form
      * @param  mixed $minutes
-     * @return void
      */
     public static function formatTime($minutes){
         $hours = floor($minutes/60);
@@ -93,7 +92,6 @@ class FormatUtil {
     /**
      * currentSqlDate
      * get current date, formatted for insertion into a database
-     * @return void
      */
     public static function currentSqlDate(){
         return static::dateTimeToSqlDate(new DateTime());
@@ -103,7 +101,6 @@ class FormatUtil {
      * dateTimeToSqlDate
      * transforma  DateTime object into an equivalent string insertable into a database 
      * @param  mixed $dt
-     * @return void
      */
     public static function dateTimeToSqlDate($dt){
         return $dt->format('Y-m-d H:i:s');
@@ -113,7 +110,6 @@ class FormatUtil {
      * sqlDateToPhpDate
      * transform an sql date into a PHP DateTime
      * @param  mixed $sqlDate
-     * @return void
      */
     public static function sqlDateToPhpDate($sqlDate){
         return date('Y-m-d H:i:s', strtotime($sqlDate));
@@ -123,7 +119,6 @@ class FormatUtil {
      * getFormattedPrice
      * format a price into human readable form
      * @param  mixed $price
-     * @return void
      */
     public static function getFormattedPrice($price){
         return $price == null? "-":number_format($price, 2, ",", "") . "€";
@@ -133,7 +128,6 @@ class FormatUtil {
      * decode
      * decode special characters and unicode 
      * @param  mixed $value
-     * @return void
      */
     public static function decode($value){
         return html_entity_decode($value, ENT_QUOTES | ENT_XML1, 'UTF-8');

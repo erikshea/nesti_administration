@@ -154,7 +154,6 @@ class AjaxController extends BaseController
     /**
      * getIngredientRecipesArray
      * get ingredients of recipe as an array of data, not entities
-     * @return void
      */
     protected function getIngredientRecipesArray(){
         $recipe = RecipeDao::findById($_POST["idRecipe"]);
@@ -173,7 +172,6 @@ class AjaxController extends BaseController
     /**
      * getIngredientsArray
      * get all existing ingredients as a data array
-     * @return void
      */
     protected static function getIngredientsArray(){
         return array_map( function($ingredient) {

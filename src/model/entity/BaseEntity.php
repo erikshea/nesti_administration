@@ -165,7 +165,6 @@ class BaseEntity{
      * makeChildEntity
      * Creates a child entity (whose table inherits current entity's table) of the current instance
      * @param  mixed $childEntityClass
-     * @return void
      */
     public function makeChildEntity(string $childEntityClass){
         if ( $this->getChildEntity($childEntityClass) == null ) {
@@ -183,7 +182,6 @@ class BaseEntity{
      * equals
      * Two entities are considered equal if of is a subclass of the other or the same class, and if they have the same primary keys
      * @param  mixed $other
-     * @return void
      */
     public function equals( $other ){
         return $other != null
@@ -216,7 +214,6 @@ class BaseEntity{
     /**
      * hasCompositeKey
      * Does the currrent entity have a composite primary key?
-     * @return void
      */
     public function hasCompositeKey(){
         return is_array(static::getDaoClass()::getPkColumnName());
@@ -227,7 +224,6 @@ class BaseEntity{
      * hasSamePrimaryKey
      * Is the current entity's primary key identical to the primary key of another entity?
      * @param  mixed $other
-     * @return void
      */
     public function hasSamePrimaryKey($other){
         if ( $this->hasCompositeKey() ){
@@ -252,7 +248,6 @@ class BaseEntity{
     /**
      * existsInDataSource
      * Is there a row in the data source that corresponds to the current entity?
-     * @return void
      */
     public function existsInDataSource(){
         if ( !$this->hasCompositeKey()){
@@ -296,7 +291,6 @@ class BaseEntity{
      * set an entity's original ID propery, which represents it's ID in the data source.
      * @param  mixed $value
      * @param  mixed $columnName
-     * @return void
      */
     public function setOriginalId($value, $columnName = null )
     {

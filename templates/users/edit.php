@@ -119,11 +119,11 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <span>Nombre de de commentaires bloqués : </span>
-                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["flag" => "b"])) ?></span>
+                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["b"])) ?></span>
                         </li>
                         <li class="list-group-item">
                             <span>Nombre de de commentaires approuvés : </span>
-                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["flag" => "a"])) ?></span>
+                            <span><?= count($vars["entity"]->getModerator()->getModeratedComments(["a"])) ?></span>
                         </li>
                     </ul>
                 </li>

@@ -79,7 +79,6 @@ class TranslateUtil {
      * translateNumber
      * tranlaste a number's decimal separator
      * @param  mixed $number
-     * @return void
      */
     public static function translateNumber($number){
         return str_replace (".",",",$number);

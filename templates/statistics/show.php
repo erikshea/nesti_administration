@@ -1,15 +1,15 @@
 <div class="container mt-3">
     <div class="row">
-        <div class="col-6 col-md-5">
+        <div class="col-6 col-lg-5">
             <h2>Commandes</h2>
             <div id="chartOrder"></div>
         </div>
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-lg-4">
             <h2>Consultation du site</h2>
             <div id="chartConnexionLog"></div>
         </div>
         
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-lg-3">
             <h4>Top 10 utilisateurs</h4>
             <div class="primary-border">
     <?php foreach ($vars['usersWithMostConnections'] as $user): ?>
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="col-6 col-md-6">
+        <div class="col-6 col-lg-6">
             <h4>Plus grosses commandes</h4>
             <div class="primary-border">
                 <?php foreach ($vars['ordersByTotal'] as $order): ?>
